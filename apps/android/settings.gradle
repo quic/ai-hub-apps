@@ -1,0 +1,41 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        ivy {
+            url 'https://qaihub-public-assets.s3.us-west-2.amazonaws.com/'
+            patternLayout {
+                artifact '/qai-hub-apps/[organization]_[module]/v[revision].[ext]'
+            }
+            metadataSources {
+                artifact()
+            }
+        }
+    }
+}
+
+/** Project Name **/
+rootProject.name = "Qualcomm AI Hub Android Sample Apps"
+
+/** Applications **/
+if (Boolean.valueOf(properties["includeClassificationApp"])) {
+    include ':ImageClassification'
+}
+if (Boolean.valueOf(properties["includeSuperResolutionApp"])) {
+    include ':SuperResolution'
+}
+
+if (Boolean.valueOf(properties["includeSemanticSegmentationApp"])) {
+    include ':SemanticSegmentation'
+}
+
+/** Qualcomm Helper Libraries **/
+include ":qnn_sdk"
