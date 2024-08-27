@@ -86,11 +86,11 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
 
 ### Sample Input
 
-![sample_input](https://github.com/user-attachments/assets/f842aeb5-1fcf-4fe1-a414-3d43cc50baa7)
+![sample_input](assets/images/kitchen.jpg)
 
 ### Sample Output
 
-![sample_output](https://github.com/user-attachments/assets/fa06aeb5-72f7-4fb5-8cf9-e952f6970206)
+![sample_output](assets/images/sample_outputs/kitchen_output.jpg)
 
 ## App and model details
 
