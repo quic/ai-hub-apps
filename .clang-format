@@ -1,0 +1,28 @@
+---
+Language: Json
+BasedOnStyle: llvm
+DisableFormat: true
+---
+Language: Cpp
+BasedOnStyle:  LLVM
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: false
+BinPackParameters: false
+BreakBeforeBraces: Allman
+BreakConstructorInitializers: BeforeComma
+ColumnLimit: 120
+IndentCaseLabels: false
+IndentWidth: 4
+PointerAlignment: Left
+Standard: c++17
+---
+Language: Proto
+DisableFormat: true
+---
+Language: Java
+DisableFormat: true
+...

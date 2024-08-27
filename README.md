@@ -34,7 +34,7 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 
 ## Getting Started
 
-1. Search for your desired OS & app in [this folder](apps), or in the [app directory](#app_directory) at the bottom of this file.
+1. Search for your desired OS & app in [this folder](apps), or in the [app directory](#app-directory) at the bottom of this file.
 
 2. The README of the selected app will contain build & installation instructions.
 
@@ -45,7 +45,8 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 | | | |
 | [Image Classification](apps/android/ImageClassification) | Android | Java | TensorFlow Lite |
 | [Super Resolution](apps/android/SuperResolution) | Android |  Java | TensorFlow Lite |
-| [Semantic Segmentation](apps/android/SemanticSegmentation) | Android |  Java | TensorFlow Lite | OpenCV, Live Camera Feed
+| [Semantic Segmentation](apps/android/SemanticSegmentation) | Android |  Java | TensorFlow Lite | OpenCV, Live Camera Feed |
+| [Object Detection](apps/windows/ObjectDetection) | Windows | C++ | ONNX Runtime | OpenCV |
 
 ## LICENSE
 
