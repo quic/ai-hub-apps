@@ -23,12 +23,6 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            jniLibs.srcDirs = [rootProject.ext.qnnJniLibs]
-        }
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.valueOf("VERSION_$javaSourceCompatibilityVersion")
         targetCompatibility JavaVersion.valueOf("VERSION_$javaTargetCompatibilityVersion")
@@ -61,7 +55,8 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.16.1'
     implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.16.1'
     implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
-    implementation project(":qnn_sdk")
+    implementation "com.qualcomm.qti:qnn-runtime:$qnnVersion"
+    implementation "com.qualcomm.qti:qnn-tflite-delegate:$qnnVersion"
 }
 
 if (System.getProperty("user.dir") != project.rootDir.path) {

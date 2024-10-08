@@ -1,0 +1,6 @@
+opencv-python
+qai_hub_models[whisper_base_en]
+audio2numpy
+samplerate
+onnxruntime
+onnxruntime-qnn

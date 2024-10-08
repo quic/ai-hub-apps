@@ -2,7 +2,3 @@
 plugins {
     id 'com.android.application' version '8.2.0' apply false
 }
-
-ext {
-    qnnJniLibs = project(":qnn_sdk").getLayout().buildDirectory.dir("libs")
-}

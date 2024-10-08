@@ -12,9 +12,11 @@ With this repository, you can...
 
 ### Supported runtimes
 * [TensorFlow Lite](https://www.tensorflow.org/lite)
+* [ONNX](https://onnxruntime.ai/)
 
 ### Supported Deployment Targets
 * Android 11 Red Velvet Cake & Newer, API v30+
+* Windows 11
 
 ### Supported compute units
 * CPU, GPU, NPU (includes [hexagon HTP](https://developer.qualcomm.com/hardware/qualcomm-innovators-development-kit/ai-resources-overview/ai-hardware-cores-accelerators))
@@ -38,15 +40,23 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 
 2. The README of the selected app will contain build & installation instructions.
 
-## App Directory
+## _Android_ App Directory
 
-| Task | OS | Language | Inference API | Special Tags
-| -- | -- | -- | -- | --
-| | | |
-| [Image Classification](apps/android/ImageClassification) | Android | Java | TensorFlow Lite |
-| [Super Resolution](apps/android/SuperResolution) | Android |  Java | TensorFlow Lite |
-| [Semantic Segmentation](apps/android/SemanticSegmentation) | Android |  Java | TensorFlow Lite | OpenCV, Live Camera Feed |
-| [Object Detection](apps/windows/ObjectDetection) | Windows | C++ | ONNX Runtime | OpenCV |
+| Task | Language | Inference API | Special Tags |
+| -- | -- | -- | -- |
+| [Image Classification](apps/android/ImageClassification) | Java | TensorFlow Lite |
+| [Semantic Segmentation](apps/android/SemanticSegmentation) |  Java | TensorFlow Lite | OpenCV, Live Camera Feed |
+| [Super Resolution](apps/android/SuperResolution) | Java | TensorFlow Lite |
+
+## _Windows_ App Directory
+
+| Task | Language | Inference API | Special Tags |
+| -- | -- | -- | -- |
+| [Image Classification](apps/windows/cpp/Classification) | C++ | ONNX | OpenCV |
+| [Llama 2 Chat](apps/windows/cpp/ChatApp) | C++ | ONNX |
+| [Object Detection](apps/windows/cpp/ObjectDetection) | C++ | ONNX | OpenCV |
+| [Super Resolution](apps/windows/cpp/SuperResolution) | C++ | ONNX | OpenCV |
+| [Whisper Speech-to-Text](apps/windows/python/Whisper) | Python | ONNX |
 
 ## LICENSE
 

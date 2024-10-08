@@ -10,15 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        ivy {
-            url 'https://qaihub-public-assets.s3.us-west-2.amazonaws.com/'
-            patternLayout {
-                artifact '/qai-hub-apps/[organization]_[module]/v[revision].[ext]'
-            }
-            metadataSources {
-                artifact()
-            }
-        }
     }
 }
 
@@ -36,6 +27,3 @@ if (Boolean.valueOf(properties["includeSuperResolutionApp"])) {
 if (Boolean.valueOf(properties["includeSemanticSegmentationApp"])) {
     include ':SemanticSegmentation'
 }
-
-/** Qualcomm Helper Libraries **/
-include ":qnn_sdk"
