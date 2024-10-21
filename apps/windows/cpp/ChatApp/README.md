@@ -21,12 +21,17 @@ The app demonstrates how to use the Genie APIs from [QNN SDK](https://qpm.qualco
 
 ## Build App
 
-### Downloading models from AI Hub
+### Compile to QNN Binary via AI Hub and Generate Genie Bundle
 
-1. Please follow the instructions from [Llama2 from AI Hub Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models/llama_v2_7b_chat_quantized/gen_ondevice_llama) to generate models and assets required by ChatApp
-2. Copy assets to target device (e.g., Snapdragon® based Windows)
+1. Copy `ChatApp` to target device (e.g., Snapdragon® based Windows)
 
-NOTE: This process takes a long time e.g. ~2 hours to export models, ~2 hours to build QNN binaries to run on-device.
+2. Please follow [this
+tutorial](https://github.com/qcom-ai-hub/ai-hub-apps-internal/tree/main/tutorials/llm_on_genie)
+to generate `genie_bundle` required by ChatApp
+
+3. Copy bundle assets from step 2 to `ChatApp\genie_bundle`. You should see
+`ChatApp\genie_bundle\*.bin` QNN binary files.
+
 
 ### Setup QNN SDK
 
@@ -58,11 +63,33 @@ Make sure `QNN_SDK_ROOT` is set globally pointing to QNN SDK before you build th
 
 1. Open `ChatApp.sln`
 2. Build project in Visual Studio
-   - It takes around 2 mins to build on X Elite.
 
 ## Running App
 
 ### Providing local paths
+
+### Running via Visual Studio
+
+Click on the green play button to build and run.
+
+Visual studio project is configured with the following command arguments:
+
+```powershell
+.\ARM64\Debug\ChatApp.exe --genie-config .\\genie_bundle\\genie_config.json --base-dir .\\genie_bundle\\
+```
+
+### Running app via CLI
+
+```powershell
+cd {Project directory}
+.\ARM64\Debug\ChatApp.exe --genie-config .\\genie_bundle\\genie_config.json --base-dir .\\genie_bundle\\
+```
+
+Run `--help` to learn more:
+
+```powershell
+.\ARM64\Debug\ChatApp.exe --help
+```
 
 Make sure to provide paths to local config file and models using `\\` or `/` as a path separator and not `\`
 
@@ -80,26 +107,6 @@ Make sure to provide paths to local config file and models using `\\` or `/` as 
 1. C:\Path\To\Model\Config\llama2_7b.json
 ```
 
-### Running app via CLI
-
-```powershell
-cd {Project directory}
-.\ARM64\Debug\ChatApp.exe --model_config .\\assets\\configs\\genie\\llama2_7b.json --htp_config .\\assets\\configs\\htp_backend_ext\\v73.json --tokenizer .\\assets\\configs\\tokenizer\\llama2_7b.json --models {Directory path with models and htp-extension-config downloaded from AI Hub}
-```
-
-You can additionally run `--help` to get more information about all available options:
-
-```powershell
-.\ARM64\Debug\ChatApp.exe --help
-```
-
-### Running via Visual Studio
-
-Visual studio project is configured with the following command arguments:
-
-```powershell
---model_config .\\assets\\configs\\genie\\llama2_7b.json --htp_config .\\assets\\configs\\htp_backend_ext\\v73.json --tokenizer .\\assets\\configs\\tokenizer\\llama2_7b.json --models {Directory path with models and htp-extension-config downloaded from AI Hub}
-```
 
 ### Sample Output
 

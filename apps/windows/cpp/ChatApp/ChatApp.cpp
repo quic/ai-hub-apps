@@ -6,7 +6,6 @@
 #include "PromptHandler.hpp"
 #include <fstream>
 #include <iostream>
-#include <regex>
 
 using namespace App;
 
@@ -48,42 +47,14 @@ void GenieCallBack(const char* response_back, const GenieDialog_SentenceCode_t s
     }
 }
 
-//
-// LoadModelConfig - Loads model config file
-//  - Loads config file in memory
-//  - Replaces place-holders with user provided values
-//
-std::string LoadModelConfig(const std::string& model_config_path,
-                            const std::string& models_path,
-                            const std::string& htp_model_config_path,
-                            const std::string& tokenizer_path)
-{
-    std::string config;
-    // Read config file into memory
-    std::getline(std::ifstream(model_config_path), config, '\0');
-
-    // Replace place-holders in config file with user provided paths
-    config = std::regex_replace(config, std::regex("<models_path>"), models_path);
-    config = std::regex_replace(config, std::regex("<htp_backend_ext_path>"), htp_model_config_path);
-    config = std::regex_replace(config, std::regex("<tokenizer_path>"), tokenizer_path);
-    return config;
-}
-
 } // namespace
 
-ChatApp::ChatApp(const std::string& model_config_path,
-                 const std::string& models_path,
-                 const std::string& htp_config_path,
-                 const std::string& tokenizer_path)
+ChatApp::ChatApp(const std::string& config)
 {
-
-    // Load model config in-memory
-    std::string config = LoadModelConfig(model_config_path, models_path, htp_config_path, tokenizer_path);
-
     // Create Genie config
     if (GENIE_STATUS_SUCCESS != GenieDialogConfig_createFromJson(config.c_str(), &m_config_handle))
     {
-        throw std::runtime_error("Failed to create the Genie Dialog config. Please check config file.");
+        throw std::runtime_error("Failed to create the Genie Dialog config. Please check config.");
     }
 
     // Create Genie dialog handle

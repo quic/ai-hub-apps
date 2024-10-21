@@ -12,23 +12,17 @@
 namespace
 {
 
-constexpr const std::string_view c_option_model_config_path = "--model_config";
-constexpr const std::string_view c_option_models_path = "--models";
-constexpr const std::string_view c_option_htp_config_path = "--htp_config";
-constexpr const std::string_view c_option_tokenizer_path = "--tokenizer";
+constexpr const std::string_view c_option_genie_config = "--genie-config";
+constexpr const std::string_view c_option_base_dir = "--base-dir";
 constexpr const std::string_view c_option_help = "--help";
 constexpr const std::string_view c_option_help_short = "-h";
 
 void PrintHelp()
 {
     std::cout << "\n:::::::: Chat with " << App::c_bot_name << " options ::::::::\n\n";
-    std::cout << c_option_model_config_path << " <Local file path>: [Required] Path to local genie config for model.\n";
-    std::cout << c_option_models_path
-              << " <Local directory path>: [Required] Path to local models downloaded from AI Hub.\n";
-    std::cout << c_option_htp_config_path << " <Local file path>: [Required] Path to local HTP backend extensions.\n"
-              << "\tAvailable htp configurations are located here <project_dir>/assets/configs/htp_backend_ext/\n";
-    std::cout << c_option_tokenizer_path << " <Local file path>: [Required] Path to local tokenizer json.\n"
-              << "\tAvailable tokenizers are located here <project_dir>/assets/configs/tokenizer/\n";
+    std::cout << c_option_genie_config << " <Local file path>: [Required] Path to local Genie config for model.\n";
+    std::cout << c_option_base_dir
+              << " <Local directory path>: [Required] Base directory to set as the working directory.\n";
     std::cout << "\nDuring chat with " << App::c_bot_name << ", please type " << App::c_exit_prompt
               << " as a prompt to terminate chat.\n ";
 }
@@ -40,17 +34,16 @@ void PrintWelcomeMessage()
     std::cout << "At any time during chat, please type `" << App::c_exit_prompt
               << "` to terminate the conversation.\n\n";
     std::cout << "Let's begin with an introduction,\n";
-    std::cout << "I'm `" << App::c_bot_name << "`! what's your name ? ";
+    std::cout << "I'm `" << App::c_bot_name << "`! What's your name? ";
 }
 
 } // namespace
 
 int main(int argc, char* argv[])
 {
-    std::string model_config_path;
-    std::string models_path;
-    std::string htp_config_path;
-    std::string tokenizer_path;
+    std::string genie_config_path;
+    std::string base_dir;
+    std::string config;
     bool invalid_arguments = false;
 
     // Check if argument file path is accessible
@@ -67,25 +60,31 @@ int main(int argc, char* argv[])
     // Arg parser
     for (int i = 1; i < argc; ++i)
     {
-        if (c_option_model_config_path == argv[i])
+        if (c_option_genie_config == argv[i])
         {
-            model_config_path = argv[++i];
-            check_arg_path(c_option_model_config_path, model_config_path);
+            if (i + 1 < argc)
+            {
+                genie_config_path = argv[++i];
+                check_arg_path(c_option_genie_config, genie_config_path);
+            }
+            else
+            {
+                std::cout << "\nMissing value for " << c_option_genie_config << " option.\n";
+                invalid_arguments = true;
+            }
         }
-        else if (c_option_models_path == argv[i])
+        else if (c_option_base_dir == argv[i])
         {
-            models_path = argv[++i];
-            check_arg_path(c_option_models_path, models_path);
-        }
-        else if (c_option_htp_config_path == argv[i])
-        {
-            htp_config_path = argv[++i];
-            check_arg_path(c_option_htp_config_path, htp_config_path);
-        }
-        else if (c_option_tokenizer_path == argv[i])
-        {
-            tokenizer_path = argv[++i];
-            check_arg_path(c_option_tokenizer_path, tokenizer_path);
+            if (i + 1 < argc)
+            {
+                base_dir = argv[++i];
+                check_arg_path(c_option_base_dir, base_dir);
+            }
+            else
+            {
+                std::cout << "\nMissing value for " << c_option_base_dir << " option.\n";
+                invalid_arguments = true;
+            }
         }
         else if (c_option_help == argv[i] || c_option_help_short == argv[i])
         {
@@ -99,8 +98,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    // If invalid arguments, print help and exit.
-    if (invalid_arguments)
+    // If invalid arguments or required arguments are missing, print help and exit.
+    if (invalid_arguments || genie_config_path.empty() || base_dir.empty())
     {
         PrintHelp();
         return 1;
@@ -108,9 +107,20 @@ int main(int argc, char* argv[])
 
     try
     {
+        // Load genie_config_path into std::string config before changing directory
+        std::ifstream config_file(genie_config_path);
+        if (!config_file)
+        {
+            throw std::runtime_error("Failed to open Genie config file: " + genie_config_path);
+        }
+
+        config.assign((std::istreambuf_iterator<char>(config_file)), std::istreambuf_iterator<char>());
+
+        std::filesystem::current_path(base_dir);
+
         std::string user_name;
 
-        App::ChatApp app(model_config_path, models_path, htp_config_path, tokenizer_path);
+        App::ChatApp app(config);
 
         // Get user name to chat with
         PrintWelcomeMessage();

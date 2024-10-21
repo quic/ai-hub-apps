@@ -24,21 +24,15 @@ class ChatApp
   public:
     /**
      * ChatApp: Initializes ChatApp
-     *    - Loads Model config with provided model path, htp config and tokenizer
+     *    - Uses provided Genie configuration string
      *    - Creates handle for Genie
      *
-     * @param model_config_path: local path to model Genie config file
-     * @param models_path: local path to directory that contains model context binaries (e.g., downloaded from AI Hub)
-     * @param htp_config_path: local path to backend htp configuration
-     * @param tokenizer_path: local path to tokenizer to use
+     * @param config: JSON string containing Genie configuration
      *
-     * @thows on failure to create handle for Genie config, dialog
+     * @throws on failure to create handle for Genie config, dialog
      *
      */
-    ChatApp(const std::string& model_config_path,
-            const std::string& models_path,
-            const std::string& htp_config_path,
-            const std::string& tokenizer_path);
+    ChatApp(const std::string& config);
     ChatApp() = delete;
     ChatApp(const ChatApp&) = delete;
     ChatApp(ChatApp&&) = delete;
@@ -49,7 +43,7 @@ class ChatApp
     /**
      * ChatWithUser: Starts Chat with user using previously loaded config
      *
-     * @param user_name: User name to  use during chat
+     * @param user_name: User name to use during chat
      *
      * @throws on failure to query model response during chat
      *

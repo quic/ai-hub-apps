@@ -14,8 +14,8 @@ The app demonstrates how to use the [QNN execution provider](https://onnxruntime
 ### Tools and SDK
 
 - Visual Studio 22
+  - Make sure **Desktop development with C++ tools** are selected during installation or installed separately later
   - Download any variant of [Visual Studio here](https://visualstudio.microsoft.com/vs/)
-  - Make sure Desktop development with C++ tools are selected during installation or installed separately later
 - QNN SDK: [Qualcomm AI Engine Direct](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct)
   - Download and install the latest Qualcomm AI Engine Direct SDK
   - Make libraries from `<QNN_SDK>/libs/<target_platform>` accessible to app target binary

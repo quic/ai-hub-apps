@@ -47,6 +47,7 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 | [Image Classification](apps/android/ImageClassification) | Java | TensorFlow Lite |
 | [Semantic Segmentation](apps/android/SemanticSegmentation) |  Java | TensorFlow Lite | OpenCV, Live Camera Feed |
 | [Super Resolution](apps/android/SuperResolution) | Java | TensorFlow Lite |
+| [WhisperKit (Speech to Text)](https://github.com/argmaxinc/WhisperKitAndroid) | Various | TensorFlow Lite |
 
 ## _Windows_ App Directory
 
