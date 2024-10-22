@@ -64,7 +64,7 @@ You can also use [conda](https://conda.io/projects/conda/en/latest/user-guide/in
 For clarity, we recommend creating a virtual env:
 
 ```
-python3.10 -m venv llm_on_genie
+python3.10 -m venv llm_on_genie_venv
 ```
 
 ### Install QAI-Hub-Models
@@ -72,7 +72,7 @@ python3.10 -m venv llm_on_genie
 In shell session, install `qai-hub-models` under `hub_model` virtual env
 
 ```bash
-source llm_on_genie/bin/activate
+source llm_on_genie_venv/bin/activate
 pip install -U "qai_hub_models[llama-v3-8b-chat-quantized]"
 ```
 
@@ -110,7 +110,7 @@ license if you haven't already done so.
 
 Make a directory to put in all deployable assets. For this example we use
 
-```
+```bash
 mkdir -p genie_bundle
 ```
 
@@ -120,7 +120,7 @@ The export command below typically takes 1-2 hours. However, it may take 3-4
 hours on PyTorch versions earlier than 2.4.0. We recommend upgrading PyTorch
 first:
 
-```
+```bash
 pip install torch==2.4.0
 ```
 
@@ -129,25 +129,26 @@ for the below export command.
 
 #### For Snapdragon® 8 Elite Android device:
 
-```
+```bash
 python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 #### For Windows with Snapdragon® X Elite
 
-```
+```bash
 python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
-Note: For older devices, you may need to adjust the context length using `--context-length`.
+Note: For older devices, you may need to adjust the context length using
+`--context-length <context-length>`.
 
-The `output-dir` would now contains both the intermediate models (`*.zip`) and the final QNN
-models (`*.bin`). Remove the intermediate models to have smaller deployable
-artifacts
+The `genie_bundle` would now contain both the intermediate models (`token`,
+`prompt`) and the final QNN models (`*.bin`). Remove the intermediate models to
+have a smaller deployable artifact:
 
-```
+```bash
 # Remove intermediate assets
-rm -rf genie_bundle/{*.zip,prompt,token}
+rm -rf genie_bundle/{prompt,token}
 ```
 
 ### Install QNN
@@ -185,11 +186,23 @@ export QNN_SDK_ROOT=/opt/qcom/aistack/qairt/<version>
 
 ### HTP Backend Config
 
-```
-cp configs/htp/htp_backend_ext.json.template genie_bundle/htp_backend_ext.json
+Check out the [AI Hub Apps repository](https://github.com/quic/ai-hub-apps)
+using Git:
+
+
+```bash
+git clone https://github.com/quic/ai-hub-apps.git
 ```
 
-Edit `soc_id` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json` following
+Now copy the HTP config template:
+
+```bash
+cp ai-hub-apps/tutorials/llm_on_genie/configs/htp/htp_backend_ext_config.json.template genie_bundle/htp_backend_ext_config.json
+```
+
+Edit `soc_id` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
+depending on your target device (should be consistent with the `--device` you
+specified in the export command):
 
 | Generation | `soc_id` | `dsp_arch` |
 |------------|--------|----------|
@@ -200,36 +213,41 @@ Edit `soc_id` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json` follo
 
 ### Tokenizer
 
-To download the tokenizer, go to the model's Hugging Face page and go to "Files
-and versions" (e.g.
+To download the tokenizer, go to the source model's Hugging Face page and go to "Files
+and versions. You can find a Hugging Face link through the model card on
+[AI Hub](https://aihub.qualcomm.com/). This will take you to the Qualcomm Hugging Face page,
+which in term will have a link to the source Hugging Face page. The tokenizer is
+only hosted on the source Hugging Face page (e.g.
 [here](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/tree/main)
-for Llama 3.0). The file will be named `tokenizer.json`.
-
-Place `tokenizer.json` as `genie_bundle/tokenizer.json`.
+for Llama 3.0).
+The file will be named `tokenizer.json`
+and should be downloaded to the `genie_bundle` directory.
 
 ### Genie Config
 
 Please run (replacing `llama_v3_8b_chat_quantized` with the desired model id):
 
-```
-cp configs/genie/llama_v3_8b_chat_quantized.json genie_bundle/genie_config.json
+```bash
+cp ai-hub-app/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat_quantized.json genie_bundle/genie_config.json
 ```
 
 For Windows laptops, please set `use-mmap` to `false`.
 
+If you customized context length by adding `--context-length` to the export
+command, please open `genie_config.json` and modify the `"size"` option (under
+`"dialog"` -> `"context"`) to be consistent.
 
-In `genie_bundle/genie_config.json`, ensure that the list of bin files in
+In `genie_bundle/genie_config.json`, also ensure that the list of bin files in
 `ctx-bins` matches with the bin files under `genie_bundle`. Genie will look for
 QNN binaries specified here.
 
-
 ## Copy Genie Binaries
 
-Copy Genie's shared libraries and executable to our bundle
+Copy Genie's shared libraries and executable to our bundle.
 
 ### For Windows device
 
-```
+```bash
 cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
 cp $QNN_SDK_ROOT/lib/aarch64-windows-msvc/* genie_bundle
 cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
@@ -237,13 +255,14 @@ cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
 
 ### For Android device
 
-```
+```bash
 # For 8 Gen 2
 cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
 # For 8 Gen 3
 cp $QNN_SDK_ROOT/lib/hexagon-v75/unsigned/* genie_bundle
 # For 8 Elite
 cp $QNN_SDK_ROOT/lib/hexagon-v79/unsigned/* genie_bundle
+# For all devices
 cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
 cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
 ```
@@ -257,10 +276,6 @@ You have two options to run the LLM on device:
 
 ### 1. Run Genie On-Device via `genie-t2t-run`
 
-Copy `genie_bundle` to target device (using `adb push` on Android) and make that your
-current working directory.
-
-
 #### For Windows with Snapdragon® X Elite
 
 In Powershell, navigate to the bundle directory and run
@@ -273,13 +288,26 @@ Note that this prompt format is specific to Llama 3.
 
 #### For Android device:
 
-Make sure you are on the device (use `adb shell`) for the next steps.
+Copy `genie_bundle` from the host machine to the target device using ADB and
+open up an interactive shell on the target device:
 
-Set `LD_LIBRARY_PATH` to current directory:
+```bash
+adb push genie_bundle /data/local/tmp
+adb shell
+```
+
+On device, navigate to the bundle directory:
+
+```bash
+cd /data/local/tmp/genie_bundle
+```
+
+Set `LD_LIBRARY_PATH` to the current directory:
 
 ```bash
 export LD_LIBRARY_PATH=$PWD
 ```
+
 Then run:
 
 ```bash
@@ -306,5 +334,5 @@ Token Generation Time: 740568 us, Token Generation Rate: 12.152884 toks/sec
 
 ### 2. Sample C++ Chat App Powered by Genie SDK
 
-We provide a sample C++ app to show how to build application using Genie SDK.
+We provide a sample C++ app to show how to build an application using the Genie SDK.
 See [CLI Windows ChatApp](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cpp/ChatApp) for more details.
