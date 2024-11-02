@@ -113,3 +113,4 @@ dmypy.json
 # Hub exports
 **/*.mlmodel
 **/*.tflite
+apps/android/SuperResolution/src/main/res/values/models.xml

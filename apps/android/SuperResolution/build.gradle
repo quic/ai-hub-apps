@@ -28,9 +28,7 @@ android {
     }
 
     preBuild.doFirst {
-        if (!file("./src/main/assets/" + project.properties['superresolution_tfLiteModelAsset']).exists()) {
-            throw new RuntimeException(missingModelErrorMsg)
-        }
+        generateModelList()
 
         for (int i = 1; i <= 2; ++i) {
             String filename = "./src/main/assets/images/Sample${i}.jpg"
@@ -60,4 +58,35 @@ dependencies {
 
 if (System.getProperty("user.dir") != project.rootDir.path) {
     throw new RuntimeException("This project should be opened from the `android` directory (parent of SuperResolution directory), NOT the SuperResolution directory.")
+}
+
+
+def generateModelList() {
+        def assetsDir = file("${projectDir}/src/main/assets")
+        def outputDir = file("${projectDir}/src/main/res/values")
+        def outputFile = file("${outputDir}/models.xml")
+        if (!outputDir.exists()) {
+            throw new GradleException("res directory not exist: ${outputDir}")
+        }
+        if (!assetsDir.exists()) {
+            throw new GradleException("assets directory not exist: ${assetsDir}")
+        }
+
+        def files = []
+        if (assetsDir.exists()) {
+            files = assetsDir.listFiles().findAll { it.name.endsWith('.tflite') || it.name.endsWith('.bin')  }.collect { it.name }
+        }
+
+        def xmlContent = """<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="model_files">
+"""
+        files.each { fileName ->
+            xmlContent += "        <item>${fileName}</item>\n"
+        }
+        xmlContent += """    </string-array>
+</resources>
+"""
+        outputFile.text = xmlContent
+
 }
