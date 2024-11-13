@@ -37,12 +37,14 @@ If you have any questions, please feel free to post on [AI Hub slack channel](ht
 
 ## Device Requirements
 
-| Model name | QNN SDK version | Supported devices |
+| Model name | Minimum QNN SDK version | Supported devices |
 | --- | --- | --- |
 | Llama-v2-7B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3<br>Snapdragon® X Elite |
 | Llama-v3-8B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
 | Llama-v3.1-8B-Chat | 2.27.7 | Snapdragon® 8 Elite |
+| Llama-v3.1-8B-Chat | 2.28.0 | Snapdragon® X Elite |
 | Llama-v3.2-3B-Chat | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
+| Llama-v3.2-3B-Chat | 2.28.0 | Snapdragon® X Elite |
 | Baichuan2-7B | 2.27.7 |  Snapdragon® 8 Elite |
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
@@ -127,6 +129,11 @@ pip install torch==2.4.0
 This version is not yet supported in general by AI Hub Models but will work
 for the below export command.
 
+Note that the export also requires a lot of memory (RAM + swap) on the host
+device (for Llama 3, we recommend 80 GB). If we detect that you have less
+memory than recommended, the export command will print a warning with
+instructions of how to increase your swap space.
+
 #### For Snapdragon® 8 Elite Android device:
 
 ```bash
@@ -200,11 +207,11 @@ Now copy the HTP config template:
 cp ai-hub-apps/tutorials/llm_on_genie/configs/htp/htp_backend_ext_config.json.template genie_bundle/htp_backend_ext_config.json
 ```
 
-Edit `soc_id` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
+Edit `soc_model` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
 depending on your target device (should be consistent with the `--device` you
 specified in the export command):
 
-| Generation | `soc_id` | `dsp_arch` |
+| Generation | `soc_model` | `dsp_arch` |
 |------------|--------|----------|
 | Snapdragon® Gen 2      | 43     | v73      |
 | Snapdragon® Gen 3      | 57     | v75      |

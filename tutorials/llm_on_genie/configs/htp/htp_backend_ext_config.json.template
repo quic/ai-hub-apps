@@ -1,7 +1,7 @@
 {
     "devices": [
         {
-            "soc_id": <TODO>,
+            "soc_model": <TODO>,
             "dsp_arch": "<TODO>",
             "cores": [
                 {

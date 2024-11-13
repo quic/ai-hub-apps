@@ -8,13 +8,13 @@
 namespace AppUtils
 {
 
-class Llama2PromptHandler
+class PromptHandler
 {
   private:
     bool m_is_first_prompt;
 
   public:
-    Llama2PromptHandler();
+    PromptHandler();
 
     std::string GetPromptWithTag(const std::string& user_prompt);
 };

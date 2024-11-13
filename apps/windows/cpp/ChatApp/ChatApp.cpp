@@ -85,7 +85,7 @@ ChatApp::~ChatApp()
 
 void ChatApp::ChatWithUser(const std::string& user_name)
 {
-    AppUtils::Llama2PromptHandler prompt_handler;
+    AppUtils::PromptHandler prompt_handler;
 
     // Initiate Chat with infinite loop.
     // User to provide `exit` as a prompt to exit.

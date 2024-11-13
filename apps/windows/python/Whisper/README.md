@@ -10,6 +10,6 @@ Follow instructions to run the demo:
 
 4. Install dependencies by running `python -m pip install -r requirements.txt`
 
-5. From this folder, run `python -m qai-hub-models.models.whisper_base_en.export --target-runtime onnx`
+5. From this folder, run `python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx`
 
 6. Run demo `python demo.py --audio_path /path/to/test/data.mp3`
