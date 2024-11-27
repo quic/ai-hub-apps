@@ -2,17 +2,21 @@
 
 # Qualcomm® AI Hub Apps
 
-The Qualcomm® AI Hub Apps are a collection of sample machine learning apps ready to deploy on Qualcomm® devices.
+The Qualcomm® AI Hub Apps are a collection of sample apps and tutorials to help deploy machine learning models on Qualcomm® devices.
 
 Each app is designed to work with one or more models from [Qualcomm® AI Hub Models](https://aihub.qualcomm.com/).
 
 With this repository, you can...
 * Explore apps optimized for on-device deployment of various machine learning tasks.
 * View open-source app recipes for running [Qualcomm® AI Hub Models](https://aihub.qualcomm.com/) on local devices.
+* Find tutorials for end-to-end workflows
+
+## Overview
 
 ### Supported runtimes
 * [TensorFlow Lite](https://www.tensorflow.org/lite)
 * [ONNX](https://onnxruntime.ai/)
+* Genie SDK (Generative AI runtime on top of [Qualcomm® AI Engine Direct SDK](https://www.qualcomm.com/developer/software/qualcomm-ai-engine-direct-sdk))
 
 ### Supported Deployment Targets
 * Android 11 Red Velvet Cake & Newer, API v30+
@@ -22,10 +26,11 @@ With this repository, you can...
 * CPU, GPU, NPU (includes [hexagon HTP](https://developer.qualcomm.com/hardware/qualcomm-innovators-development-kit/ai-resources-overview/ai-hardware-cores-accelerators))
 
 ### Chipsets supported for NPU Acceleration
-* [Snapdragon 888/888+](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-888-5g-mobile-platform)
-* [Snapdragon 8 Gen 1](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-1-mobile-platform)
-* [Snapdragon 8 Gen 2](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-2-mobile-platform)
+* [Snapdragon 8 Elite](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-elite-mobile-platform)
 * [Snapdragon 8 Gen 3](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform)
+* [Snapdragon 8 Gen 2](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-2-mobile-platform)
+* [Snapdragon 8 Gen 1](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-1-mobile-platform)
+* [Snapdragon 888/888+](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-888-5g-mobile-platform)
 * ... and all other [Snapdragon® chipsets supported by the QNN SDK](https://docs.qualcomm.com/bundle/publicresource/topics/80-63442-50/overview.html#supported-snapdragon-devices)
 
 _Weight and activation type required for NPU Acceleration:_
@@ -34,7 +39,7 @@ _Weight and activation type required for NPU Acceleration:_
 
 __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipsets.__
 
-## Getting Started
+## Getting Started with Apps
 
 1. Search for your desired OS & app in [this folder](apps), or in the [app directory](#app-directory) at the bottom of this file.
 
@@ -44,6 +49,7 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 
 | Task | Language | Inference API | Special Tags |
 | -- | -- | -- | -- |
+| [ChatApp](apps/android/ChatApp) | Java/C++ | Genie SDK | LLM, GenAI |
 | [Image Classification](apps/android/ImageClassification) | Java | TensorFlow Lite |
 | [Semantic Segmentation](apps/android/SemanticSegmentation) |  Java | TensorFlow Lite | OpenCV, Live Camera Feed |
 | [Super Resolution](apps/android/SuperResolution) | Java | TensorFlow Lite |
@@ -53,11 +59,17 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 
 | Task | Language | Inference API | Special Tags |
 | -- | -- | -- | -- |
+| [ChatApp](apps/windows/cpp/ChatApp) | C++ | Genie SDK | LLM, GenAI |
 | [Image Classification](apps/windows/cpp/Classification) | C++ | ONNX | OpenCV |
-| [Llama 2 Chat](apps/windows/cpp/ChatApp) | C++ | ONNX |
 | [Object Detection](apps/windows/cpp/ObjectDetection) | C++ | ONNX | OpenCV |
 | [Super Resolution](apps/windows/cpp/SuperResolution) | C++ | ONNX | OpenCV |
 | [Whisper Speech-to-Text](apps/windows/python/Whisper) | Python | ONNX |
+
+## _Tutorials_ Directory
+
+| Tutorial | Topic |
+| --- | --- |
+| [LLM on-device deployment](tutorials/llm_on_genie) | Exporting and deploying Large Language Model (LLM) using Genie SDK |
 
 ## LICENSE
 

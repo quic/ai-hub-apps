@@ -1,0 +1,121 @@
+plugins {
+    id "com.android.application"
+}
+
+// Path to local QNN SDK.
+// Download QNN SDK from https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct
+def qnnSDKLocalPath="<Path to local installed QNN SDK root>"
+
+// Check if QNN SDK is set correctly
+def checkQNNSDK(qnnSDKPath) {
+    if (!file(qnnSDKPath).exists()) {
+        throw new RuntimeException("QNN SDK does not exists at " + qnnSDKPath + ". Please set `qnnSDKLocalPath` in build.gradle.");
+    }
+
+    if (!file(qnnSDKPath + "/lib/aarch64-android/libGenie.so").exists()) {
+        throw new RuntimeException("libGenie does not exists. Please set `qnnSDKLocalPath` in build.gradle.");
+    }
+}
+
+// List of model assets
+def models = ["llama3_2_3b"]
+// Relative asset path for model configuration and binaries
+def relAssetsPath = "src/main/assets/models/"
+
+// Ensure genie-config and tokenizer is present
+models.each { model ->
+    if (!file(relAssetsPath + model + "/genie-config.json").exists()) {
+        throw new RuntimeException("Missing genie-config.json for " + model + ".")
+    }
+    if (!file(relAssetsPath + model + "/tokenizer.json").exists()) {
+        throw new RuntimeException("Missing tokenizer.json for " + model + ".")
+    }
+}
+
+// Checks if QNN SDK path is set correctly
+checkQNNSDK(qnnSDKLocalPath);
+
+// Copy required QNN libs
+def buildDir = project(":ChatApp").getLayout().getBuildDirectory()
+def libsDir = buildDir.dir("libs")
+def libsABIDir = buildDir.dir("libs/arm64-v8a")
+copy {
+    from qnnSDKLocalPath
+
+    include "**/lib/aarch64-android/libQnnHtp.so"
+    include "**/lib/aarch64-android/libQnnHtpPrepare.so"
+    include "**/lib/aarch64-android/libQnnSystem.so"
+    include "**/lib/aarch64-android/libQnnSaver.so"
+    include "**/lib/hexagon-v**/unsigned/libQnnHtpV**Skel.so"
+    include "**/lib/aarch64-android/libQnnHtpV**Stub.so"
+
+    into libsABIDir
+    // Copy libraries without directory structure
+    eachFile {
+        path = name
+    }
+    includeEmptyDirs = false
+}
+
+android {
+    compileSdk Integer.valueOf(androidCompileSDK)
+
+    defaultConfig {
+        applicationId "com.quicinc.chatapp"
+
+        // TODO: use androidMinSDK value from gradle.properties once it updates to 31
+        minSdk Integer.valueOf(31)
+        targetSdk Integer.valueOf(androidTargetSDK)
+        versionCode 1
+        versionName "1.0"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+                abiFilters "arm64-v8a"
+                arguments "-DQNN_SDK_ROOT_PATH=" + qnnSDKLocalPath
+            }
+        }
+        sourceSets {
+            main {
+                jniLibs.srcDir libsDir
+            }
+        }
+        signingConfig signingConfigs.debug
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.valueOf("VERSION_$javaSourceCompatibilityVersion")
+        targetCompatibility JavaVersion.valueOf("VERSION_$javaTargetCompatibilityVersion")
+    }
+
+    namespace "com.quicinc.chatapp"
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+            version "3.22.1"
+        }
+    }
+    packagingOptions {
+        // Extract native libraries so they"re accessible via the file system directly.
+        jniLibs.useLegacyPackaging = true
+    }
+    aaptOptions {
+        noCompress "bin", "json"
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ["*.jar"], dir: "libs")
+    implementation "androidx.appcompat:appcompat:1.7.0"
+    implementation "com.google.android.material:material:1.12.0"
+    implementation "androidx.constraintlayout:constraintlayout:2.2.0"
+}
+
+if (System.getProperty("user.dir") != project.rootDir.path) {
+    throw new RuntimeException("This project should be opened from the `android` directory (parent of ChatApp directory), NOT the ChatApp directory.")
+}

@@ -137,13 +137,15 @@ instructions of how to increase your swap space.
 #### For Snapdragon® 8 Elite Android device:
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --chipset qualcomm-snapdragon-8-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
+
+For Snapdragon 8 Gen 3, please use `--chipset qualcomm-snapdragon-8gen3`.
 
 #### For Windows with Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --chipset qualcomm-snapdragon-x-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 Note: For older devices, you may need to adjust the context length using
@@ -343,3 +345,8 @@ Token Generation Time: 740568 us, Token Generation Rate: 12.152884 toks/sec
 
 We provide a sample C++ app to show how to build an application using the Genie SDK.
 See [CLI Windows ChatApp](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cpp/ChatApp) for more details.
+
+### 3. Sample Android Chat App Powered by Genie SDK
+
+We provide a sample Android (Java and C++ app) to show how to build an application using the Genie SDK for mobile.
+See [Android ChatApp](https://github.com/quic/ai-hub-apps/tree/main/apps/android/ChatApp) for more details.

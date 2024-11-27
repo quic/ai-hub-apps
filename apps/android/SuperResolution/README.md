@@ -70,6 +70,9 @@ The below is a non-exhaustive list of [AI Hub Models](https://aihub.qualcomm.com
 - [XLSR](https://aihub.qualcomm.com/mobile/models/xlsr)
 - [XLSR-Quantized](https://aihub.qualcomm.com/mobile/models/xlsr_quantized)
 
+A good model to start with is QuickSRNetSmall-Quantized, which strikes a good
+balance between speed and numerical performance.
+
 ## Replicating an AI Hub Profile / Inference Job
 
 Each AI Hub profile or inference job, once completed, will contain a `Runtime Configuration` section.

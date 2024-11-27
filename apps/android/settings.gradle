@@ -27,3 +27,7 @@ if (Boolean.valueOf(properties["includeSuperResolutionApp"])) {
 if (Boolean.valueOf(properties["includeSemanticSegmentationApp"])) {
     include ':SemanticSegmentation'
 }
+
+if (Boolean.valueOf(properties["includeChatApp"])) {
+    include ':ChatApp'
+}

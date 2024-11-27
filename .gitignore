@@ -99,6 +99,8 @@ dmypy.json
 .pyre/
 
 *build/*
+*.bin
+*.cxx/
 *.onnx
 *.mlmodelc*
 *.pt
