@@ -46,7 +46,7 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
     implementation 'org.opencv:opencv:4.10.0'
     implementation "com.qualcomm.qti:qnn-runtime:$qnnVersion"
-    implementation "com.qualcomm.qti:qnn-tflite-delegate:$qnnVersion"
+    implementation "com.qualcomm.qti:qnn-litert-delegate:$qnnVersion"
 }
 
 if (System.getProperty("user.dir") != project.rootDir.path) {

@@ -4,7 +4,7 @@ In this tutorial we will show how an end to end workflow of deploying
 large language models (LLMs) to run on Snapdragon® platform such as Snapdragon®
 8 Elite, Snapdragon® 8 Gen 3 chipset (e.g., Samsung Galaxy S24 family) and
 Snapdragon® X Elite (e.g. Snapdragon® based Microsoft Surface Pro). We will use
-[AI Hub](https://aihub.qualcomm.com/) to compile the models to QNN binaries,
+[Qualcomm AI Hub](https://aihub.qualcomm.com/) to compile the models to QNN binaries,
 and run it with Genie in [QNN
 SDK](https://qpm.qualcomm.com/main/tools/details/qualcomm_ai_engine_direct).
 
@@ -58,6 +58,15 @@ from QNN SDK 2.28.0.
 
 ## 1. Generate Genie compatible QNN binaries from AI Hub
 
+### Requirements
+
+### Set up huggingface token
+
+Setting up huggingface token is required only for Llama model family.
+Request model access on huggingface for Llama models. For instance, you can [apply here](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) to access Llama 3.2 2B model.
+
+Setup huggingface token locally by following the instructions [here](https://huggingface.co/docs/huggingface_hub/en/guides/cli).
+
 ### Set up virtual envs
 
 Create a [virtualenv](https://virtualenv.pypa.io/en/latest/) for `qai-hub-models` with Python 3.10.
@@ -82,7 +91,7 @@ Replace `llama-v3-8b-chat-quantized` with the desired llama model from [AI Hub
 Model](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
 Note to replace `_` with `-` (e.g. `llama_v3_8b_chat_quantized` -> `llama-v3-8b-chat-quantized`)
 
-Ensure at least 40GB of memory (RAM + swap). On Ubuntu you can check it by
+Ensure at least 80GB of memory (RAM + swap). On Ubuntu you can check it by
 
 ```
 free -h
@@ -223,9 +232,9 @@ specified in the export command):
 ### Tokenizer
 
 To download the tokenizer, go to the source model's Hugging Face page and go to "Files
-and versions. You can find a Hugging Face link through the model card on
+and versions." You can find a Hugging Face link through the model card on
 [AI Hub](https://aihub.qualcomm.com/). This will take you to the Qualcomm Hugging Face page,
-which in term will have a link to the source Hugging Face page. The tokenizer is
+which in turn will have a link to the source Hugging Face page. The tokenizer is
 only hosted on the source Hugging Face page (e.g.
 [here](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/tree/main)
 for Llama 3.0).
@@ -237,7 +246,7 @@ and should be downloaded to the `genie_bundle` directory.
 Please run (replacing `llama_v3_8b_chat_quantized` with the desired model id):
 
 ```bash
-cp ai-hub-app/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat_quantized.json genie_bundle/genie_config.json
+cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat_quantized.json genie_bundle/genie_config.json
 ```
 
 For Windows laptops, please set `use-mmap` to `false`.

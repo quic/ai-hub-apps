@@ -26,7 +26,7 @@ The app demonstrates how to use the Genie APIs from [QNN SDK](https://qpm.qualco
 1. Copy `ChatApp` to target device (e.g., Snapdragon® based Windows)
 
 2. Please follow [this
-tutorial](https://github.com/qcom-ai-hub/ai-hub-apps-internal/tree/main/tutorials/llm_on_genie)
+tutorial](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie)
 to generate `genie_bundle` required by ChatApp
 
 3. Copy bundle assets from step 2 to `ChatApp\genie_bundle`. You should see

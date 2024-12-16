@@ -8,14 +8,24 @@ The app demonstrates how to use the Genie C++ APIs from [QNN SDK](https://qpm.qu
 
 ## Current limitations on running ChatApp
 
-:warning: This demo app **does not work** on consumer devices with Android 14.
+:warning: This demo app **does not work on all** the consumer devices with Android 14.
 
 Genie SDK requires newer meta-build to run LLMs on-device. Depending on which meta-build is picked by your phone vendor, this feature may or may not work.
 
 We recommend using a device from [QDC](https://qdc.qualcomm.com/) for rest of this demo to run models on-device.
 Android devices on QDC have newer meta-build and can run this demo on Android 14+.
 
-We are actively looking into how we can enable this experience on consumer devices.
+We have verified sample ChatApp for the following device:
+
+| Device name | OS | Build Version |
+| --- | --- | --- |
+| Samsung Galaxy S24 Plus | One UI 6.1 (Android 14) | UP1A.231005.007.S926U1UEU4AXK4 |
+
+If you have a device listed in the above table, you can update OS to above mentioned or newer OS to run Sample App locally.
+
+If your device is not listed above, we request to try this app on your device and share your feedback as a comment on [this issue](https://github.com/quic/ai-hub-apps/issues/29).
+
+We are looking forward for community contributions for trying out this app on different devices and keep this information up-to-date.
 
 ## Demo
 

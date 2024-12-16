@@ -17,11 +17,7 @@ set(GENIE_LIB_PATH "${QNN_SDK_ROOT_PATH}/lib/aarch64-android/libGenie.so")
 include_directories("includes")
 
 # Include Genie headers here
-if(EXISTS ${GENIE_HEADERS_PATH})
-    include_directories(${GENIE_HEADERS_PATH})
-else()
-    message(FATAL_ERROR "Cannot find Genie headers at ${GENIE_HEADERS_PATH}. Please set QNN_SDK_ROOT_PATH in JNI Cmake file.")
-endif()
+include_directories(${GENIE_HEADERS_PATH})
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
@@ -30,11 +26,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
         GenieLib.cpp)
 
 # Link libGenie.so here
-if(EXISTS ${GENIE_LIB_PATH})
-    target_link_libraries(${CMAKE_PROJECT_NAME}
-            "${GENIE_LIB_PATH}"
-            android
-            log)
-else()
-    message(FATAL_ERROR "Cannot find libGenie.so at ${GENIE_LIB_PATH}. Please set QNN_SDK_ROOT_PATH in JNI Cmake file.")
-endif()
+target_link_libraries(${CMAKE_PROJECT_NAME}
+        "${GENIE_LIB_PATH}"
+        android
+        log)

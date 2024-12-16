@@ -6,56 +6,12 @@ plugins {
 // Download QNN SDK from https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct
 def qnnSDKLocalPath="<Path to local installed QNN SDK root>"
 
-// Check if QNN SDK is set correctly
-def checkQNNSDK(qnnSDKPath) {
-    if (!file(qnnSDKPath).exists()) {
-        throw new RuntimeException("QNN SDK does not exists at " + qnnSDKPath + ". Please set `qnnSDKLocalPath` in build.gradle.");
-    }
-
-    if (!file(qnnSDKPath + "/lib/aarch64-android/libGenie.so").exists()) {
-        throw new RuntimeException("libGenie does not exists. Please set `qnnSDKLocalPath` in build.gradle.");
-    }
-}
-
 // List of model assets
 def models = ["llama3_2_3b"]
 // Relative asset path for model configuration and binaries
 def relAssetsPath = "src/main/assets/models/"
-
-// Ensure genie-config and tokenizer is present
-models.each { model ->
-    if (!file(relAssetsPath + model + "/genie-config.json").exists()) {
-        throw new RuntimeException("Missing genie-config.json for " + model + ".")
-    }
-    if (!file(relAssetsPath + model + "/tokenizer.json").exists()) {
-        throw new RuntimeException("Missing tokenizer.json for " + model + ".")
-    }
-}
-
-// Checks if QNN SDK path is set correctly
-checkQNNSDK(qnnSDKLocalPath);
-
-// Copy required QNN libs
 def buildDir = project(":ChatApp").getLayout().getBuildDirectory()
 def libsDir = buildDir.dir("libs")
-def libsABIDir = buildDir.dir("libs/arm64-v8a")
-copy {
-    from qnnSDKLocalPath
-
-    include "**/lib/aarch64-android/libQnnHtp.so"
-    include "**/lib/aarch64-android/libQnnHtpPrepare.so"
-    include "**/lib/aarch64-android/libQnnSystem.so"
-    include "**/lib/aarch64-android/libQnnSaver.so"
-    include "**/lib/hexagon-v**/unsigned/libQnnHtpV**Skel.so"
-    include "**/lib/aarch64-android/libQnnHtpV**Stub.so"
-
-    into libsABIDir
-    // Copy libraries without directory structure
-    eachFile {
-        path = name
-    }
-    includeEmptyDirs = false
-}
 
 android {
     compileSdk Integer.valueOf(androidCompileSDK)
@@ -106,6 +62,47 @@ android {
     }
     aaptOptions {
         noCompress "bin", "json"
+    }
+
+    preBuild.doFirst {
+        // Check if QNN SDK is set correctly
+        if (!file(qnnSDKLocalPath).exists()) {
+            throw new RuntimeException("QNN SDK does not exist at " + qnnSDKLocalPath + ". Please set `qnnSDKLocalPath` in build.gradle.");
+        }
+
+        // Copy required QNN libs
+        if (!file(qnnSDKLocalPath + "/lib/aarch64-android/libGenie.so").exists()) {
+            throw new RuntimeException("libGenie does not exist. Please set `qnnSDKLocalPath` in build.gradle.");
+        }
+
+        // Ensure genie-config and tokenizer is present
+        models.each { model ->
+            if (!file(relAssetsPath + model + "/genie-config.json").exists()) {
+                throw new RuntimeException("Missing genie-config.json for " + model + ".")
+            }
+            if (!file(relAssetsPath + model + "/tokenizer.json").exists()) {
+                throw new RuntimeException("Missing tokenizer.json for " + model + ".")
+            }
+        }
+
+        def libsABIDir = buildDir.dir("libs/arm64-v8a")
+        copy {
+            from qnnSDKLocalPath
+
+            include "**/lib/aarch64-android/libQnnHtp.so"
+            include "**/lib/aarch64-android/libQnnHtpPrepare.so"
+            include "**/lib/aarch64-android/libQnnSystem.so"
+            include "**/lib/aarch64-android/libQnnSaver.so"
+            include "**/lib/hexagon-v**/unsigned/libQnnHtpV**Skel.so"
+            include "**/lib/aarch64-android/libQnnHtpV**Stub.so"
+
+            into libsABIDir
+            // Copy libraries without directory structure
+            eachFile {
+                path = name
+            }
+            includeEmptyDirs = false
+        }
     }
 }
 

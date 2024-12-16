@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
             HashMap<String, String> supportedSocModel = new HashMap<>();
             supportedSocModel.putIfAbsent("SM8750", "qualcomm-snapdragon-8-elite.json");
             supportedSocModel.putIfAbsent("SM8650", "qualcomm-snapdragon-8-gen3.json");
+            supportedSocModel.putIfAbsent("QCS8550", "qualcomm-snapdragon-8-gen2.json");
 
             String socModel = android.os.Build.SOC_MODEL;
             if (!supportedSocModel.containsKey(socModel)) {
