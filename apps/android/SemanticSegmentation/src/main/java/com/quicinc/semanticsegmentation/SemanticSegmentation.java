@@ -40,8 +40,6 @@ public class SemanticSegmentation implements AutoCloseable {
     private long preprocessingTime;
     private long inferenceTime;
     private long postprocessingTime;
-    private final Scalar INPUT_MEAN = new Scalar(0.485f, 0.456f, 0.406f);
-    private final Scalar INPUT_STD = new Scalar(.229f, .224f, .225f);
     private final int NUM_CLASSES = 19; // Output classes (CityScapes dataset)
     // Re-usable memory
     private final ByteBuffer inputByteBuffer;
@@ -214,10 +212,6 @@ public class SemanticSegmentation implements AutoCloseable {
         Mat scaledImage = new Mat(inputHeight, inputWidth, CvType.CV_8UC3);
         Imgproc.resize(correctRotInputImageRgb, scaledImage, scaledImage.size(), 0, 0, Imgproc.INTER_LINEAR);
         scaledImage.convertTo(scaledImage, CvType.CV_32FC3, 1 / 255f);
-
-        // Normalize input as expected by FFNet
-        Core.subtract(scaledImage, INPUT_MEAN, scaledImage);
-        Core.divide(scaledImage, INPUT_STD, scaledImage);
 
         //
         // TFLite inference

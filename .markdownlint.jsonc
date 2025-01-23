@@ -1,0 +1,4 @@
+{
+    "MD013": false, // No line length limit
+    "MD033": false  // Allow inline HTML
+}

@@ -1,11 +1,11 @@
-# LLM on-device deployment
+# LLM On-Device Deployment
 
-In this tutorial we will show how an end to end workflow of deploying
-large language models (LLMs) to run on Snapdragon® platform such as Snapdragon®
-8 Elite, Snapdragon® 8 Gen 3 chipset (e.g., Samsung Galaxy S24 family) and
-Snapdragon® X Elite (e.g. Snapdragon® based Microsoft Surface Pro). We will use
-[Qualcomm AI Hub](https://aihub.qualcomm.com/) to compile the models to QNN binaries,
-and run it with Genie in [QNN
+In this tutorial we will show an end to end workflow deploying large language
+models (LLMs) to Snapdragon® platforms such as Snapdragon® 8 Elite,
+Snapdragon® 8 Gen 3 (e.g., Samsung Galaxy S24 family) and Snapdragon® X Elite
+(e.g. Snapdragon® based Microsoft Surface Pro). We will use
+[Qualcomm AI Hub](https://aihub.qualcomm.com/) to compile the models to QNN binaries
+and run them with Genie from the [QNN
 SDK](https://qpm.qualcomm.com/main/tools/details/qualcomm_ai_engine_direct).
 
 We will use Llama3 8B as a running example. Other LLMs from [AI Hub
@@ -16,20 +16,17 @@ will work with the same flow.
 
 We will walk you through the follow steps:
 
-1. Get access to [Llama 3 weights from huggingface](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct)
+1. Get access to [Llama 3 weights from Hugging Face](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct).
 2. Use Qualcomm [AI Hub
-Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models) to export Llama 3 using AI Hub
-3. Prepare assets required by Qualcomm Genie, the inference runtime for LLMs
-
-On Android / Windows PC with Snapdragon® platform
-
-4. Run the LLM on device with an example prompt
+Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models) to export Llama 3 using AI Hub.
+3. Prepare assets required by Qualcomm Genie, the inference runtime for LLMs.
+4. Run the LLM on device with an example prompt on Android / Windows PC with Snapdragon®.
 
 Note that because this is a large model, it may take 1-2 hours to generate required assets.
 
-If you have any questions, please feel free to post on [AI Hub slack channel](https://aihub.qualcomm.com/community/slack)
+If you have any questions, please feel free to post on [AI Hub Slack channel](https://aihub.qualcomm.com/community/slack)
 
-## Requirements
+## Required Software
 
 1. [QNN SDK](https://qpm.qualcomm.com/main/tools/details/qualcomm_ai_engine_direct)
 2. [qai-hub-models](https://pypi.org/project/qai-hub-models/)
@@ -37,19 +34,22 @@ If you have any questions, please feel free to post on [AI Hub slack channel](ht
 
 ## Device Requirements
 
-| Model name | Minimum QNN SDK version | Supported devices |
+| Model name | Minimum Compile QNN SDK version | Supported devices |
 | --- | --- | --- |
-| Llama-v2-7B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3<br>Snapdragon® X Elite |
-| Llama-v3-8B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
+| Llama-v2-7B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-v3-8B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama-v3.1-8B-Chat | 2.27.7 | Snapdragon® 8 Elite |
-| Llama-v3.1-8B-Chat | 2.28.0 | Snapdragon® X Elite |
+| Llama-v3.1-8B-Chat | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama-v3.2-3B-Chat | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
-| Llama-v3.2-3B-Chat | 2.28.0 | Snapdragon® X Elite |
+| Llama-v3.2-3B-Chat | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Baichuan2-7B | 2.27.7 |  Snapdragon® 8 Elite |
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
+| Phi-3.5-Mini-Instruct | 2.29.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® 8 Gen 3 |
 
 Device requirements:
+
+- At least Genie SDK from QNN SDK 2.29.0 (earlier versions have issues with long prompts).
 - 16GB memory or more for 7B+ or 4096 context length models.
 - 12GB memory or more for 3B+ models (and you may need to adjust down context length).
 
@@ -58,27 +58,25 @@ from QNN SDK 2.28.0.
 
 ## 1. Generate Genie compatible QNN binaries from AI Hub
 
-### Requirements
+### Setup Hugging Face token
 
-### Set up huggingface token
+Setting up Hugging Face token is required only for Llama model family.
+Request model access on Hugging Face for Llama models. For instance, you can [apply here](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) to access Llama 3.2 2B model.
 
-Setting up huggingface token is required only for Llama model family.
-Request model access on huggingface for Llama models. For instance, you can [apply here](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) to access Llama 3.2 2B model.
+Setup Hugging Face token locally by following the instructions [here](https://huggingface.co/docs/huggingface_hub/en/guides/cli).
 
-Setup huggingface token locally by following the instructions [here](https://huggingface.co/docs/huggingface_hub/en/guides/cli).
-
-### Set up virtual envs
+### Setup Virtual Envs
 
 Create a [virtualenv](https://virtualenv.pypa.io/en/latest/) for `qai-hub-models` with Python 3.10.
 You can also use [conda](https://conda.io/projects/conda/en/latest/user-guide/install/index.html).
 
 For clarity, we recommend creating a virtual env:
 
-```
+```bash
 python3.10 -m venv llm_on_genie_venv
 ```
 
-### Install QAI-Hub-Models
+### Install `qai-hub-models`
 
 In shell session, install `qai-hub-models` under `hub_model` virtual env
 
@@ -93,7 +91,7 @@ Note to replace `_` with `-` (e.g. `llama_v3_8b_chat_quantized` -> `llama-v3-8b-
 
 Ensure at least 80GB of memory (RAM + swap). On Ubuntu you can check it by
 
-```
+```bash
 free -h
 ```
 
@@ -103,7 +101,7 @@ We use
 [qai-hub-models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/)
 to adapt Huggingface Llama models for on-device inference.
 
-### Download or Generate Genie-compatible QNN binaries
+### Download or Generate Genie-Compatible QNN Binaries
 
 Some of the models can be downloaded directly from [AI
 Hub](https://aihub.qualcomm.com). For Llama, it has to be exported through [AI Hub
@@ -112,7 +110,7 @@ Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
 To generate the Llama assets, we will run a single command that performs the
 following steps:
 
-1. Download model weights from Huggingface. You will need to sign the Llama
+1. Download model weights from Hugging Face. You will need to sign the Llama
 license if you haven't already done so.
 
 2. Upload models to AI Hub for compilation.
@@ -143,18 +141,18 @@ device (for Llama 3, we recommend 80 GB). If we detect that you have less
 memory than recommended, the export command will print a warning with
 instructions of how to increase your swap space.
 
-#### For Snapdragon® 8 Elite Android device:
+#### For Android on Snapdragon® 8 Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --chipset qualcomm-snapdragon-8-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
-For Snapdragon 8 Gen 3, please use `--chipset qualcomm-snapdragon-8gen3`.
+For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
 
-#### For Windows with Snapdragon® X Elite
+#### For Windows on Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --chipset qualcomm-snapdragon-x-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 Note: For older devices, you may need to adjust the context length using
@@ -173,9 +171,11 @@ rm -rf genie_bundle/{prompt,token}
 
 Typically we recommend using the same QNN SDK version that AI Hub uses to compile
 the assets. You can find this version by clicking the job links posted printed
-by the export command.
+by the export command. If the AI Hub version has not yet reached 2.29.0, we do recommend
+mismatching the compile and runtime versions in order to pick up an important fix
+(affecting long prompts) in 2.29.0.
 
-However, if the [Model Requirements](#model-requirements) table above requires a
+However, if the [Device Requirements](#device-requirements) table above requires a
 newer version than AI Hub uses, please use the newer version.
 
 Go to [QNN
@@ -189,14 +189,14 @@ If you are on a Mac laptop, we recommend using
 
 If successful, you'd see a message like
 
-```
+```text
 SUCCESS: Installed qualcomm_ai_engine_direct.Core at /opt/qcom/aistack/qairt/<version>
 ```
 
 Set your `QNN_SDK_ROOT` environment variable to point to this directory. For
 instance, on Linux you would run:
 
-```
+```bash
 export QNN_SDK_ROOT=/opt/qcom/aistack/qairt/<version>
 ```
 
@@ -206,7 +206,6 @@ export QNN_SDK_ROOT=/opt/qcom/aistack/qairt/<version>
 
 Check out the [AI Hub Apps repository](https://github.com/quic/ai-hub-apps)
 using Git:
-
 
 ```bash
 git clone https://github.com/quic/ai-hub-apps.git
@@ -222,24 +221,43 @@ Edit `soc_model` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
 depending on your target device (should be consistent with the `--device` you
 specified in the export command):
 
-| Generation | `soc_model` | `dsp_arch` |
-|------------|--------|----------|
-| Snapdragon® Gen 2      | 43     | v73      |
-| Snapdragon® Gen 3      | 57     | v75      |
+| Generation               | `soc_model` | `dsp_arch` |
+|--------------------------|--------|----------|
+| Snapdragon® Gen 2        | 43     | v73      |
+| Snapdragon® Gen 3        | 57     | v75      |
 | Snapdragon® 8 Elite      | 69     | v79      |
 | Snapdragon® X Elite      | 60     | v73      |
+| Snapdragon® X Plus       | 60     | v73      |
 
 ### Tokenizer
 
 To download the tokenizer, go to the source model's Hugging Face page and go to "Files
 and versions." You can find a Hugging Face link through the model card on
 [AI Hub](https://aihub.qualcomm.com/). This will take you to the Qualcomm Hugging Face page,
-which in turn will have a link to the source Hugging Face page. The tokenizer is
-only hosted on the source Hugging Face page (e.g.
-[here](https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/tree/main)
-for Llama 3.0).
-The file will be named `tokenizer.json`
-and should be downloaded to the `genie_bundle` directory.
+which in turn will have a link to the source Hugging Face page. The file will be named `tokenizer.json`
+and should be downloaded to the `genie_bundle` directory. The tokenizers are only hosted on the source Hugging Face page.
+
+| Model name | Tokenizer | Notes |
+| --- | --- | --- |
+| Llama-v2-7B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf/blob/main/tokenizer.json) | |
+| Llama-v3-8B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Meta-Llama-3-8B/blob/main/tokenizer.json) | |
+| Llama-v3.1-8B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/tokenizer.json) | |
+| Llama-v3.2-3B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/blob/main/tokenizer.json) | |
+| Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
+| Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
+| Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
+
+
+For `Baichuan2-7B`, the tokenizer file can be created using the following code:
+```python
+from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM
+
+config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(model_id, config=config, trust_remote_code=True)
+tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=True, trust_remote_code=True)
+custom_tokenizer = AutoTokenizer(models.BPE(vocab=tokenizer.get_vocab(), merges=[]))
+custom_tokenizer.save("tokenizer.json")
+```
 
 ### Genie Config
 
@@ -263,7 +281,7 @@ QNN binaries specified here.
 
 Copy Genie's shared libraries and executable to our bundle.
 
-### For Windows device
+### On Windows
 
 ```bash
 cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
@@ -271,7 +289,7 @@ cp $QNN_SDK_ROOT/lib/aarch64-windows-msvc/* genie_bundle
 cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
 ```
 
-### For Android device
+### On Android
 
 ```bash
 # For 8 Gen 2
@@ -285,16 +303,29 @@ cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
 cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
 ```
 
-## Run LLM on device
+## Run LLM on Device
 
 You have two options to run the LLM on device:
 
  1. Use the `genie-t2t-run` CLI command
  2. Use the [CLI Windows ChatApp](https://github.com/quic/ai-hub-apps/tree/main/apps/windows/cpp/ChatApp) (Windows only)
 
+#### Prompt Formats
+
+All the LLMs have different formats. To get sensible output from the LLMs, it is important to use the correct prompt format for the model. These can also be found on the Hugging Face repository for each of the model. Adding samples for a few models here.
+
+| Model name | Sample Prompt |
+| --- | --- |
+| Llama-v2-7B-Chat | &lt;s&gt;[INST] &lt;&lt;SYS&gt;&gt;You are a helpful AI Assistant.&lt;&lt;/SYS&gt;&gt;[/INST]&lt;/s>&lt;s&gt;[INST]What is France's capital?[/INST] |
+| Llama-v3-8B-Chat <br> Llama-v3.1-8B-Chat <br> Llama-v3.2-3B-Chat | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nWhat is France's capital?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
+| Qwen2-7B-Instruct | <&#124;im_start&#124;>system\nYou are a helpful AI Assistant<&#124;im_end&#124;><&#124;im_start&#124;>What is France's capital?\n<&#124;im_end&#124;>\n<&#124;im_start&#124;>assistant\n |
+| Phi-3.5-Mini-Instruct | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n |
+| Mistral-7B-Instruct-v0.3 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST] |
+
+
 ### 1. Run Genie On-Device via `genie-t2t-run`
 
-#### For Windows with Snapdragon® X Elite
+#### Genie on Windows with Snapdragon® X
 
 In Powershell, navigate to the bundle directory and run
 
@@ -304,7 +335,7 @@ In Powershell, navigate to the bundle directory and run
 
 Note that this prompt format is specific to Llama 3.
 
-#### For Android device:
+#### Genie on Android
 
 Copy `genie_bundle` from the host machine to the target device using ADB and
 open up an interactive shell on the target device:
@@ -332,7 +363,7 @@ Then run:
 ./genie-t2t-run -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWhat is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 ```
 
-#### Sample output
+#### Sample Output
 
 ```text
 Using libGenie.so version 1.1.0

@@ -44,8 +44,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
-    <IncludePath>C:\Qualcomm\AIStack\QAIRT\2.25.0.240728\include\Genie;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <PublicIncludeDirectories>C:\Qualcomm\AIStack\QAIRT\2.25.0.240728\include\Genie</PublicIncludeDirectories>
+    <IncludePath>$(QNN_SDK_ROOT)\include\Genie;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <PublicIncludeDirectories>$(QNN_SDK_ROOT)\include\Genie</PublicIncludeDirectories>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
