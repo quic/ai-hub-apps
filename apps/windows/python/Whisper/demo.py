@@ -5,8 +5,8 @@
 import argparse
 from datetime import datetime
 
+from model import WhisperBaseEnONNX
 from qai_hub_models.models.whisper_base_en import App as WhisperApp
-from whisper_model_onnx import WhisperBaseEnONNX
 
 
 def main():

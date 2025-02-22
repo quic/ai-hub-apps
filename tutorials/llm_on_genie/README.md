@@ -46,15 +46,17 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
 | Phi-3.5-Mini-Instruct | 2.29.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® 8 Gen 3 |
+| Granite-v3.1-8B-Instruct | 2.30.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
 
 Device requirements:
 
+- Android 15
 - At least Genie SDK from QNN SDK 2.29.0 (earlier versions have issues with long prompts).
 - 16GB memory or more for 7B+ or 4096 context length models.
 - 12GB memory or more for 3B+ models (and you may need to adjust down context length).
 
-Models that require 2.27.7 will be available on Snapdragon® X Elite starting
-from QNN SDK 2.28.0.
+> [!IMPORTANT]
+> Please make sure device requirements are met before proceeding.
 
 ## 1. Generate Genie compatible QNN binaries from AI Hub
 
@@ -246,6 +248,7 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
 | Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
 | Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
+| Granite-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/ibm-granite/granite-3.1-8b-base/blob/main/tokenizer.json) | |
 
 
 For `Baichuan2-7B`, the tokenizer file can be created using the following code:
@@ -321,6 +324,7 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 | Qwen2-7B-Instruct | <&#124;im_start&#124;>system\nYou are a helpful AI Assistant<&#124;im_end&#124;><&#124;im_start&#124;>What is France's capital?\n<&#124;im_end&#124;>\n<&#124;im_start&#124;>assistant\n |
 | Phi-3.5-Mini-Instruct | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n |
 | Mistral-7B-Instruct-v0.3 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST] |
+| Granite-v3.1-8B-Instruct | <&#124;start_of_role&#124;>system<&#124;end_of_role&#124;>You are a helpful AI assistant.<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>user<&#124;end_of_role&#124;>What is France's capital?<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>assistant<&#124;end_of_role&#124;>\n |
 
 
 ### 1. Run Genie On-Device via `genie-t2t-run`

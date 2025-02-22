@@ -29,7 +29,7 @@ We are looking forward for community contributions for trying out this app on di
 
 ## Demo
 
-https://github.com/user-attachments/assets/52396ba2-a3e7-425f-a962-893d0ce962f1
+https://github.com/user-attachments/assets/35856cbf-a6e7-4c7f-aad7-351637baf6ff
 
 ## Requirements
 

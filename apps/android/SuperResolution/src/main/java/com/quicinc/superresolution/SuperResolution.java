@@ -18,6 +18,7 @@ import org.tensorflow.lite.Delegate;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.Tensor;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.common.ops.CastOp;
 import org.tensorflow.lite.support.image.ColorSpaceType;
 import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
@@ -105,7 +106,10 @@ public class SuperResolution implements AutoCloseable {
 
         // Set-up preprocessor
         inputImageProcessor = new ImageProcessor.Builder().add(new NormalizeOp(0.0f, 255.0f)).build();
-        outputImageProcessor = new ImageProcessor.Builder().add(new NormalizeOp(0.0f, 1 / 255.0f)).build();
+        outputImageProcessor = new ImageProcessor.Builder()
+                .add(new NormalizeOp(0.0f, 1 / 255.0f))
+                .add(new CastOp(DataType.UINT8))
+                .build();
 
         // Set-up output image
         outputBuffer = TensorBuffer.createFixedSize(outputShape, outputType);
