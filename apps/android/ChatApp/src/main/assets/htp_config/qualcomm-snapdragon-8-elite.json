@@ -1,7 +1,7 @@
 {
     "devices": [
         {
-            "soc_id": 69,
+            "soc_model": 69,
             "dsp_arch": "v79",
             "cores": [
                 {

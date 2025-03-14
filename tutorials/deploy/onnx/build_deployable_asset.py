@@ -26,7 +26,7 @@ def _natively_quantize_tensor(
             np.round(
                 np.array(variable.values).astype(np.float64) / scales.astype(np.float64)
             ).astype(np.int64)
-            - zero_points
+            + zero_points
         )
         return np.array(w_unclipped.clip(iinfo.min, iinfo.max).astype(dtype))
     axis = axis % rank
@@ -38,7 +38,7 @@ def _natively_quantize_tensor(
         np.round(
             variable.values.astype(np.float64) / scales_fullrank.astype(np.float64)
         ).astype(np.int64)
-        - zero_points_fullrank
+        + zero_points_fullrank
     )
 
     w_unclipped_min = w_unclipped.min()

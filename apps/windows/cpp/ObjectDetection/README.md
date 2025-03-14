@@ -113,7 +113,7 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
    ```
 
    - QNN libraries are not set up correctly and at runtime backend libs were not found.
-   - Please refer to [setting up QNN SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
+   - Please refer to [Tools and SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
 2. How do I use a model with different input shape than 640x640?
    - Use `--model_input_ht` / `--model_input_wt` to model input dimensions.
 3. I have a model that does not have post-processing embedded into the model. Can I still use the app?

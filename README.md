@@ -31,7 +31,7 @@ With this repository, you can...
 * [Snapdragon 8 Gen 2](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-2-mobile-platform)
 * [Snapdragon 8 Gen 1](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-1-mobile-platform)
 * [Snapdragon 888/888+](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-888-5g-mobile-platform)
-* ... and all other [Snapdragon® chipsets supported by the QNN SDK](https://docs.qualcomm.com/bundle/publicresource/topics/80-63442-50/overview.html#supported-snapdragon-devices)
+* ... and all other [Snapdragon® chipsets supported by the QAIRT SDK](https://docs.qualcomm.com/bundle/publicresource/topics/80-63442-50/overview.html#supported-snapdragon-devices)
 
 _Weight and activation type required for NPU Acceleration:_
 * Floating Point: FP16 (All Snapdragon® chipsets with Hexagon® Architecture v69 or newer)

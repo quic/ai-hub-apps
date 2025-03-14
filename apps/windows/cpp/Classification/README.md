@@ -16,7 +16,7 @@ The app demonstrates how to use the [QNN execution provider](https://onnxruntime
 - Visual Studio 22
   - Download any variant of [Visual Studio here](https://visualstudio.microsoft.com/vs/)
   - Make sure Desktop development with C++ tools are selected during installation or installed separately later
-- QNN SDK: [Qualcomm AI Engine Direct](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct)
+- QAIRT SDK: [Qualcomm AI Runtime SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_Community) (see [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for older versions)
   - Download and install the latest Qualcomm AI Engine Direct SDK
   - Make libraries from `<QNN_SDK>/libs/<target_platform>` accessible to app target binary
     - Option 1: add `<QNN_SDK>/libs/<target_platform>` in $PATH environment variable
@@ -110,7 +110,7 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
    ```
 
    - QNN libraries are not set up correctly and at runtime backend libs were not found.
-   - Please refer to [setting up QNN SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
+   - Please refer to [Tools and SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
 2. How do I use a model with different input shape than 224x224?
    - Use `--model_input_ht` / `--model_input_wt` to model input dimensions.
 3. I have a model that does have different post-processing. Can I still use the app?

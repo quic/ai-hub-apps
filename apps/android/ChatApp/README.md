@@ -4,7 +4,7 @@
 
 Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat_quantized) using Genie SDK.
 
-The app demonstrates how to use the Genie C++ APIs from [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
+The app demonstrates how to use the Genie C++ APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 
 ## Current limitations on running ChatApp
 
@@ -29,7 +29,7 @@ We are looking forward for community contributions for trying out this app on di
 
 ## Demo
 
-https://github.com/user-attachments/assets/35856cbf-a6e7-4c7f-aad7-351637baf6ff
+https://github.com/user-attachments/assets/7b23c632-cc4e-48ed-b1df-ea98ec0f51b7
 
 ## Requirements
 
@@ -49,18 +49,18 @@ https://github.com/user-attachments/assets/35856cbf-a6e7-4c7f-aad7-351637baf6ff
     pip install "qai-hub-models[llama-v3-2-3b-chat-quantized]"
     ```
 
-4. Download and extract QNN SDK compatible with sample app:
+4. Download and extract QAIRT SDK compatible with sample app:
 
-We recommend using same QNN SDK version as the one used by AI Hub for generating QNN context binaries.
-You can find the AI Hub QNN version in the compile job page as shown in the following screenshot:
+We recommend using same QAIRT SDK (also "QNN SDK" for older versions) version as the one used by AI Hub for generating QNN context binaries.
+You can find the AI Hub QAIRT version in the compile job page as shown in the following screenshot:
 
 ![QNN version on AI Hub](assets/ai-hub-qnn-version.png)
 
-Having different QNN versions could result in runtime or load-time failures.
+Having different QAIRT versions could result in runtime or load-time failures.
 
-Follow these steps to configure QNN SDKs for ChatApp:
+Follow these steps to configure QAIRT SDKs for ChatApp:
 
-- Download and extract [Qualcomm AI Engine Direct](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for Linux.
+- Download and extract [Qualcomm® AI Runtime SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) (see [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for older versions) for Linux.
 
 - If you are using macOS, then we recommend using [Docker](https://www.docker.com/) to install `qpm-cli` to extract `.qik` file.
 

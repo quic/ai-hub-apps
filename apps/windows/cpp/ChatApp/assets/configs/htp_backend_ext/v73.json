@@ -1,7 +1,7 @@
 {
     "devices": [
         {
-            "soc_id": 43,
+            "soc_model": 43,
             "dsp_arch": "v73",
             "cores": [
                 {

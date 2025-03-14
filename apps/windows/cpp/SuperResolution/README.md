@@ -17,12 +17,12 @@ The app demonstrates how to use the [QNN execution provider](https://onnxruntime
 - Visual Studio 22
   - Download any variant of [Visual Studio here](https://visualstudio.microsoft.com/vs/)
   - Make sure Desktop development with C++ tools are selected during installation or installed separately later
-- QNN SDK: [Qualcomm AI Engine Direct](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct)
-  - Download and install the latest Qualcomm AI Engine Direct SDK
-  - Make libraries from `<QNN_SDK>/libs/<target_platform>` accessible to app target binary
-    - Option 1: add `<QNN_SDK>/libs/<target_platform>` in $PATH environment variable
-    - Option 2: copy libraries from `<QNN_SDK>/libs/<target_platform>` in same directory as executable
-  - e.g. on Windows on Snapdragon®, `<QNN_SDK>/libs/aarch64-windows-msvc` or `<QNN_SDK>/libs/arm64x-windows-msvc` should be added in $PATH environment variable.
+- QAIRT SDK: [Qualcomm AI Runtime SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) (see [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for older versions)
+  - Download and install the latest Qualcomm AI Runtime SDK
+  - Make libraries from `<QAIRT_SDK>/libs/<target_platform>` accessible to app target binary
+    - Option 1: add `<QAIRT_SDK>/libs/<target_platform>` in $PATH environment variable
+    - Option 2: copy libraries from `<QAIRT_SDK>/libs/<target_platform>` in same directory as executable
+  - e.g. on Windows on Snapdragon®, `<QAIRT_SDK>/libs/aarch64-windows-msvc` or `<QAIRT_SDK>/libs/arm64x-windows-msvc` should be added in $PATH environment variable.
 
 ## Build App
 
@@ -111,7 +111,7 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
    ```
 
    - QNN libraries are not setup correctly and at runtime backend libs were not found.
-   - Please refer to [setting up QNN SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
+   - Please refer to [Tools and SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
 2. How do I use a model with different input shape than 128x128?
    - Use `--model_input_ht` / `--model_input_wt` to model input dimensions.
 3. How to change if my model uses different scale than 4?
