@@ -29,6 +29,39 @@
 
     </androidx.cardview.widget.CardView>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/modelSelectorCard"
+        android:layout_width="409sp"
+        android:layout_height="50sp"
+        android:background="@color/purple_qcom"
+        app:layout_constraintBottom_toTopOf="@id/imageSelectorCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/modelSelectorText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="60sp"
+            android:gravity="center"
+            android:text="Model"
+            android:textColor="@color/white"
+            android:textSize="17sp" />
+
+
+        <Spinner
+            android:id="@+id/modelSelector"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginEnd="30sp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:textAlignment="textEnd"
+            android:theme="@style/spinnerTheme" />
+
+    </LinearLayout>
     <androidx.cardview.widget.CardView
         android:id="@+id/imageSelectorCard"
         android:layout_width="409sp"
@@ -67,7 +100,7 @@
         android:layout_marginBottom="8sp"
         android:backgroundTint="@color/purple_qcom"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/imageSelectorCard"
+        app:layout_constraintBottom_toTopOf="@+id/modelSelectorCard"
         tools:layout_editor_absoluteX="2sp">
 
         <RadioButton
