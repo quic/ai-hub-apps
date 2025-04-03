@@ -13,9 +13,10 @@ constexpr const std::string_view c_first_prompt_prefix_part_1 =
 constexpr const std::string_view c_first_prompt_prefix_part_2 =
     "and you are a helpful AI assistant. Please keep answers consice and to the point. <|eot_id|>\n\n";
 constexpr const std::string_view c_prompt_prefix = "<|start_header_id|>user<|end_header_id|>\n\n";
-constexpr const std::string_view c_end_of_prompt = "<|eot_id|>";
+constexpr const std::string_view c_end_of_prompt = "<|eot_id|><|start_header_id|>assistant<|end_header_id|>";
 
-/*  Llama2 system prompt
+//  Llama2 system prompt
+/*
 constexpr const std::string_view c_first_prompt_prefix_part_1 = "[INST] <<SYS>>\nYour name is ";
 constexpr const std::string_view c_first_prompt_prefix_part_2 =
     "and you are a helpful AI assistant. Please keep answers consice and to the point. \n<</SYS>>\n\n";

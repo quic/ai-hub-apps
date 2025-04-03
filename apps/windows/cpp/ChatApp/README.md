@@ -1,6 +1,6 @@
 # CLI Chat application
 
-Chat application for Windows on Snapdragon® with [Llama 2](https://aihub.qualcomm.com/compute/models/llama_v2_7b_chat_quantized) using Genie SDK.
+Chat application for Windows on Snapdragon® demonstrating a large language model (LLM, e.g., [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat_quantized)) using Genie SDK.
 
 The app demonstrates how to use the Genie APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 
@@ -23,11 +23,13 @@ The app demonstrates how to use the Genie APIs from [QAIRT SDK](https://qpm.qual
 
 ### Compile to Context Binary via AI Hub and Generate Genie Bundle
 
-1. Copy `ChatApp` to target device (e.g., Snapdragon® based Windows)
+1. Clone this repository so that you have a local copy of `ChatApp`.
 
 2. Please follow [this
 tutorial](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie)
-to generate `genie_bundle` required by ChatApp
+to generate `genie_bundle` required by ChatApp. If you use any of the Llama 3
+models, the app will work without modifications. If you use another model, you
+will need to update the prompt format in `PromptHandler.cpp` first.
 
 3. Copy bundle assets from step 2 to `ChatApp\genie_bundle`. You should see
 `ChatApp\genie_bundle\*.bin` context binary files.
