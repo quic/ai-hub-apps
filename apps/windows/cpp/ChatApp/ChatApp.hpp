@@ -12,7 +12,6 @@
 namespace App
 {
 constexpr const std::string_view c_exit_prompt = "exit";
-constexpr const std::string_view c_bot_name = "Qbot";
 
 class ChatApp
 {
@@ -48,6 +47,6 @@ class ChatApp
      * @throws on failure to query model response during chat
      *
      */
-    void ChatWithUser(const std::string& user_name);
+    void ChatLoop();
 };
 } // namespace App

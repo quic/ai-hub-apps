@@ -36,7 +36,7 @@
                     "pos-id-dim": 64,
                     "cpu-mask": "0xe0",
                     "kv-dim": 128,
-                    "rope-theta": 10000,
+                    "rope-theta": 500000,
                     "allow-async-init": false
                 },
                 "extensions": "htp_backend_ext_config.json"

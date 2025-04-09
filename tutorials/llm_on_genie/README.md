@@ -231,22 +231,11 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Llama-v3.1-8B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/tokenizer.json) | |
 | Llama-v3.2-3B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/blob/main/tokenizer.json) | |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | [tokenizer.json](https://huggingface.co/taide/Llama3-TAIDE-LX-8B-Chat-Alpha1/blob/main/tokenizer.json) | |
+| Baichuan2-7B | [tokenizer.json](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/baichuan2_7b_quantized/v2/tokenizer.json) | |
 | Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
 | Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
 | Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
 | IBM-Granite-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/ibm-granite/granite-3.1-8b-base/blob/main/tokenizer.json) | |
-
-For `Baichuan2-7B`, the tokenizer file can be created using the following code:
-
-```python
-from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM
-
-config = AutoConfig.from_pretrained(model_id, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_id, config=config, trust_remote_code=True)
-tokenizer = AutoTokenizer.from_pretrained(model_id, use_fast=True, trust_remote_code=True)
-custom_tokenizer = AutoTokenizer(models.BPE(vocab=tokenizer.get_vocab(), merges=[]))
-custom_tokenizer.save("tokenizer.json")
-```
 
 ### [Optional] Use the Windows PowerShell LLM Runner
 

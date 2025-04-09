@@ -19,22 +19,19 @@ constexpr const std::string_view c_option_help_short = "-h";
 
 void PrintHelp()
 {
-    std::cout << "\n:::::::: Chat with " << App::c_bot_name << " options ::::::::\n\n";
+    std::cout << "\n:::::::: Chat options ::::::::\n\n";
     std::cout << c_option_genie_config << " <Local file path>: [Required] Path to local Genie config for model.\n";
     std::cout << c_option_base_dir
               << " <Local directory path>: [Required] Base directory to set as the working directory.\n";
-    std::cout << "\nDuring chat with " << App::c_bot_name << ", please type " << App::c_exit_prompt
-              << " as a prompt to terminate chat.\n ";
+    std::cout << "\nDuring chat, please type " << App::c_exit_prompt << " as a prompt to terminate chat.\n ";
 }
 
 void PrintWelcomeMessage()
 {
-    std::cout << "\n:::::::: Welcome to Chat with " << App::c_bot_name << " ::::::::\n ";
-    std::cout << App::c_bot_name << " will use provided configuration file for conversation.\n";
+    std::cout << "\n:::::::: Welcome to ChatApp ::::::::\n ";
+    std::cout << "This demonstrates a multi-turn chat with an LLM.\n ";
     std::cout << "At any time during chat, please type `" << App::c_exit_prompt
               << "` to terminate the conversation.\n\n";
-    std::cout << "Let's begin with an introduction,\n";
-    std::cout << "I'm `" << App::c_bot_name << "`! What's your name? ";
 }
 
 } // namespace
@@ -124,10 +121,9 @@ int main(int argc, char* argv[])
 
         // Get user name to chat with
         PrintWelcomeMessage();
-        std::getline(std::cin, user_name);
 
         // Interactive chat
-        app.ChatWithUser(user_name);
+        app.ChatLoop();
     }
     catch (const std::exception& e)
     {

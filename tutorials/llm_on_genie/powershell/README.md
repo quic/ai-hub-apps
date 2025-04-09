@@ -23,3 +23,19 @@ need to enable this first with this command:
 ```powershell
 Set-ExecutionPolicy -Scope CurrentUser Unrestricted -Force
 ```
+
+## UTF-8 support
+
+If you want to use Unicode characters in your prompts, we recommend globally
+enabling UTF-8 on Windows:
+
+* Open Control Panel -> Region -> Administrative -> Change system locale...
+* Tick the "Beta: Use Unicode UTF-8 for worldwide language support"
+* Restart Windows
+
+If you want to change this only for a single PowerShell session, execute:
+
+```powershell
+chcp 65001
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8]
+```

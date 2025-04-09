@@ -90,6 +90,9 @@ ENV/
 env.bak/
 venv.bak/
 
+# JetBrains things
+.idea/
+
 # mypy
 .mypy_cache/
 .dmypy.json

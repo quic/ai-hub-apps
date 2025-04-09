@@ -68,8 +68,6 @@ Make sure `QNN_SDK_ROOT` is set globally pointing to QAIRT SDK before you build 
 
 ## Running App
 
-### Providing local paths
-
 ### Running via Visual Studio
 
 Click on the green play button to build and run.
@@ -80,7 +78,7 @@ Visual studio project is configured with the following command arguments:
 .\ARM64\Debug\ChatApp.exe --genie-config .\\genie_bundle\\genie_config.json --base-dir .\\genie_bundle\\
 ```
 
-### Running app via CLI
+### Running via CLI
 
 ```powershell
 cd {Project directory}
@@ -108,6 +106,12 @@ Make sure to provide paths to local config file and models using `\\` or `/` as 
 ```powershell
 1. C:\Path\To\Model\Config\llama2_7b.json
 ```
+
+#### Unicode characters
+
+To use languages that require Unicode, please follow these instructions:
+
+* [UTF-8 support](https://github.com/quic/ai-hub-apps/blob/main/tutorials/llm_on_genie/powershell/README.md#utf-8-support)
 
 
 ### Sample Output

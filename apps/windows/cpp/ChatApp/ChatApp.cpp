@@ -83,7 +83,7 @@ ChatApp::~ChatApp()
     }
 }
 
-void ChatApp::ChatWithUser(const std::string& user_name)
+void ChatApp::ChatLoop()
 {
     AppUtils::PromptHandler prompt_handler;
 
@@ -96,13 +96,14 @@ void ChatApp::ChatWithUser(const std::string& user_name)
 
         // Input user prompt
         ChatSplit();
-        std::cout << user_name << ": ";
+        std::cout << "Input: ";
         std::getline(std::cin, user_prompt);
 
         // Exit prompt
+
         if (user_prompt.compare(c_exit_prompt) == 0)
         {
-            std::cout << "Exiting chat as per " << user_name << "'s request.";
+            std::cout << "Exiting chat per user's request.";
             return;
         }
         // User provides an empty prompt
@@ -115,30 +116,12 @@ void ChatApp::ChatWithUser(const std::string& user_name)
         std::string tagged_prompt = prompt_handler.GetPromptWithTag(user_prompt);
 
         // Bot's response
-        std::cout << c_bot_name << ":";
+        std::cout << "Output: ";
         if (GENIE_STATUS_SUCCESS != GenieDialog_query(m_dialog_handle, tagged_prompt.c_str(),
                                                       GenieDialog_SentenceCode_t::GENIE_DIALOG_SENTENCE_COMPLETE,
                                                       GenieCallBack, &model_response))
         {
             throw std::runtime_error("Failed to get response from GenieDialog. Please restart the ChatApp.");
-        }
-
-        if (model_response.empty())
-        {
-            // If model response is empty, reset dialog to re-initiate dialog.
-            // During local testing, we found that in certain cases,
-            // model response bails out after few iterations during chat.
-            // If that happens, just reset Dialog handle to continue the chat.
-            if (GENIE_STATUS_SUCCESS != GenieDialog_reset(m_dialog_handle))
-            {
-                throw std::runtime_error("Failed to reset Genie Dialog.");
-            }
-            if (GENIE_STATUS_SUCCESS != GenieDialog_query(m_dialog_handle, tagged_prompt.c_str(),
-                                                          GenieDialog_SentenceCode_t::GENIE_DIALOG_SENTENCE_COMPLETE,
-                                                          GenieCallBack, &model_response))
-            {
-                throw std::runtime_error("Failed to get response from GenieDialog. Please restart the ChatApp.");
-            }
         }
     }
 }
