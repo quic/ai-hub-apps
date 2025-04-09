@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView selectedImageView;
     TextView inferenceTimeView;
     TextView predictionTimeView;
-    Spinner imageSelector;
+    Spinner imageSelector, modelSelector;
     Button predictionButton;
     ActivityResultLauncher<Intent> selectImageResultLauncher;
     private final String fromGalleryImageSelectorOption = "From Gallery";
@@ -61,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                     "Sample1.jpg",
                     "Sample2.jpg",
                     fromGalleryImageSelectorOption};
+
+    private String[] modelSelectorOptions;
 
     // Inference Elements
     Bitmap selectedImage = null; // Raw image, not resized
@@ -91,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         allDelegatesButton = (RadioButton)findViewById(R.id.defaultDelegateRadio);
 
         imageSelector = (Spinner) findViewById((R.id.imageSelector));
+        modelSelector = (Spinner) findViewById((R.id.modelSelector));
         inferenceTimeView = (TextView)findViewById(R.id.inferenceTimeResultText);
         predictionTimeView = (TextView)findViewById(R.id.predictionTimeResultText);
         predictionButton = (Button)findViewById(R.id.runModelButton);
@@ -122,6 +127,26 @@ public class MainActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> parent) { }
         });
 
+        // Setup Model Selector Dropdown
+        modelSelectorOptions = getResources().getStringArray(R.array.model_files);
+        ArrayAdapter modelAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, modelSelectorOptions);
+        modelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modelSelector.setAdapter(modelAdapter);
+        modelSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Load selected models from assets
+                ((TextView) view).setTextColor(getResources().getColor(R.color.white));
+                ((TextView) view).setEllipsize(TextUtils.TruncateAt.END);
+
+                // Exit the UI thread and instantiate the model in the background.
+                String modelName = parent.getItemAtPosition(position).toString();
+                createTFLiteUpscalerAsync(modelName);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
+        });
         // Setup Image Selection from Phone Gallery
         selectImageResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -155,9 +180,6 @@ public class MainActivity extends AppCompatActivity {
         // Setup button callback
         predictionButton.setOnClickListener((view) -> updatePredictionDataAsync());
 
-        // Exit the UI thread and instantiate the model in the background.
-        createTFLiteUpscalerAsync();
-
         // Enable image selection
         enableImageSelector();
         enableDelegateSelectionButtons();
@@ -176,12 +198,15 @@ public class MainActivity extends AppCompatActivity {
             predictionButton.setAlpha(0.5f);
             imageSelector.setEnabled(false);
             imageSelector.setAlpha(0.5f);
+            modelSelector.setEnabled(false);
+            modelSelector.setAlpha(0.5f);
             cpuOnlyButton.setEnabled(false);
             allDelegatesButton.setEnabled(false);
         } else if (cpuOnlyUpscaler != null && defaultDelegateUpscaler != null && selectedImage != null) {
             predictionButton.setEnabled(true);
             predictionButton.setAlpha(1.0f);
             enableImageSelector();
+            enableModelSelector();
             enableDelegateSelectionButtons();
         }
     }
@@ -192,6 +217,13 @@ public class MainActivity extends AppCompatActivity {
     void enableImageSelector() {
         imageSelector.setEnabled(true);
         imageSelector.setAlpha(1.0f);
+    }
+    /**
+     * Enable the model selector UI spinner.
+     */
+    void enableModelSelector() {
+        modelSelector.setEnabled(true);
+        modelSelector.setAlpha(1.0f);
     }
 
     /**
@@ -327,9 +359,11 @@ public class MainActivity extends AppCompatActivity {
      * Loading the TF Lite model takes time, so this is done asynchronously to the main UI thread.
      * Disables the inference UI during load and reenables it afterwards.
      */
-    void createTFLiteUpscalerAsync() {
+    void createTFLiteUpscalerAsync(final String tfLiteModelAsset) {
         if (defaultDelegateUpscaler != null || cpuOnlyUpscaler != null) {
-            throw new RuntimeException("Classifiers were already created");
+            defaultDelegateUpscaler.close();
+            cpuOnlyUpscaler.close();
+//            throw new RuntimeException("Classifiers were already created");
         }
         setInferenceUIEnabled(false);
 
@@ -337,7 +371,6 @@ public class MainActivity extends AppCompatActivity {
         backgroundTaskExecutor.execute(() -> {
             // Create two upscalers.
             // One uses the default set of delegates (can access NPU, GPU, CPU), and the other uses only XNNPack (CPU).
-            String tfLiteModelAsset = this.getResources().getString(R.string.tfLiteModelAsset);
             try {
                 defaultDelegateUpscaler = new SuperResolution(
                         this,
@@ -352,6 +385,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException | NoSuchAlgorithmException e) {
                 throw new RuntimeException(e.getMessage());
             }
+            Log.i("createTFLiteUpscalerAsync","model load finish: "+tfLiteModelAsset);
 
             mainLooperHandler.post(() -> setInferenceUIEnabled(true));
         });
