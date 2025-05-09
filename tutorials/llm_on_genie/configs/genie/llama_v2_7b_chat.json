@@ -4,11 +4,10 @@
         "type": "basic",
         "context": {
             "version": 1,
-            "size": 4096,
-            "n-vocab": 128256,
-            "bos-token": 128000,
-            "eos-token": 128001,
-            "eot-token": 128009
+            "size": 1024,
+            "n-vocab": 32000,
+            "bos-token": 1,
+            "eos-token": 2
         },
         "sampler": {
             "version": 1,
@@ -23,20 +22,19 @@
         },
         "engine": {
             "version": 1,
-            "n-threads": 3,
+            "n-threads": 4,
             "backend": {
                 "version": 1,
                 "type": "QnnHtp",
                 "QnnHtp": {
                     "version": 1,
-                    "use-mmap": true,
                     "spill-fill-bufsize": 0,
+                    "use-mmap": true,
                     "mmap-budget": 0,
                     "poll": true,
                     "pos-id-dim": 64,
                     "cpu-mask": "0xe0",
                     "kv-dim": 128,
-                    "rope-theta": 500000,
                     "allow-async-init": false
                 },
                 "extensions": "htp_backend_ext_config.json"
@@ -47,11 +45,10 @@
                 "binary": {
                     "version": 1,
                     "ctx-bins": [
-                        "llama_v3_taide_8b_chat_quantized_part_1_of_5.bin",
-                        "llama_v3_taide_8b_chat_quantized_part_2_of_5.bin",
-                        "llama_v3_taide_8b_chat_quantized_part_3_of_5.bin",
-                        "llama_v3_taide_8b_chat_quantized_part_4_of_5.bin",
-                        "llama_v3_taide_8b_chat_quantized_part_5_of_5.bin"
+                        "Llama2_Part1.bin",
+                        "Llama2_Part2.bin",
+                        "Llama2_Part3.bin",
+                        "Llama2_Part4.bin"
                     ]
                 }
             }

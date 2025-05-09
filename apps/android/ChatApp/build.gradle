@@ -1,15 +1,19 @@
+import java.nio.file.Paths
+
 plugins {
     id "com.android.application"
 }
 
-// Path to local QNN SDK.
-// Download QNN SDK from https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct
-def qnnSDKLocalPath="<Path to local installed QNN SDK root>"
+// Path to local QAIRT SDK.
+// Download QAIRT SDK from https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK
+// e.g. "/opt/qcom/aistack/qairt/2.33.0.250327"
+//      "C:\\Qualcomm\\AIStack\\QAIRT\\2.33.0.250327"
+def qnnSDKLocalPath= ""   // <-- Please add QNN SDK root path
 
 // List of model assets
 def models = ["llama3_2_3b"]
 // Relative asset path for model configuration and binaries
-def relAssetsPath = "src/main/assets/models/"
+def relAssetsPath = "src/main/assets/models"
 def buildDir = project(":ChatApp").getLayout().getBuildDirectory()
 def libsDir = buildDir.dir("libs")
 
@@ -65,23 +69,31 @@ android {
     }
 
     preBuild.doFirst {
+        if (!qnnSDKLocalPath) {
+            throw new RuntimeException("Please download QAIRT SDK and set `qnnSDKLocalPath` in build.gradle.");
+        }
+
         // Check if QNN SDK is set correctly
-        if (!file(qnnSDKLocalPath).exists()) {
-            throw new RuntimeException("QNN SDK does not exist at " + qnnSDKLocalPath + ". Please set `qnnSDKLocalPath` in build.gradle.");
+        def qnnSDKFile = file(qnnSDKLocalPath)
+        if (!qnnSDKFile.exists()) {
+            throw new RuntimeException("QAIRT SDK does not exist at $qnnSDKFile.absolutePath.");
         }
 
         // Copy required QNN libs
-        if (!file(qnnSDKLocalPath + "/lib/aarch64-android/libGenie.so").exists()) {
-            throw new RuntimeException("libGenie does not exist. Please set `qnnSDKLocalPath` in build.gradle.");
+        def genieLibFile = file(Paths.get(qnnSDKLocalPath, "lib", "aarch64-android", "libGenie.so"))
+        if (!genieLibFile.exists()) {
+            throw new RuntimeException("libGenie.so does not exist. Expected at $genieLibFile.absolutePath");
         }
 
-        // Ensure genie-config and tokenizer is present
+        // Ensure genie config and tokenizer are present
         models.each { model ->
-            if (!file(relAssetsPath + model + "/genie-config.json").exists()) {
-                throw new RuntimeException("Missing genie-config.json for " + model + ".")
+            def configFile = file(Paths.get(relAssetsPath, model, "genie_config.json"))
+            if (!configFile.exists()) {
+                throw new RuntimeException("Missing genie_config.json for $model. Expected at $configFile.absolutePath")
             }
-            if (!file(relAssetsPath + model + "/tokenizer.json").exists()) {
-                throw new RuntimeException("Missing tokenizer.json for " + model + ".")
+            def tokenizerFile = file(Paths.get(relAssetsPath, model, "tokenizer.json"))
+            if (!tokenizerFile.exists()) {
+                throw new RuntimeException("Missing tokenizer.json for $model. Expected at $tokenizerFile.absolutePath")
             }
         }
 

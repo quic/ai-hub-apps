@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Copy assets to External cache
             //  - <assets>/models
-            //      - has list of models with tokenizer.json, genie-config.json and model binaries
+            //      - has list of models with tokenizer.json, genie_config.json and model binaries
             //  - <assets>/htp_config/
             //      - has SM8750.json and SM8650.json and picked up according to device SOC Model at runtime.
             String externalDir = getExternalCacheDir().getAbsolutePath();

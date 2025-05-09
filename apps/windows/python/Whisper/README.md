@@ -2,14 +2,57 @@
 
 Follow instructions to run the demo:
 
-1. Download & [Install Python (x86)](https://www.python.org) and add it to your system path.
+1. Enable PowerShell Scripts. Open PowerShell in administrator mode, and run:
 
-2. Download & Install [Git for Windows](https://github.com/git-for-windows/git/releases/download/v2.45.2.windows.1/Git-2.45.2-64-bit.exe) and add it to your system path.
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser Unrestricted -Force
+```
 
-3. Download & Extract [FFMPeg for Windows](https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip) and add it to your system path.
+2. Open Anaconda PowerShell Prompt in this folder. If you don't have Anaconda PowerShell, use regular PowerShell.
 
-4. Install dependencies by running `python -m pip install -r requirements.txt`
+3. Install platform dependencies:
 
-5. From this folder, run `python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx`
+```powershell
+..\install_platform_deps.ps1 -extra_pkgs ffmpeg
+```
 
-6. Run demo `python demo.py --audio_path /path/to/test/data.mp3`
+The above script will install:
+  * Anaconda for x86-64. We use x86-64 Python for compatibility with other Python packages. However, inference in ONNX Runtime will, for the most part, run natively with ARM64 code.
+  * Git for Windows. This is required to load the AI Hub Models package, which contains the application code used by this demo.
+  * ffmpeg for reading audio files (Note that as of writing this, WinGet does not have an ARM64 distribution of ffmpeg. You will install a slower emulated x86-64 ffmpeg distribution instead.)
+
+4. Open (or re-open) Anaconda Powershell Prompt to continue.
+
+5. Create & activate your python environment:
+
+```powershell
+..\activate_venv.ps1 -name AI_Hub
+```
+
+6. Install python packages:
+
+```powershell
+..\install_python_deps.ps1 -model whisper-base-en
+```
+
+In your currently active python environment, the above script will install:
+  * AI Hub Models and model dependencies for stable diffusion.
+  * The onnxruntime-qnn package, both to enable native ARM64 ONNX inference, as well as to enable targeting Qualcomm NPUs.
+
+7. Export model:
+
+```powershell
+python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx --device "Snapdragon X Elite CRD" --skip-profiling --skip-inferencing
+```
+
+8. Get microphone device number:
+
+```powershell
+python demo.py --list-audio-devices
+```
+
+9. Stream whisper from your microphone:
+
+```powershell
+python demo.py --stream-audio-device <device_number>
+```

@@ -2,7 +2,7 @@
 
 # Sample Chat App
 
-Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat_quantized) using Genie SDK.
+Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat) using Genie SDK.
 
 The app demonstrates how to use the Genie C++ APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 
@@ -46,7 +46,7 @@ https://github.com/user-attachments/assets/7b23c632-cc4e-48ed-b1df-ea98ec0f51b7
 
     ```bash
     pip install qai-hub
-    pip install "qai-hub-models[llama-v3-2-3b-chat-quantized]"
+    pip install "qai-hub-models[llama-v3-2-3b-chat]"
     ```
 
 4. Download and extract QAIRT SDK compatible with sample app:
@@ -83,12 +83,12 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
 1. Export Llama 3.2 3B model with context length 2048
 
     - Read more about [exporting LLMs via AI Hub here](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#1-generate-genie-compatible-qnn-binaries-from-ai-hub)
-        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_chat_quantized` and reduce context length for this demo.
+        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_chat` and reduce context length for this demo.
 
     - Export Llama 3.2 3B model with context length 2048
 
     ```bash
-    python -m qai_hub_models.models.llama_v3_2_3b_chat_quantized.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle
+    python -m qai_hub_models.models.llama_v3_2_3b_chat.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle
     ```
 
     - Exporting Llama3.2 models will take a while depending on your internet connectivity.

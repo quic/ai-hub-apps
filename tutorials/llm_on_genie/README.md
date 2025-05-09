@@ -120,12 +120,18 @@ In a shell session, install `qai-hub-models` in the virtual environment:
 
 ```bash
 source llm_on_genie_venv/bin/activate
-pip install -U "qai_hub_models[llama-v3-8b-chat-quantized]"
+pip install -U "qai-hub-models[llama-v3-8b-chat]"
 ```
 
-Replace `llama-v3-8b-chat-quantized` with the desired llama model from [AI Hub
+Replace `llama-v3-8b-chat` with the desired llama model from [AI Hub
 Model](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
-Note to replace `_` with `-` (e.g. `llama_v3_8b_chat_quantized` -> `llama-v3-8b-chat-quantized`)
+Note to replace `_` with `-` (e.g. `llama_v3_8b_chat` -> `llama-v3-8b-chat`)
+
+Make sure Git is installed in your environment. This command should work:
+
+```bash
+git --version
+```
 
 Ensure at least 80GB of memory (RAM + swap). On Ubuntu (including through WSL) you can check it by
 
@@ -191,7 +197,7 @@ instructions of how to increase your swap space.
 #### For Android on Snapdragon® 8 Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
@@ -199,7 +205,7 @@ For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
 #### For Windows on Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat_quantized.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_chat.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 Note: For older devices, you may need to adjust the context length using
@@ -245,10 +251,17 @@ on a prompt of your choosing.
 
 ### Genie Config
 
-Please run (replacing `llama_v3_8b_chat_quantized` with the desired model id):
+Check out the [AI Hub Apps repository](https://github.com/quic/ai-hub-apps)
+using Git:
 
 ```bash
-cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat_quantized.json genie_bundle/genie_config.json
+git clone https://github.com/quic/ai-hub-apps.git
+```
+
+Now run (replacing `llama_v3_8b_chat` with the desired model id):
+
+```bash
+cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat.json genie_bundle/genie_config.json
 ```
 
 For Windows laptops, please set `use-mmap` to `false`.
@@ -263,14 +276,7 @@ QNN binaries specified here.
 
 ### HTP Backend Config
 
-Check out the [AI Hub Apps repository](https://github.com/quic/ai-hub-apps)
-using Git:
-
-```bash
-git clone https://github.com/quic/ai-hub-apps.git
-```
-
-Now copy the HTP config template:
+Copy the HTP config template:
 
 ```bash
 cp ai-hub-apps/tutorials/llm_on_genie/configs/htp/htp_backend_ext_config.json.template genie_bundle/htp_backend_ext_config.json
@@ -313,7 +319,7 @@ cp $QNN_SDK_ROOT/lib/hexagon-v79/unsigned/* genie_bundle
 cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
 cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
 ```
-
+This should support most use cases
 ## Run LLM on Device
 
 You have three options to run the LLM on device:

@@ -44,11 +44,11 @@
                 "binary": {
                     "version": 1,
                     "ctx-bins": [
-                        "llama_v3_1_8b_chat_quantized_part_1_of_5.bin",
-                        "llama_v3_1_8b_chat_quantized_part_2_of_5.bin",
-                        "llama_v3_1_8b_chat_quantized_part_3_of_5.bin",
-                        "llama_v3_1_8b_chat_quantized_part_4_of_5.bin",
-                        "llama_v3_1_8b_chat_quantized_part_5_of_5.bin"
+                        "llama_v3_1_8b_chat_part_1_of_5.bin",
+                        "llama_v3_1_8b_chat_part_2_of_5.bin",
+                        "llama_v3_1_8b_chat_part_3_of_5.bin",
+                        "llama_v3_1_8b_chat_part_4_of_5.bin",
+                        "llama_v3_1_8b_chat_part_5_of_5.bin"
                     ]
                 },
                 "positional-encoding": {
