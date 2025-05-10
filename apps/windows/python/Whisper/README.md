@@ -36,7 +36,7 @@ The above script will install:
 ```
 
 In your currently active python environment, the above script will install:
-  * AI Hub Models and model dependencies for stable diffusion.
+  * AI Hub Models and dependencies for whisper.
   * The onnxruntime-qnn package, both to enable native ARM64 ONNX inference, as well as to enable targeting Qualcomm NPUs.
 
 7. Export model:
