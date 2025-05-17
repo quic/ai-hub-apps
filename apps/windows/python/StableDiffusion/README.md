@@ -35,8 +35,6 @@ Set-ExecutionPolicy -Scope CurrentUser Unrestricted -Force
 ..\install_platform_deps.ps1
 ```
 
-You can leave out ffmpeg if it is already installed and in your system path.
-
 The above script will install:
   * Anaconda for x86-64. We use x86-64 Python for compatibility with other Python packages. However, inference in ONNX Runtime will, for the most part, run natively with ARM64 code.
   * Git for Windows. This is required to load the AI Hub Models package, which contains the application code used by this demo.
