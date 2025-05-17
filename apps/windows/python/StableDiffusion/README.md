@@ -1,4 +1,4 @@
-## Run Stable Diffusion on Snapdragon X Elite
+## Run Whisper on Snapdragon X Elite
 
 Follow instructions to run the demo:
 
