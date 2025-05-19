@@ -31,11 +31,11 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Model name | Minimum Compile QAIRT SDK version | Supported devices |
 | --- | --- | --- |
 | Llama-v2-7B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
-| Llama-v3-8B-Chat | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
-| Llama-v3.1-8B-Chat | 2.27.7 | Snapdragon® 8 Elite |
-| Llama-v3.1-8B-Chat | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
-| Llama-v3.2-3B-Chat | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
-| Llama-v3.2-3B-Chat | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-v3-8B-Instruct | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-v3.1-8B-Instruct | 2.27.7 | Snapdragon® 8 Elite |
+| Llama-v3.1-8B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-v3.2-3B-Instruct | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
+| Llama-v3.2-3B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Baichuan2-7B | 2.27.7 |  Snapdragon® 8 Elite |
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
@@ -120,12 +120,12 @@ In a shell session, install `qai-hub-models` in the virtual environment:
 
 ```bash
 source llm_on_genie_venv/bin/activate
-pip install -U "qai-hub-models[llama-v3-8b-chat]"
+pip install -U "qai-hub-models[llama-v3-8b-instruct]"
 ```
 
-Replace `llama-v3-8b-chat` with the desired llama model from [AI Hub
+Replace `llama-v3-8b-instruct` with the desired llama model from [AI Hub
 Model](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
-Note to replace `_` with `-` (e.g. `llama_v3_8b_chat` -> `llama-v3-8b-chat`)
+Note to replace `_` with `-` (e.g. `llama_v3_8b_instruct` -> `llama-v3-8b-instruct`)
 
 Make sure Git is installed in your environment. This command should work:
 
@@ -197,7 +197,7 @@ instructions of how to increase your swap space.
 #### For Android on Snapdragon® 8 Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
@@ -205,7 +205,7 @@ For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
 #### For Windows on Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_chat.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 Note: For older devices, you may need to adjust the context length using
@@ -245,6 +245,8 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 
 ### [Optional] Use the Windows PowerShell LLM Runner
 
+**Do not use this script to create your Genie bundle if you are building Windows ChatApp. Continue with the rest of the tutorial instead.**
+
 The easiest path to running an LLM on a Windows on Snapdragon® device is to use the [PowerShell implementation](powershell/)
 of the rest of this tutorial. It will automatically generate the appropriate configuration files and execute `genie-t2t-run.exe`
 on a prompt of your choosing.
@@ -258,10 +260,10 @@ using Git:
 git clone https://github.com/quic/ai-hub-apps.git
 ```
 
-Now run (replacing `llama_v3_8b_chat` with the desired model id):
+Now run (replacing `llama_v3_8b_instruct` with the desired model id):
 
 ```bash
-cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_chat.json genie_bundle/genie_config.json
+cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_instruct.json genie_bundle/genie_config.json
 ```
 
 For Windows laptops, please set `use-mmap` to `false`.
@@ -294,32 +296,21 @@ specified in the export command):
 | Snapdragon® X Elite      | 60     | v73      |
 | Snapdragon® X Plus       | 60     | v73      |
 
-## Copy Genie Binaries
+## Collect & Finalize Genie Bundle
 
-Copy Genie's shared libraries and executable to our bundle.
-
-### On Windows
-
-```bash
-cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
-cp $QNN_SDK_ROOT/lib/aarch64-windows-msvc/* genie_bundle
-cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
+When finished with the above steps, your bundle should look like this:
+```
+genie_bundle/
+   genie_config.json
+   htp_backend_ext_config.json
+   tokenizer.json
+   <model_id>_part_1_of_N.bin
+   ...
+   <model_id>_part_N_of_N.bin
 ```
 
-### On Android
+where <model_id> is the name of the model. This is the name of the json you copied from `configs/genie/<model_name>.json`.
 
-```bash
-# For 8 Gen 2
-cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
-# For 8 Gen 3
-cp $QNN_SDK_ROOT/lib/hexagon-v75/unsigned/* genie_bundle
-# For 8 Elite
-cp $QNN_SDK_ROOT/lib/hexagon-v79/unsigned/* genie_bundle
-# For all devices
-cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
-cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
-```
-This should support most use cases
 ## Run LLM on Device
 
 You have three options to run the LLM on device:
@@ -346,6 +337,15 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 
 #### Genie on Windows with Snapdragon® X
 
+Copy Genie's shared libraries and executable to our bundle.
+(Note you can skip this step if you used the powershell script to prepare your bundle.)
+
+```bash
+cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
+cp $QNN_SDK_ROOT/lib/aarch64-windows-msvc/* genie_bundle
+cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
+```
+
 In Powershell, navigate to the bundle directory and run
 
 ```bash
@@ -355,6 +355,20 @@ In Powershell, navigate to the bundle directory and run
 Note that this prompt format is specific to Llama 3.
 
 #### Genie on Android
+
+Copy Genie's shared libraries and executable to our bundle.
+
+```bash
+# For 8 Gen 2
+cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
+# For 8 Gen 3
+cp $QNN_SDK_ROOT/lib/hexagon-v75/unsigned/* genie_bundle
+# For 8 Elite
+cp $QNN_SDK_ROOT/lib/hexagon-v79/unsigned/* genie_bundle
+# For all devices
+cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
+cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
+```
 
 Copy `genie_bundle` from the host machine to the target device using ADB and
 open up an interactive shell on the target device:

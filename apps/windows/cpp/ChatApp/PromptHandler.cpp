@@ -21,7 +21,7 @@ constexpr const std::string_view c_end_user = "<|eot_id|>";
 constexpr const std::string_view c_begin_assistant = "<|start_header_id|>assistant<|end_header_id|>\n\n";
 constexpr const std::string_view c_end_assistant = "<|eot_id|>";
 
-#elifdef LLAMA3_TAIDE
+#elif defined LLAMA3_TAIDE
 // Llama3-TAIDE
 constexpr const std::string_view c_begin_system =
     "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n你是一個來自台灣的AI助理，你的名字是 "
@@ -31,7 +31,7 @@ constexpr const std::string_view c_end_user = "<|eot_id|>";
 constexpr const std::string_view c_begin_assistant = "<|start_header_id|>assistant<|end_header_id|>\n\n";
 constexpr const std::string_view c_end_assistant = "<|eot_id|>";
 
-#elifdef LLAMA2
+#elif defined LLAMA2
 // Llama2 system prompt
 // Ref: https://www.llama.com/docs/model-cards-and-prompt-formats/meta-llama-2/
 constexpr const std::string_view c_begin_system =

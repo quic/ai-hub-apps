@@ -16,12 +16,12 @@
 
 .EXAMPLE
     # 1. Export the model
-    python -m qai_hub_models.models.llama_v3_2_3b_chat.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
 
     # 2. Download tokenizer to genie_bundle\tokenizer.json (see ..\README.md for download links).
 
     # 3. Run the model on this device.
-    & .\RunLlm.ps1 -ModelName llama_v3_2_3b_chat -BundleRoot genie_bundle -RawPrompt "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nHow many dogs are there in space?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+    & .\RunLlm.ps1 -ModelName llama_v3_2_3b_instruct -BundleRoot genie_bundle -RawPrompt "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nHow many dogs are there in space?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 
 .LINK
     https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie/
@@ -31,7 +31,7 @@
 #>
 param (
     [Parameter(Mandatory = $true,
-               HelpMessage = "The name of the AI Hub model to run,`n  e.g., llama_v3_2_3b_chat.")]
+               HelpMessage = "The name of the AI Hub model to run,`n  e.g., llama_v3_2_3b_instruct.")]
     [string]$ModelName,
 
     [Parameter(Mandatory = $true,

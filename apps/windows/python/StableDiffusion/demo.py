@@ -10,7 +10,10 @@ from PIL import Image
 from qai_hub_models.models._shared.stable_diffusion.app import StableDiffusionApp
 from qai_hub_models.utils.args import add_output_dir_arg
 from qai_hub_models.utils.display import display_or_save_image, to_uint8
-from qai_hub_models.utils.executable_onnx_model import ExecutableOnnxModel
+from qai_hub_models.utils.onnx_torch_wrapper import (
+    OnnxModelTorchWrapper,
+    OnnxSessionOptions,
+)
 from transformers import CLIPTokenizer
 
 DEFAULT_PROMPT = "A girl taking a walk at sunset"
@@ -61,12 +64,17 @@ def main():
     add_output_dir_arg(parser)
     args = parser.parse_args()
 
+    # Disable compile caching becuase Stable Diffusion is Pre-Compiled
+    # This is needed due to a bug in onnxruntime 1.22, and can be removed after the next ORT release.
+    options = OnnxSessionOptions.aihub_defaults()
+    options.context_enable = False
+
     # Load model
     print("Loading model and app...")
     sdapp = StableDiffusionApp(
-        ExecutableOnnxModel.OnNPU(args.text_encoder),
-        ExecutableOnnxModel.OnNPU(args.vae_decoder),
-        ExecutableOnnxModel.OnNPU(args.unet),
+        OnnxModelTorchWrapper.OnNPU(args.text_encoder, options),
+        OnnxModelTorchWrapper.OnNPU(args.vae_decoder, options),
+        OnnxModelTorchWrapper.OnNPU(args.unet, options),
         CLIPTokenizer.from_pretrained(HF_REPO, subfolder="tokenizer"),
         EulerDiscreteScheduler.from_pretrained(HF_REPO, subfolder="scheduler"),
         channel_last_latent=True,

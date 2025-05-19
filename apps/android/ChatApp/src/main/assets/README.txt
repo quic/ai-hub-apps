@@ -1,1 +1,1 @@
-Place TFLite asset here
+Place QNN context binaries and tokenizer here

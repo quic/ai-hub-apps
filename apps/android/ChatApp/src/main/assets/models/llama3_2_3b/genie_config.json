@@ -44,9 +44,9 @@
                 "binary": {
                     "version": 1,
                     "ctx-bins": [
-                        "<models_path>/llama_v3_2_3b_chat_part_1_of_3.bin",
-                        "<models_path>/llama_v3_2_3b_chat_part_2_of_3.bin",
-                        "<models_path>/llama_v3_2_3b_chat_part_3_of_3.bin"
+                        "<models_path>/llama_v3_2_3b_instruct_part_1_of_3.bin",
+                        "<models_path>/llama_v3_2_3b_instruct_part_2_of_3.bin",
+                        "<models_path>/llama_v3_2_3b_instruct_part_3_of_3.bin"
                     ]
                 },
                 "positional-encoding": {

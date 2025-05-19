@@ -69,8 +69,9 @@
       </DelayLoadDLLs>
     </Link>
     <PostBuildEvent>
-      <Command>powershell cp $(QNN_SDK_ROOT)\lib\hexagon-v73\unsigned\* $(OutDir)
-powershell cp $(QNN_SDK_ROOT)\lib\aarch64-windows-msvc\* $(OutDir)</Command>
+      <Command>powershell "Copy-Item '$(QNN_SDK_ROOT)\lib\hexagon-v73\unsigned\*' '$(OutDir)' -Force"
+
+powershell "Copy-Item '$(QNN_SDK_ROOT)\lib\aarch64-windows-msvc\*' '$(OutDir)' -Force"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">

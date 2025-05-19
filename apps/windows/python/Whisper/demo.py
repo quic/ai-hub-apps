@@ -7,7 +7,7 @@ from datetime import datetime
 
 import sounddevice as sd
 from qai_hub_models.models._shared.whisper.app import WhisperApp
-from qai_hub_models.utils.executable_onnx_model import ExecutableOnnxModel
+from qai_hub_models.utils.onnx_torch_wrapper import OnnxModelTorchWrapper
 
 
 def main():
@@ -58,8 +58,8 @@ def main():
 
     print("Loading model...")
     app = WhisperApp(
-        ExecutableOnnxModel.OnNPU(args.encoder_path),
-        ExecutableOnnxModel.OnNPU(args.decoder_path),
+        OnnxModelTorchWrapper.OnNPU(args.encoder_path),
+        OnnxModelTorchWrapper.OnNPU(args.decoder_path),
         num_decoder_blocks=6,
         num_decoder_heads=8,
         attention_dim=512,

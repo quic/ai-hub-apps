@@ -1,6 +1,6 @@
 # CLI Chat application
 
-Chat application for Windows on Snapdragon® demonstrating a large language model (LLM, e.g., [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat)) using Genie SDK.
+Chat application for Windows on Snapdragon® demonstrating a large language model (LLM, e.g., [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_instruct)) using Genie SDK.
 
 The app demonstrates how to use the Genie APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 

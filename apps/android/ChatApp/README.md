@@ -2,7 +2,7 @@
 
 # Sample Chat App
 
-Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_chat) using Genie SDK.
+Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_instruct) using Genie SDK.
 
 The app demonstrates how to use the Genie C++ APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 
@@ -17,9 +17,10 @@ Android devices on QDC have newer meta-build and can run this demo on Android 14
 
 We have verified sample ChatApp for the following device:
 
-| Device name | OS | Build Version |
-| --- | --- | --- |
-| Samsung Galaxy S24 Plus | One UI 6.1 (Android 14) | UP1A.231005.007.S926U1UEU4AXK4 |
+| Device name | QAIRT version | OS | Build Version |
+| --- | --- | --- | --- |
+| Samsung Galaxy S24 Plus  | 2.29.0 | One UI 6.1 (Android 14) | UP1A.231005.007.S926U1UEU4AXK4 |
+| Samsung Galaxy S25 Ultra | 2.33.0 | One UI 7.0 (Android 15) | AP3A.240905.015.A2.S938U1UEU1AYA1 |
 
 If you have a device listed in the above table, you can update OS to above mentioned or newer OS to run Sample App locally.
 
@@ -36,17 +37,18 @@ https://github.com/user-attachments/assets/7b23c632-cc4e-48ed-b1df-ea98ec0f51b7
 ### Platform
 
 - Snapdragon® Gen 3 or Snapdragon® 8 Elite
-- Access to Android device on [QDC](https://qdc.qualcomm.com/)
+- Or access to Android device on [QDC](https://qdc.qualcomm.com/)
+- The host computer can run Windows, Linux, or macOS.
 
 ### Tools and SDK
 
 1. Clone this repository **with [Git-LFS](https://git-lfs.com) enabled.**
-2. Download [Android Studio](https://developer.android.com/studio). **Version 2023.1.1 or newer** is required.
+2. Download [Android Studio](https://developer.android.com/studio). **Version 2024.3.1 or newer** is required.
 3. Install AI Hub and AI Hub models
 
     ```bash
     pip install qai-hub
-    pip install "qai-hub-models[llama-v3-2-3b-chat]"
+    pip install "qai-hub-models[llama-v3-2-3b-instruct]"
     ```
 
 4. Download and extract QAIRT SDK compatible with sample app:
@@ -80,15 +82,15 @@ We will use Llama 3.2 3B with context length 2048 as an example for this demo.
 cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
 ```
 
-1. Export Llama 3.2 3B model with context length 2048
+1. Export Llama 3.2 3B model with context length 2048 (if you change this, please update the `"size"` option in the `apps/android/ChatApp/src/main/assets/models/llama3_2_3b/genie_config.json` file)
 
     - Read more about [exporting LLMs via AI Hub here](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#1-generate-genie-compatible-qnn-binaries-from-ai-hub)
-        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_chat` and reduce context length for this demo.
+        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_instruct` and reduce context length for this demo.
 
     - Export Llama 3.2 3B model with context length 2048
 
     ```bash
-    python -m qai_hub_models.models.llama_v3_2_3b_chat.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle
+    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle
     ```
 
     - Exporting Llama3.2 models will take a while depending on your internet connectivity.
@@ -102,13 +104,18 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
     cp genie_bundle/*.bin src/main/assets/models/llama3_2_3b/
     ```
 
-4. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
+4. Note that you do not need to set up the `genie_config.json` and the HTP
+   config. These files are already set up for you. In the `genie_config.json`, you will find
+   placeholders like `<models_path>`. These will be resolved by the app and are
+   important so that the Android app can locate your files on device.
+
+5. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
 
     ```code
     def qnnSDKLocalPath="/opt/qcom/aistack/qairt/2.28.2.241116"
     ```
 
-5. Build APK
+6. Build APK
     - Open **the PARENT folder (`android`) (NOT THIS FOLDER)** in Android Studio
     - Run gradle sync
     - Build the `ChatApp` target
@@ -121,7 +128,7 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
     ```
 
 
-6. Run on Android device
+7. Run on Android device
 
     We recommend using [QDC](https://qdc.qualcomm.com/) to run this app.
 
