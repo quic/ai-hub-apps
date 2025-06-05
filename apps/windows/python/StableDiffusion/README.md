@@ -2,7 +2,7 @@
 
 Follow instructions to run the demo:
 
-1. Download ONNX model files from https://aihub.qualcomm.com/models/stable_diffusion_v2_1_quantized:
+1. Download ONNX model files from https://aihub.qualcomm.com/models/stable_diffusion_v2_1:
     * Unzip each file.
     * Move each file to `.\models`
     * Rename each FOLDER to `text_encoder.onnx`, `unet.onnx`, and `vae_decoder.onnx`, respectively.
