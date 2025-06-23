@@ -106,10 +106,12 @@ powershell cp $(QNN_SDK_ROOT)\lib\aarch64-windows-msvc\* $(OutDir)</Command>
     <ClCompile Include="ChatServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="PromptHandler.cpp" />
+    <ClCompile Include="HttpServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ChatServer.hpp" />
     <ClInclude Include="PromptHandler.hpp" />
+    <ClInclude Include="HttpServer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
