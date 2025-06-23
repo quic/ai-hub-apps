@@ -70,6 +70,13 @@ Invoke-WebRequest -Uri https://raw.githubusercontent.com/nlohmann/json/develop/s
 
 Make sure `QNN_SDK_ROOT` is set globally pointing to QAIRT SDK before you build the project.
 
+**Important:**
+- In Visual Studio, right-click your project (`ChatServer`) in Solution Explorer and select **Properties**.
+- Go to **Configuration Properties > C/C++ > General > Additional Include Directories**.
+- Add the following entry to the list:
+  - `$(ProjectDir)`
+- Click OK to save. This ensures the compiler can find `httplib.h` and `nlohmann/json.hpp` if they are in your project root.
+
 1. Open `ChatServer.sln`
 2. Build project in Visual Studio
 
