@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 #include <json.hpp>
-#define CPPHTTPLIB_OPENSSL_SUPPORT
+// #define CPPHTTPLIB_OPENSSL_SUPPORT
 #include "httplib.h"
 
 using json = nlohmann::json;
@@ -41,7 +41,7 @@ void HttpServer::Start() {
             std::string tagged_prompt = prompt_handler.FormatMessages(body["messages"]);
             std::string model_response;
             if (GENIE_STATUS_SUCCESS != GenieDialog_query(
-                    m_chat_server.m_dialog_handle, tagged_prompt.c_str(),
+                    m_chat_server.GetDialogHandle(), tagged_prompt.c_str(),
                     GenieDialog_SentenceCode_t::GENIE_DIALOG_SENTENCE_COMPLETE,
                     [](const char* response_back, const GenieDialog_SentenceCode_t, const void* user_data) {
                         std::string* resp = static_cast<std::string*>(const_cast<void*>(user_data));

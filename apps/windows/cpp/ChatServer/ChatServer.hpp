@@ -48,5 +48,6 @@ class ChatServer
      *
      */
     void ChatLoop();
+    GenieDialog_Handle_t GetDialogHandle() const;
 };
 } // namespace App

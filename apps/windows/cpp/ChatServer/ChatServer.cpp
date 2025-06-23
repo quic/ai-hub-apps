@@ -85,7 +85,7 @@ ChatServer::~ChatServer()
 
 void ChatServer::ChatLoop()
 {
-    AppUtils::PromptHandler prompt_handler;
+    // AppUtils::PromptHandler prompt_handler;
 
     // Initiate Chat with infinite loop.
     // User to provide `exit` as a prompt to exit.
@@ -113,7 +113,8 @@ void ChatServer::ChatLoop()
             continue;
         }
 
-        std::string tagged_prompt = prompt_handler.GetPromptWithTag(user_prompt);
+        // std::string tagged_prompt = prompt_handler.GetPromptWithTag(user_prompt);
+        std::string tagged_prompt = user_prompt;
 
         // Bot's response
         std::cout << "Output: ";
@@ -124,4 +125,8 @@ void ChatServer::ChatLoop()
             throw std::runtime_error("Failed to get response from GenieDialog. Please restart the ChatServer.");
         }
     }
+}
+
+GenieDialog_Handle_t ChatServer::GetDialogHandle() const {
+    return m_dialog_handle;
 }
