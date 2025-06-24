@@ -90,7 +90,7 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
     - Export Llama 3.2 3B model with context length 2048
 
     ```bash
-    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle
+    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle --skip-profiling --skip-inferencing
     ```
 
     - Exporting Llama3.2 models will take a while depending on your internet connectivity.

@@ -43,7 +43,7 @@ Comments have been left in [TFLiteHelpers.java](src/main/java/com/qualcomm/tflit
 | Classes | **CityScapes** Classes | [1, Height', Width', 19] | float32 lower resolution class logit predictions
 
 Refer to the CityScapes segmentation
-[model.py](https://github.com/qcom-ai-hub/ai-hub-models-internal/blob/main/qai_hub_models/models/_shared/cityscapes_segmentation/model.py)
+[model.py](https://github.com/quic/ai-hub-models/blob/main/qai_hub_models/models/_shared/cityscapes_segmentation/model.py)
 for class label information.
 
 The app is developed to work best with a Width/Height ratio of 2.
