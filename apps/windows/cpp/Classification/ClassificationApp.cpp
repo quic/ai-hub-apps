@@ -70,9 +70,9 @@ void ClassificationApp::PrepareModelForInference(const App::BackendOption backen
     {
         std::ostringstream err_msg;
         err_msg << "Model not found at " << m_model_path << "\n";
-        err_msg << "Please download onnx model from "
-                   "https://aihub.qualcomm.com/compute/models/mobilenet_v2 and place into "
-                   "<Project_Dir>\\assets\\models\\";
+        err_msg << "Please download the float/onnx variant of "
+                   "https://aihub.qualcomm.com/compute/models/mobilenet_v2 and place it at "
+                   "<Project_Dir>\\assets\\models\\classification.onnx";
         throw std::runtime_error(err_msg.str());
     }
     std::wstring model_path_wstr = std::wstring(m_model_path.begin(), m_model_path.end());

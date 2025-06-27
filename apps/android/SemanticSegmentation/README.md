@@ -50,7 +50,7 @@ The app is developed to work best with a Width/Height ratio of 2.
 
 ## Compatible [AI Hub Models](https://aihub.qualcomm.com/mobile/models)
 
-The app is currently compatible with the unquantized FFNet variants:
+The app is currently compatible with the TFLite `float` variant of these models:
 
 - [FFNet-40S](https://aihub.qualcomm.com/mobile/models/ffnet_40s)
 - [FFNet-54S](https://aihub.qualcomm.com/mobile/models/ffnet_54s)

@@ -2,7 +2,6 @@
 
 Super Resolution application for Windows on Snapdragon® with [XLSR](https://aihub.qualcomm.com/compute/models/xlsr) using ONNX runtime.
 
-
 The app demonstrates how to use the [QNN execution provider](https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html) to accelerate the model using the Snapdragon® Neural Processing Unit (NPU).
 
 ## Requirements
@@ -16,19 +15,17 @@ The app demonstrates how to use the [QNN execution provider](https://onnxruntime
 
 - Visual Studio 22
   - Download any variant of [Visual Studio here](https://visualstudio.microsoft.com/vs/)
-  - Make sure Desktop development with C++ tools are selected during installation or installed separately later
-- QAIRT SDK: [Qualcomm AI Runtime SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) (see [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for older versions)
-  - Download and install the latest Qualcomm AI Runtime SDK
-  - Make libraries from `<QAIRT_SDK>/libs/<target_platform>` accessible to app target binary
-    - Option 1: add `<QAIRT_SDK>/libs/<target_platform>` in $PATH environment variable
-    - Option 2: copy libraries from `<QAIRT_SDK>/libs/<target_platform>` in same directory as executable
-  - e.g. on Windows on Snapdragon®, `<QAIRT_SDK>/libs/aarch64-windows-msvc` or `<QAIRT_SDK>/libs/arm64x-windows-msvc` should be added in $PATH environment variable.
+  - Make sure **Desktop development with C++ tools** are selected during installation or installed separately later
 
 ## Build App
 
 ### Downloading model from AI Hub
 
-Download Super Resolution [XLSR SuperResolution ONNX model from AI Hub](https://aihub.qualcomm.com/compute/models/xlsr) and place into `<project directory>/assets/models/` directory
+Download the **float** / **ONNX** variant of [XLSR ONNX float](https://aihub.qualcomm.com/compute/models/xlsr) from AI Hub.
+Rename it and place it into:
+```
+<project directory>/assets/models/super_resolution.onnx
+```
 
 ### Build project in Visual Studio 22
 
@@ -55,26 +52,23 @@ Download Super Resolution [XLSR SuperResolution ONNX model from AI Hub](https://
          ```
 
 3. Build project in Visual Studio
-   - It takes around 10 mins to build on X Elite.
 
 ## Running App
-
-Please ensure you have followed [Downloading model from AI Hub](#downloading-model-from-ai-hub) section and placed [xlsr.onnx](https://aihub.qualcomm.com/compute/models/xlsr) into `.\assets\models\xlsr.onnx`
 
 ### Running via Visual Studio
 
 Visual studio project is configured with the following command arguments:
 
 ```bash
---model .\assets\models\xlsr.onnx --image .\assets\images\Doll.jpg
+--model .\assets\models\super_resolution.onnx --image .\assets\images\Doll.jpg
 ```
 
-You can simply run the app from Visual Studio to run SuperResolution on sample image.
+You can simply run the app from Visual Studio to run super resolution on sample image.
 
 ### Running app via CLI
 
 ```bash
-.\ARM64\Debug\SuperResolution.exe --model .\assets\models\xlsr.onnx --image .\assets\images\Doll.jpg
+.\ARM64\Debug\SuperResolution.exe --model .\assets\models\super_resolution.onnx --image .\assets\images\Doll.jpg
 ```
 
 You can additionally run `--help` to get more information about all available options:
@@ -104,14 +98,10 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
 
 ## FAQ
 
-1. QNN SetupBackend failed:
-
-   ```bash
-   QNN SetupBackend failed: Unable to load backend, error: load library failed
-   ```
-
-   - QNN libraries are not setup correctly and at runtime backend libs were not found.
-   - Please refer to [Tools and SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
+1. If you get a DLL error message upon launch (for instance that
+   `opencv_core4d.dll` was not found). Try Build -> Clean Solution and
+   re-build. If this still happens, please go over the NuGet and vcpkg
+   instructions again carefully.
 2. How do I use a model with different input shape than 128x128?
    - Use `--model_input_ht` / `--model_input_wt` to model input dimensions.
 3. How to change if my model uses different scale than 4?
@@ -119,25 +109,6 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
 
 ## Project setup
 
-Following section describes how to configure similar project with NuGet and vcpkg from scratch:
-
-1. Start empty Visual Studio project
-2. Setup NuGet to install ONNXRuntime QNN Execution provider
-   - Go to `Project -> Manage NuGet Packages`
-   - Look up and install the following packages
-     - [ONNX-Runtime-QNN](https://www.nuget.org/packages/Microsoft.ML.OnnxRuntime.QNN)
-3. Set up Visual Studio for vcpkg
-   - Enable vcpkg [manifest mode](https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode)
-      - Go to Project Setting
-      - General -> vcpkg
-      - Enable Manifest mode
-   - Add `OpenCV` dependency in vcpkg
-      - Run the following commands in Visual Studio powershell:
-
-      ```bash
-      vcpkg —new application
-      vcpkg add port opencv
-      ```
-
-      This creates vcpkg.json and adds opencv depedency
-4. Now project is setup to work with vcpkg and NuGet package manager
+Please see the [Classification app](../Classification/README.md) for
+instructions of how to set up a project with ONNXRuntime QNN Execution Provider
+from scratch.

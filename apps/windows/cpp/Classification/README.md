@@ -15,19 +15,17 @@ The app demonstrates how to use the [QNN execution provider](https://onnxruntime
 
 - Visual Studio 22
   - Download any variant of [Visual Studio here](https://visualstudio.microsoft.com/vs/)
-  - Make sure Desktop development with C++ tools are selected during installation or installed separately later
-- QAIRT SDK: [Qualcomm AI Runtime SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_Community) (see [QNN SDK](https://qpm.qualcomm.com/#/main/tools/details/qualcomm_ai_engine_direct) for older versions)
-  - Download and install the latest Qualcomm AI Engine Direct SDK
-  - Make libraries from `<QNN_SDK>/libs/<target_platform>` accessible to app target binary
-    - Option 1: add `<QNN_SDK>/libs/<target_platform>` in $PATH environment variable
-    - Option 2: copy libraries from `<QNN_SDK>/libs/<target_platform>` in same directory as executable
-  - e.g. on Windows on Snapdragon®, `<QNN_SDK>/libs/aarch64-windows-msvc` or `<QNN_SDK>/libs/arm64x-windows-msvc` should be added in $PATH environment variable.
+  - Make sure **Desktop development with C++ tools** are selected during installation or installed separately later
 
 ## Build App
 
 ### Downloading model from AI Hub
 
-Download classification [MobileNet-V2 ONNX model from AI Hub](https://aihub.qualcomm.com/compute/models/mobilenet_v2) and place into `<project directory>/assets/models/` directory
+Download the **float**/**onnx** variant of [MobileNet-V2](https://aihub.qualcomm.com/compute/models/mobilenet_v2) from AI Hub.
+Rename it and place it into:
+```
+<project directory>/assets/models/classification.onnx
+```
 
 ### Build project in Visual Studio 22
 
@@ -53,19 +51,16 @@ Download classification [MobileNet-V2 ONNX model from AI Hub](https://aihub.qual
          vcpkg integrate install
          ```
 
-3. Build project in Visual Studio
-   - It takes around 10 mins to build on X Elite.
+3. Build and run project in Visual Studio
 
 ## Running App
 
-Please ensure you have followed [Downloading model from AI Hub](#downloading-model-from-ai-hub) section and placed [mobilenet_v2.onnx](https://aihub.qualcomm.com/compute/models/mobilenet_v2)  into `.\assets\models\mobilenet_v2.onnx`
-
 ### Running via Visual Studio
 
-Visual studio project is configured with the following command arguments:
+Visual Studio project is configured with the following command arguments:
 
 ```bash
---model .\assets\models\mobilenet_v2.onnx --image .\assets\images\keyboard.jpg
+--model .\assets\models\classification.onnx --image .\assets\images\keyboard.jpg
 ```
 
 You can simply run the app from Visual Studio to run classification on sample image.
@@ -73,7 +68,7 @@ You can simply run the app from Visual Studio to run classification on sample im
 ### Running app via CLI
 
 ```bash
-.\ARM64\Debug\Classification.exe --model .\assets\models\mobilenet_v2.onnx --image .\assets\images\keyboard.jpg
+.\ARM64\Debug\Classification.exe --model .\assets\models\classification.onnx --image .\assets\images\keyboard.jpg
 ```
 
 You can additionally run `--help` to get more information about all available options:
@@ -103,14 +98,10 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
 
 ## FAQ
 
-1. QNN SetupBackend failed:
-
-   ```bash
-   QNN SetupBackend failed: Unable to load backend, error: load library failed
-   ```
-
-   - QNN libraries are not set up correctly and at runtime backend libs were not found.
-   - Please refer to [Tools and SDK](#tools-and-sdk) and ensure required libs are either in PATH environment variable or copied into target directory
+1. If you get a DLL error message upon launch (for instance that
+   `opencv_core4d.dll` was not found). Try Build -> Clean Solution and
+   re-build. If this still happens, please go over the NuGet and vcpkg
+   instructions again carefully.
 2. How do I use a model with different input shape than 224x224?
    - Use `--model_input_ht` / `--model_input_wt` to model input dimensions.
 3. I have a model that does have different post-processing. Can I still use the app?
@@ -118,13 +109,23 @@ Please refer to [QNN EP options](https://onnxruntime.ai/docs/execution-providers
 
 ## Project setup
 
-Following section describes how to configure similar project with NuGet and vcpkg from scratch:
+Following section describes how to configure your own project with NuGet and vcpkg from scratch:
 
 1. Start empty Visual Studio project
-2. Setup NuGet to install ONNXRuntime QNN Execution provider
-   - Go to `Project -> Manage NuGet Packages`
+2. Set up NuGet to install ONNXRuntime QNN Execution provider
+   - Go to `Project` -> `Manage NuGet Packages`
    - Look up and install the following packages
-     - [ONNX-Runtime-QNN](https://www.nuget.org/packages/Microsoft.ML.OnnxRuntime.QNN)
+     - [Microsoft.ML.OnnxRuntime.QNN](https://www.nuget.org/packages/Microsoft.ML.OnnxRuntime.QNN)
+   - This NuGet package does not properly copy all necessary files to the build
+     folder, so we use a batch script
+     [copy_missing_qnn_ep_files.bat](copy_missing_qnn_ep_files.bat) to do this
+     for us. Copy this script into your project and make sure it runs by adding
+         this to your `.vcxproj` file:
+     ```
+     <Target Name="PostBuildCopyQnn" AfterTargets="Build">
+       <Exec Command="&quot;$(ProjectDir)copy_missing_qnn_ep_files.bat&quot; &quot;$(OutDir)&quot;" />
+     </Target>
+     ```
 3. Set up Visual Studio for vcpkg
    - Enable vcpkg [manifest mode](https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode)
       - Go to Project Setting
@@ -137,6 +138,15 @@ Following section describes how to configure similar project with NuGet and vcpk
       vcpkg —new application
       vcpkg add port opencv
       ```
-
-      This creates vcpkg.json and adds opencv depedency
-4. Now project is setup to work with vcpkg and NuGet package manager
+   - **Important**: To get around a vcpkg bug affecting ARM64, please add the
+     following to your `.vcxproj` file:
+     ```
+     <PropertyGroup>
+       <VcpkgPlatformTarget Condition="'$(Platform)'=='ARM64'">arm64</VcpkgPlatformTarget>
+     </PropertyGroup>
+     ```
+     If this is not added, you will see an error message like this:
+     ```
+     error: Invalid triplet name. Triplet names are all lowercase alphanumeric+hyphens.
+     ```
+4. Now project is setup to work with the vcpkg and NuGet package managers

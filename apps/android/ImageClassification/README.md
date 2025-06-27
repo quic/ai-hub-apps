@@ -53,42 +53,30 @@ The below is a non-exhaustive list of [AI Hub Models](https://aihub.qualcomm.com
 
 **Not every model has been individually tested with this app**. Please file an issue or reach out on [Slack](https://join.slack.com/t/qualcomm-ai-hub/shared_invite/zt-2j76uzoye-Xya17vQESuxrWTKEwK2uMQ) if you find a model in this list with app compatibility issues.
 
+Please download the TFLite asset. Variants `float` and `w8a8` are both supported by the app.
+
 - [ConvNext-Tiny](https://aihub.qualcomm.com/mobile/models/convnext_tiny)
-- [ConvNext-Tiny-w8a8-Quantized](https://aihub.qualcomm.com/mobile/models/convnext_tiny)
 - [DenseNet-121](https://aihub.qualcomm.com/mobile/models/densenet121)
 - [EfficientNet-B0](https://aihub.qualcomm.com/mobile/models/efficientnet_b0)
 - [GoogLeNet](https://aihub.qualcomm.com/mobile/models/googlenet)
-- [GoogLeNetQuantized](https://aihub.qualcomm.com/mobile/models/googlenet_quantized)
 - [Inception-v3](https://aihub.qualcomm.com/mobile/models/inception_v3)
-- [Inception-v3-Quantized](https://aihub.qualcomm.com/mobile/models/inception_v3_quantized)
 - [MNASNet05](https://aihub.qualcomm.com/mobile/models/mnasnet05)
 - [MobileNet-v2](https://aihub.qualcomm.com/mobile/models/mobilenet_v2)
-- [MobileNet-v2-Quantized](https://aihub.qualcomm.com/mobile/models/mobilenet_v2_quantized)
 - [MobileNet-v3-Large](https://aihub.qualcomm.com/mobile/models/mobilenet_v3_large)
-- [MobileNet-v3-Large-Quantized](https://aihub.qualcomm.com/mobile/models/mobilenet_v3_large_quantized)
 - [MobileNet-v3-Small](https://aihub.qualcomm.com/mobile/models/mobilenet_v3_small)
 - [RegNet](https://aihub.qualcomm.com/mobile/models/regnet)
-- [RegNetQuantized](https://aihub.qualcomm.com/mobile/models/regnet_quantized)
 - [ResNet101](https://aihub.qualcomm.com/mobile/models/resnet101)
-- [ResNet101Quantized](https://aihub.qualcomm.com/mobile/models/resnet101_quantized)
 - [ResNet18](https://aihub.qualcomm.com/mobile/models/resnet18)
-- [ResNet18Quantized](https://aihub.qualcomm.com/mobile/models/resnet18_quantized)
 - [ResNet50](https://aihub.qualcomm.com/mobile/models/resnet50)
-- [ResNet50Quantized](https://aihub.qualcomm.com/mobile/models/resnet50_quantized)
 - [ResNeXt101](https://aihub.qualcomm.com/mobile/models/resnext101)
-- [ResNeXt101Quantized](https://aihub.qualcomm.com/mobile/models/resnext101_quantized)
 - [ResNeXt50](https://aihub.qualcomm.com/mobile/models/resnext50)
-- [ResNeXt50Quantized](https://aihub.qualcomm.com/mobile/models/resnext50_quantized)
 - [ShuffleNet-v2](https://aihub.qualcomm.com/mobile/models/shufflenet_v2)
-- [ShuffleNet-v2Quantized](https://aihub.qualcomm.com/mobile/models/shufflenet_v2_quantized)
 - [SqueezeNet-1_1](https://aihub.qualcomm.com/mobile/models/squeezenet1_1)
-- [SqueezeNet-1_1Quantized](https://aihub.qualcomm.com/mobile/models/squeezenet1_1_quantized)
 - [Swin-Base](https://aihub.qualcomm.com/mobile/models/swin_base)
 - [Swin-Small](https://aihub.qualcomm.com/mobile/models/swin_small)
 - [Swin-Tiny](https://aihub.qualcomm.com/mobile/models/swin_tiny)
 - [VIT](https://aihub.qualcomm.com/mobile/models/vit)
 - [WideResNet50](https://aihub.qualcomm.com/mobile/models/wideresnet50)
-- [WideResNet50-Quantized](https://aihub.qualcomm.com/mobile/models/wideresnet50_quantized)
 
 ## Replicating an AI Hub Profile / Inference Job
 

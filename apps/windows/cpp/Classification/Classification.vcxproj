@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props" Condition="Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props')" />
+  <Import Project="packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props" Condition="Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -73,6 +73,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <VcpkgPlatformTarget Condition="'$(Platform)'=='ARM64'">arm64</VcpkgPlatformTarget>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -216,15 +219,18 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">true</DeploymentContent>
     </CopyFileToFolders>
   </ItemGroup>
+  <Target Name="PostBuildCopyQnn" AfterTargets="Build">
+    <Exec Command="&quot;$(ProjectDir)copy_missing_qnn_ep_files.bat&quot; &quot;$(OutDir)&quot;" />
+  </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets" Condition="Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets')" />
+    <Import Project="packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets" Condition="Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props'))" />
-    <Error Condition="!Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.ML.OnnxRuntime.QNN.1.19.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.ML.OnnxRuntime.QNN.1.22.0\build\native\Microsoft.ML.OnnxRuntime.QNN.targets'))" />
   </Target>
 </Project>

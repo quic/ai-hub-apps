@@ -101,9 +101,9 @@ void ObjectDetectionApp::PrepareModelForInference(const App::BackendOption backe
     {
         std::ostringstream err_msg;
         err_msg << "Model not found at " << m_model_path << "\n";
-        err_msg << "Please download onnx model from "
-                   "https://aihub.qualcomm.com/compute/models/yolov8_det and place into "
-                   "<Project_Dir>\\assets\\models\\";
+        err_msg << "Please download the float/onnx variant of "
+                   "https://aihub.qualcomm.com/compute/models/yolox and rename and place it at "
+                   "<Project_Dir>\\assets\\models\\detection.onnx";
         throw std::runtime_error(err_msg.str());
     }
     std::wstring model_path_wstr = std::wstring(m_model_path.begin(), m_model_path.end());
@@ -203,7 +203,7 @@ void ObjectDetectionApp::ProcessOutput(const std::string& input_image_path,
 
     auto output_coords = m_outputs[0].GetTensorData<float>();
     auto output_prob = m_outputs[1].GetTensorData<float>();
-    auto output_class = m_outputs[2].GetTensorData<float>();
+    auto output_class = m_outputs[2].GetTensorData<uint8_t>();
 
     std::vector<Utils::BoxCornerEncoding> box_list;
     for (int i = 0; i < 8400; i++)

@@ -36,6 +36,7 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Llama-v3.1-8B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama-v3.2-3B-Instruct | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
 | Llama-v3.2-3B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-SEA-LION-v3.5-8B-R | 2.28.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Baichuan2-7B | 2.27.7 |  Snapdragon® 8 Elite |
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
@@ -235,6 +236,7 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Llama-v2-7B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf/blob/main/tokenizer.json) | |
 | Llama-v3-8B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Meta-Llama-3-8B/blob/main/tokenizer.json) | |
 | Llama-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/tokenizer.json) | |
+| Llama-SEA-LION-v3.5-8B-R | [tokenizer.json](https://huggingface.co/aisingapore/Llama-SEA-LION-v3.5-8B-R/blob/main/tokenizer.json) | |
 | Llama-v3.2-3B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/blob/main/tokenizer.json) | |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | [tokenizer.json](https://huggingface.co/taide/Llama3-TAIDE-LX-8B-Chat-Alpha1/blob/main/tokenizer.json) | |
 | Baichuan2-7B | [tokenizer.json](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/baichuan2_7b_quantized/v2/tokenizer.json) | |
@@ -328,6 +330,8 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 | Llama-v2-7B-Chat | &lt;s&gt;[INST] &lt;&lt;SYS&gt;&gt;You are a helpful AI Assistant.&lt;&lt;/SYS&gt;&gt;[/INST]&lt;/s>&lt;s&gt;[INST]What is France's capital?[/INST] |
 | Llama-v3-8B-Instruct <br> Llama-v3.1-8B-Instruct <br> Llama-v3.2-3B-Instruct | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nWhat is France's capital?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\n你是一個來自台灣的AI助理，你的名字是 TAIDE，樂於以台灣人的立場幫助使用者，會用繁體中文回答問題<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\n介紹台灣特色<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
+| Llama-SEA-LION-v3.5-8B-R (non-thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking off<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\n\n&lt;/think&gt;>\n\n |
+| Llama-SEA-LION-v3.5-8B-R (thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking on<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\nHere is my thinking:\n |
 | Qwen2-7B-Instruct | <&#124;im_start&#124;>system\nYou are a helpful AI Assistant<&#124;im_end&#124;><&#124;im_start&#124;>What is France's capital?\n<&#124;im_end&#124;>\n<&#124;im_start&#124;>assistant\n |
 | Phi-3.5-Mini-Instruct | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n |
 | Mistral-7B-Instruct-v0.3 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST] |

@@ -56,19 +56,16 @@ The below is a non-exhaustive list of [AI Hub Models](https://aihub.qualcomm.com
 
 **Not every model has been individually tested with this app**. Please file an issue or reach out on [Slack](https://join.slack.com/t/qualcomm-ai-hub/shared_invite/zt-2j76uzoye-Xya17vQESuxrWTKEwK2uMQ) if you find a model in this list with app compatibility issues.
 
+Please download the TFLite asset. Variants `float` and `w8a8` are both supported by the app.
+
 - [ESRGAN](https://aihub.qualcomm.com/mobile/models/esrgan)
 - [QuickSRNetLarge](https://aihub.qualcomm.com/mobile/models/quicksrnetlarge)
-- [QuickSRNetLarge-Quantized](https://aihub.qualcomm.com/mobile/models/quicksrnetlarge_quantized)
 - [QuickSRNetMedium](https://aihub.qualcomm.com/mobile/models/quicksrnetmedium)
-- [QuickSRNetMedium-Quantized](https://aihub.qualcomm.com/mobile/models/quicksrnetmedium_quantized)
 - [QuickSRNetSmall](https://aihub.qualcomm.com/mobile/models/quicksrnetsmall)
-- [QuickSRNetSmall-Quantized](https://aihub.qualcomm.com/mobile/models/quicksrnetsmall_quantized)
 - [Real-ESRGAN-General-x4v3](https://aihub.qualcomm.com/mobile/models/real_esrgan_general_x4v3)
 - [Real-ESRGAN-x4plus](https://aihub.qualcomm.com/mobile/models/real_esrgan_x4plus)
 - [SESR-M5](https://aihub.qualcomm.com/mobile/models/sesr_m5)
-- [SESR-M5-Quantized](https://aihub.qualcomm.com/mobile/models/sesr_m5_quantized)
 - [XLSR](https://aihub.qualcomm.com/mobile/models/xlsr)
-- [XLSR-Quantized](https://aihub.qualcomm.com/mobile/models/xlsr_quantized)
 
 A good model to start with is QuickSRNetSmall-Quantized, which strikes a good
 balance between speed and numerical performance.
