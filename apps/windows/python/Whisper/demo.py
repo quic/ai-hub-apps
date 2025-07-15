@@ -41,13 +41,13 @@ def main():
     parser.add_argument(
         "--encoder-path",
         type=str,
-        default="build\\whisper_base_en\\WhisperEncoderInf.onnx",
+        default="build\\whisper_base_en\\WhisperEncoderInf\\model.onnx",
         help="Encoder model path",
     )
     parser.add_argument(
         "--decoder-path",
         type=str,
-        default="build\\whisper_base_en\\WhisperDecoderInf.onnx",
+        default="build\\whisper_base_en\\WhisperDecoderInf\\model.onnx",
         help="Decoder model path",
     )
     args = parser.parse_args()

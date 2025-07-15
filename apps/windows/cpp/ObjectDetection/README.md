@@ -1,6 +1,6 @@
 # Object Detection CLI application
 
-Object Detection application for Windows on Snapdragon® with [Yolo-v8](https://aihub.qualcomm.com/compute/models/yolov8_det) using ONNX runtime.
+Object Detection application for Windows on Snapdragon® with [YOLO-X](https://aihub.qualcomm.com/compute/models/yolox) using ONNX runtime.
 
 The app demonstrates how to use the [QNN execution provider](https://onnxruntime.ai/docs/execution-providers/QNN-ExecutionProvider.html) to accelerate the model using the Snapdragon® Neural Processing Unit (NPU).
 

@@ -40,6 +40,7 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Baichuan2-7B | 2.27.7 |  Snapdragon® 8 Elite |
 | Qwen2-7B-Instruct | 2.27.7 |  Snapdragon® 8 Elite |
+| Qwen2.5-7B-Instruct | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
 | Phi-3.5-Mini-Instruct | 2.29.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® 8 Gen 3 |
 | IBM-Granite-v3.1-8B-Instruct | 2.30.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
@@ -241,6 +242,7 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | [tokenizer.json](https://huggingface.co/taide/Llama3-TAIDE-LX-8B-Chat-Alpha1/blob/main/tokenizer.json) | |
 | Baichuan2-7B | [tokenizer.json](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/baichuan2_7b_quantized/v2/tokenizer.json) | |
 | Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
+| Qwen2.5-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/tokenizer.json) | |
 | Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
 | Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
 | IBM-Granite-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/ibm-granite/granite-3.1-8b-base/blob/main/tokenizer.json) | |
@@ -332,7 +334,7 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\n你是一個來自台灣的AI助理，你的名字是 TAIDE，樂於以台灣人的立場幫助使用者，會用繁體中文回答問題<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\n介紹台灣特色<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
 | Llama-SEA-LION-v3.5-8B-R (non-thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking off<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\n\n&lt;/think&gt;>\n\n |
 | Llama-SEA-LION-v3.5-8B-R (thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking on<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\nHere is my thinking:\n |
-| Qwen2-7B-Instruct | <&#124;im_start&#124;>system\nYou are a helpful AI Assistant<&#124;im_end&#124;><&#124;im_start&#124;>What is France's capital?\n<&#124;im_end&#124;>\n<&#124;im_start&#124;>assistant\n |
+| Qwen2-7B-Instruct <br> Qwen2.5-7B-Instruct | <&#124;im_start&#124;>system\nYou are a helpful AI Assistant<&#124;im_end&#124;><&#124;im_start&#124;>What is France's capital?\n<&#124;im_end&#124;>\n<&#124;im_start&#124;>assistant\n |
 | Phi-3.5-Mini-Instruct | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n |
 | Mistral-7B-Instruct-v0.3 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST] |
 | IBM-Granite-v3.1-8B-Instruct | <&#124;start_of_role&#124;>system<&#124;end_of_role&#124;>You are a helpful AI assistant.<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>user<&#124;end_of_role&#124;>What is France's capital?<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>assistant<&#124;end_of_role&#124;>\n |

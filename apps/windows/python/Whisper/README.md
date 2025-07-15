@@ -43,6 +43,11 @@ In your currently active python environment, the above script will install:
 
 ```powershell
 python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx --device "Snapdragon X Elite CRD" --skip-profiling --skip-inferencing
+# WARNING: Do not rename `model.data` files. This will break the demo.
+Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
+mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperEncoderInf
+Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
+mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperDecoderInf
 ```
 
 8. Get microphone device number:
