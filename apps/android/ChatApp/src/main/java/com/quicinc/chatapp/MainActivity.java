@@ -120,13 +120,13 @@ public class MainActivity extends AppCompatActivity {
             Path htpExtConfigPath = Paths.get(externalDir, "htp_config", supportedSocModel.get(socModel));
 
             setContentView(R.layout.activity_main);
-            Button llama32 = (Button) findViewById(R.id.llama_3_2);
-            llama32.setOnClickListener(new View.OnClickListener() {
+            Button llm = (Button) findViewById(R.id.llm);
+            llm.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(MainActivity.this, Conversation.class);
                     intent.putExtra(Conversation.cConversationActivityKeyHtpConfig, htpExtConfigPath.toString());
-                    intent.putExtra(Conversation.cConversationActivityKeyModelName, "llama3_2_3b");
+                    intent.putExtra(Conversation.cConversationActivityKeyModelName, "llm");
                     startActivity(intent);
                 }
             });

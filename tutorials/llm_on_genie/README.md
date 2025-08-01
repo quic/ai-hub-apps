@@ -44,6 +44,7 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
 | Phi-3.5-Mini-Instruct | 2.29.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® 8 Gen 3 |
 | IBM-Granite-v3.1-8B-Instruct | 2.30.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
+| Llama-v3.2-1B-Instruct | 2.36.3 | Snapdragon® 8 Elite |
 
 Device requirements:
 
@@ -199,15 +200,15 @@ instructions of how to increase your swap space.
 #### For Android on Snapdragon® 8 Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_instruct.export --device "Snapdragon 8 Elite QRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-8-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
-For Snapdragon 8 Gen 3, please use `--device "Snapdragon 8 Gen 3 QRD"`.
+For Snapdragon 8 Gen 3, please use `--chipset qualcomm-snapdragon-8gen3`.
 
 #### For Windows on Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_instruct.export --device "Snapdragon X Elite CRD" --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-x-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
 ```
 
 Note: For older devices, you may need to adjust the context length using
@@ -239,6 +240,7 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Llama-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/tokenizer.json) | |
 | Llama-SEA-LION-v3.5-8B-R | [tokenizer.json](https://huggingface.co/aisingapore/Llama-SEA-LION-v3.5-8B-R/blob/main/tokenizer.json) | |
 | Llama-v3.2-3B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/blob/main/tokenizer.json) | |
+| Llama-v3.2-1B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/blob/main/tokenizer.json) | |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | [tokenizer.json](https://huggingface.co/taide/Llama3-TAIDE-LX-8B-Chat-Alpha1/blob/main/tokenizer.json) | |
 | Baichuan2-7B | [tokenizer.json](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/baichuan2_7b_quantized/v2/tokenizer.json) | |
 | Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
@@ -289,7 +291,7 @@ cp ai-hub-apps/tutorials/llm_on_genie/configs/htp/htp_backend_ext_config.json.te
 ```
 
 Edit `soc_model` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
-depending on your target device (should be consistent with the `--device` you
+depending on your target device (should be consistent with the `--chipset` you
 specified in the export command):
 
 | Generation               | `soc_model` | `dsp_arch` |
@@ -330,7 +332,7 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 | Model name | Sample Prompt |
 | --- | --- |
 | Llama-v2-7B-Chat | &lt;s&gt;[INST] &lt;&lt;SYS&gt;&gt;You are a helpful AI Assistant.&lt;&lt;/SYS&gt;&gt;[/INST]&lt;/s>&lt;s&gt;[INST]What is France's capital?[/INST] |
-| Llama-v3-8B-Instruct <br> Llama-v3.1-8B-Instruct <br> Llama-v3.2-3B-Instruct | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nWhat is France's capital?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
+| Llama-v3-8B-Instruct <br> Llama-v3.1-8B-Instruct <br> Llama-v3.2-3B-Instruct <br> Llama-v3.2-1B-Instruct | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nWhat is France's capital?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
 | Llama3-TAIDE-LX-8B-Chat-Alpha1 | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\n你是一個來自台灣的AI助理，你的名字是 TAIDE，樂於以台灣人的立場幫助使用者，會用繁體中文回答問題<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\n介紹台灣特色<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;> |
 | Llama-SEA-LION-v3.5-8B-R (non-thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking off<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\n\n&lt;/think&gt;>\n\n |
 | Llama-SEA-LION-v3.5-8B-R (thinking mode) | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\ndetailed thinking on<&#124;eot_id&#124;><&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\nThủ đô của Việt Nam là thành phố nào?<&#124;eot_id&#124;><&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n\n&lt;think&gt;\nHere is my thinking:\n |

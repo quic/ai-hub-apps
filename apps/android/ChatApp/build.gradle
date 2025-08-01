@@ -11,7 +11,7 @@ plugins {
 def qnnSDKLocalPath= ""   // <-- Please add QNN SDK root path
 
 // List of model assets
-def models = ["llama3_2_3b"]
+def models = ["llm"]
 // Relative asset path for model configuration and binaries
 def relAssetsPath = "src/main/assets/models"
 def buildDir = project(":ChatApp").getLayout().getBuildDirectory()

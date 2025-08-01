@@ -2,7 +2,7 @@
 
 # Sample Chat App
 
-Chat application for Android on Snapdragon® with [Llama 3.2 3B](https://aihub.qualcomm.com/compute/models/llama_v3_2_3b_instruct) using Genie SDK.
+Chat application for Android on Snapdragon® with LLMs from [Qualcomm® AI Hub Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models) using Genie SDK.
 
 The app demonstrates how to use the Genie C++ APIs from [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) to run and accelerate LLMs using the Snapdragon® Neural Processing Unit (NPU).
 
@@ -44,12 +44,14 @@ https://github.com/user-attachments/assets/7b23c632-cc4e-48ed-b1df-ea98ec0f51b7
 
 1. Clone this repository **with [Git-LFS](https://git-lfs.com) enabled.**
 2. Download [Android Studio](https://developer.android.com/studio). **Version 2024.3.1 or newer** is required.
-3. Install AI Hub and AI Hub models
+3. Install AI Hub and AI Hub models.
 
     ```bash
     pip install qai-hub
     pip install "qai-hub-models[llama-v3-2-3b-instruct]"
     ```
+
+    - This Android ChatApp works with Llama 3.2 3B out of the box. It also works with other LLMs in AI Hub Models. Go to the README of the LLM of your choice in [Qualcomm® AI Hub Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models) to learn how to install it.
 
 4. Download and extract QAIRT SDK compatible with sample app:
 
@@ -74,48 +76,86 @@ Follow these steps to configure QAIRT SDKs for ChatApp:
 
 ## Build App
 
-We will use Llama 3.2 3B with context length 2048 as an example for this demo.
-
 1. Go to ChatApp directory
 
 ```bash
 cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
 ```
 
-1. Export Llama 3.2 3B model with context length 2048 (if you change this, please update the `"size"` option in the `apps/android/ChatApp/src/main/assets/models/llama3_2_3b/genie_config.json` file)
+2. Get QNN context binaries for the LLM of your choice from Qualcomm AI Hub. There are two ways to get these assets:
+
+    - Run export script to get context binaries for Llama variants. We will export these models with context length 4096 by default. You can add the argument --context-length with your desired context length value while exporting the model for modifying (recommended to use lower or equal to 4096). Make sure the size option in the genie config matches your model's context length.
+
+    - Download directly from our website. Make sure to select the correct device when downloading the context binaries.
 
     - Read more about [exporting LLMs via AI Hub here](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#1-generate-genie-compatible-qnn-binaries-from-ai-hub)
-        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_instruct` and reduce context length for this demo.
+        - You'll have to replace model name from the above tutorial with `llama_v3_2_3b_instruct` or the model id of your choice and reduce context length for this demo when exporting.
 
-    - Export Llama 3.2 3B model with context length 2048
+    - The following command exports Llama 3.2 3B model with context length 4096:
 
     ```bash
-    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --context-length 2048 --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle --skip-profiling --skip-inferencing
+    python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --device "Snapdragon 8 Elite QRD" --output-dir genie_bundle --skip-profiling --skip-inferencing
     ```
 
-    - Exporting Llama3.2 models will take a while depending on your internet connectivity.
+    - Exporting Llama 3.2 models will take a while depending on your internet connectivity.
     - This takes around 1-2 hours with good internet connectivity.
 
-2. Download and save `tokenizer.json` from [Huggingface Llama3.2](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) to `src/main/assets/models/llama3_2_3b/`
+3. Navigate to `src/main/assets/models/llm` and use this directory to store the assets.
 
-3. Copy model binaries (`genie_bundle/*.bin`) from step 1 to `src/main/assets/models/llama3_2_3b/`
+    - Download and save `tokenizer.json` from the [LLM On-Device Deployment](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#genie-config) tutorial to `src/main/assets/models/llm/`.
+
+    -  If you would like, you may also go to the [HuggingFace](https://huggingface.co/) repository of your desired model and save `tokenizer.json` from there.
+
+4. Copy model binaries (`genie_bundle/*.bin`) from step 1 to `src/main/assets/models/llm/`
 
     ```bash
-    cp genie_bundle/*.bin src/main/assets/models/llama3_2_3b/
+    cp genie_bundle/*.bin src/main/assets/models/llm/
     ```
 
-4. Note that you do not need to set up the `genie_config.json` and the HTP
-   config. These files are already set up for you. In the `genie_config.json`, you will find
-   placeholders like `<models_path>`. These will be resolved by the app and are
-   important so that the Android app can locate your files on device.
+5. If your model is not Llama 3.2 3B, you do not need to modify the HTP config, but the `genie_config.json` will need to be updated to support the model of your choice. Use the Prepare Genie Configs section of the [LLM On-Device Deployment tutorial](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#prepare-genie-configs) to access the correct `genie_config.json`.
 
-5. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
+    - Replace the tokenizer path with a placeholder. It may look like this:
+
+        ```code
+        "path": "<tokenizer_path>"
+        ```
+
+    - Replace the HTP config path with a placeholder. It may look like this:
+
+        ```code
+        "extensions": "<htp_backend_ext_path>"
+        ```
+
+    - Replace the context binary paths with placeholders. It may look like this but will differ depending on the model and number of binaries generated:
+
+        ```code
+        "ctx-bins": [
+                "<models_path>/weight_sharing_model_1_of_4.serialized.bin",
+                "<models_path>/weight_sharing_model_2_of_4.serialized.bin",
+                "<models_path>/weight_sharing_model_3_of_4.serialized.bin",
+                "<models_path>/weight_sharing_model_4_of_4.serialized.bin"
+            ]
+        ```
+
+    - These placeholders will be resolved by the app and are important so that the Android app can locate your files on device.
+
+    - If your model is Llama 3.2 3B, you do not need to set up the `genie_config.json` and the HTP config. These files are already set up for you.
+
+6. Update the text in `apps/android/ChatApp/src/main/res/values/strings.xml` to display the model you would like to chat with in the application. If you are using Llama 3.2 3B, it may look like this:
+
+    ```code
+    <string name="chat_with_llm">Chat with Llama 3.2 3B</string>
+    ```
+
+    - If you are using a model that is not one of the Llama 3 models, you will have to update the prompt format in `PromptHandler.cpp` first. Check out the Prompt Formats section in the [LLM On-Device Deployment tutorial](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#prompt-formats) to learn more.
+
+7. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
 
     ```code
     def qnnSDKLocalPath="/opt/qcom/aistack/qairt/2.28.2.241116"
     ```
 
-6. Build APK
+8. Build APK
     - Open **the PARENT folder (`android`) (NOT THIS FOLDER)** in Android Studio
     - Run gradle sync
     - Build the `ChatApp` target
@@ -127,8 +167,7 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
     # here {build_type} can be either `release` or `debug`
     ```
 
-
-7. Run on Android device
+9. Run on Android device
 
     We recommend using [QDC](https://qdc.qualcomm.com/) to run this app.
 

@@ -19,11 +19,11 @@
         android:layout_centerVertical="true">
 
     <Button
-        android:id="@+id/llama_3_2"
+        android:id="@+id/llm"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:textSize="16sp"
-        android:text="@string/chat_with_llama_3_2_3b"
+        android:text="@string/chat_with_llm"
         android:gravity="center"
         android:layout_gravity="center" />
     </LinearLayout>
