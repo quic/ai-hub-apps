@@ -46,7 +46,7 @@ python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx --d
 # WARNING: Do not rename `model.data` files. This will break the demo.
 Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
 mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperEncoderInf
-Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
+Expand-Archive -Path .\build\whisper_base_en\WhisperDecoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
 mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperDecoderInf
 ```
 
