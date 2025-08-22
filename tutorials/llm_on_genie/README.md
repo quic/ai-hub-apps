@@ -186,7 +186,8 @@ The export command below may take 4-6 hours. It takes an additional 1-2 hours
 on PyTorch versions earlier than 2.4.0. We recommend upgrading PyTorch first:
 
 ```bash
-pip install torch==2.4.0
+pip install torch==2.2.2
+pip install torchvision==0.17.2
 ```
 
 This version is not yet supported in general by AI Hub Models but will work
