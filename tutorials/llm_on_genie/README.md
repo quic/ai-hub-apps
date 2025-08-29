@@ -180,17 +180,9 @@ Make a directory to put in all deployable assets. For this example we use
 mkdir -p genie_bundle
 ```
 
-#### [Optional] Upgrade PyTorch
+#### Exporting Llama models takes time and resources.
 
-The export command below may take 4-6 hours. It takes an additional 1-2 hours
-on PyTorch versions earlier than 2.4.0. We recommend upgrading PyTorch first:
-
-```bash
-pip install torch==2.4.0
-```
-
-This version is not yet supported in general by AI Hub Models but will work
-for the below export command.
+The export command below may take 4-6 hours.
 
 Note that the export also requires a lot of memory (RAM + swap) on the host
 device (for Llama 3, we recommend 80 GB). If we detect that you have less
@@ -422,6 +414,9 @@ Init Time: 6549034 us
 Prompt Processing Time: 196067 us, Prompt Processing Rate : 86.707710 toks/sec
 Token Generation Time: 740568 us, Token Generation Rate: 12.152884 toks/sec
 ```
+
+Note: QAIRT 2.35 and above does not show KPIs at the end of the response. You can pass `--profile /path/to/txt/file` to store KPIs in that file to look at it later.
+
 
 ### 2. Sample C++ Chat App Powered by Genie SDK
 

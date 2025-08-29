@@ -6,8 +6,11 @@ import argparse
 from datetime import datetime
 
 import sounddevice as sd
-from qai_hub_models.models._shared.whisper.app import WhisperApp
-from qai_hub_models.utils.onnx_torch_wrapper import OnnxModelTorchWrapper
+from qai_hub_models.models._shared.hf_whisper.app import HfWhisperApp
+from qai_hub_models.utils.onnx_torch_wrapper import (
+    OnnxModelTorchWrapper,
+    OnnxSessionOptions,
+)
 
 
 def main():
@@ -41,14 +44,21 @@ def main():
     parser.add_argument(
         "--encoder-path",
         type=str,
-        default="build\\whisper_base_en\\WhisperEncoderInf\\model.onnx",
+        default="build\\whisper_base\\HfWhisperEncoder\\model.onnx",
         help="Encoder model path",
     )
     parser.add_argument(
         "--decoder-path",
         type=str,
-        default="build\\whisper_base_en\\WhisperDecoderInf\\model.onnx",
+        default="build\\whisper_base\\HfWhisperDecoder\\model.onnx",
         help="Decoder model path",
+    )
+    parser.add_argument(
+        "--model-size",
+        type=str,
+        default="base",
+        choices=["tiny", "base", "small", "medium", "large", "large-v3-turbo"],
+        help="Size of the model being run, corresponding to a specific model checkpoint on huggingface.",
     )
     args = parser.parse_args()
 
@@ -56,14 +66,16 @@ def main():
         print(sd.query_devices())
         return
 
+    # Disable compile caching becuase Stable Diffusion is Pre-Compiled
+    # This is needed due to a bug in onnxruntime 1.22, and can be removed after the next ORT release.
+    options = OnnxSessionOptions.aihub_defaults()
+    options.context_enable = False
+
     print("Loading model...")
-    app = WhisperApp(
+    app = HfWhisperApp(
         OnnxModelTorchWrapper.OnNPU(args.encoder_path),
         OnnxModelTorchWrapper.OnNPU(args.decoder_path),
-        num_decoder_blocks=6,
-        num_decoder_heads=8,
-        attention_dim=512,
-        mean_decode_len=224,
+        f"openai/whisper-{args.model_size}",
     )
 
     if args.stream_audio_device:

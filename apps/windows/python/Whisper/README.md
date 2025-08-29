@@ -29,10 +29,18 @@ The above script will install:
 ..\activate_venv.ps1 -name AI_Hub
 ```
 
+If you get an error about accepting conda terms of service, run the following:
+
+```powershell
+conda tos accept --override-channels -c pkgs/main
+conda tos accept --override-channels -c pkgs/r
+conda tos accept --override-channels -c pkgs/msys2
+```
+
 6. Install python packages:
 
 ```powershell
-..\install_python_deps.ps1 -model whisper-base-en
+..\install_python_deps.ps1 -model whisper-base
 ```
 
 In your currently active python environment, the above script will install:
@@ -42,12 +50,12 @@ In your currently active python environment, the above script will install:
 7. Export model:
 
 ```powershell
-python -m qai_hub_models.models.whisper_base_en.export --target-runtime onnx --device "Snapdragon X Elite CRD" --skip-profiling --skip-inferencing
-# WARNING: Do not rename `model.data` files. This will break the demo.
-Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
-mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperEncoderInf
-Expand-Archive -Path .\build\whisper_base_en\WhisperEncoderInf.onnx.zip -DestinationPath .\build\whisper_base_en\
-mv .\build\whisper_base_en\model.onnx .\build\whisper_base_en\WhisperDecoderInf
+python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD" --skip-profiling --skip-inferencing
+# WARNING: Do not rename `model.bin` files. This will break the demo.
+Expand-Archive -Path .\build\whisper_base\HfWhisperEncoder.onnx.zip -DestinationPath .\build\whisper_base\
+mv .\build\whisper_base\model.onnx .\build\whisper_base\HfWhisperEncoder
+Expand-Archive -Path .\build\whisper_base\HfWhisperDecoder.onnx.zip -DestinationPath .\build\whisper_base\
+mv .\build\whisper_base\model.onnx .\build\whisper_base\HfWhisperDecoder
 ```
 
 8. Get microphone device number:
@@ -60,4 +68,10 @@ python demo.py --list-audio-devices
 
 ```powershell
 python demo.py --stream-audio-device <device_number>
+```
+
+or run with a [sample audio file](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/hf_whisper_asr_shared/v1/audio/fox.wav).
+
+```powershell
+python demo.py --audio-file fox.wav
 ```
