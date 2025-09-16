@@ -50,7 +50,7 @@ In your currently active python environment, the above script will install:
 7. Export model:
 
 ```powershell
-python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD" --skip-profiling --skip-inferencing
+python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD"  --fetch-static-assets
 # WARNING: Do not rename `model.bin` files. This will break the demo.
 Expand-Archive -Path .\build\whisper_base\HfWhisperEncoder.onnx.zip -DestinationPath .\build\whisper_base\
 mv .\build\whisper_base\model.onnx .\build\whisper_base\HfWhisperEncoder

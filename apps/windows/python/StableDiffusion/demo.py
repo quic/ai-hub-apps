@@ -46,19 +46,19 @@ def main():
     parser.add_argument(
         "--text-encoder",
         type=str,
-        default="models\\text_encoder.onnx\\model.onnx",
+        default="build\\stable_diffusion_v2_1\\precompiled\\qualcomm-snapdragon-x-elite\\text_encoder.onnx\\model.onnx",
         help="Text Encoder ONNX model path",
     )
     parser.add_argument(
         "--unet",
         type=str,
-        default="models\\unet.onnx\\model.onnx",
+        default="build\\stable_diffusion_v2_1\\precompiled\\qualcomm-snapdragon-x-elite\\unet.onnx\\model.onnx",
         help="UNET ONNX model path",
     )
     parser.add_argument(
         "--vae-decoder",
         type=str,
-        default="models\\vae_decoder.onnx\\model.onnx",
+        default="build\\stable_diffusion_v2_1\\precompiled\\qualcomm-snapdragon-x-elite\\vae_decoder.onnx\\model.onnx",
         help="VAE Decoder ONNX model path",
     )
     add_output_dir_arg(parser)

@@ -34,6 +34,7 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Llama-v3-8B-Instruct | 2.27.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama-v3.1-8B-Instruct | 2.27.7 | Snapdragon® 8 Elite |
 | Llama-v3.1-8B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
+| Llama-v3.2-1B-Instruct | 2.36.3 | Snapdragon® 8 Elite |
 | Llama-v3.2-3B-Instruct | 2.27.7 | Snapdragon® 8 Elite<br>Snapdragon® 8 Gen 3 (Context length 2048) |
 | Llama-v3.2-3B-Instruct | 2.28.0 | Snapdragon® X Elite<br>Snapdragon® X Plus |
 | Llama-SEA-LION-v3.5-8B-R | 2.28.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® X Plus |
@@ -44,7 +45,7 @@ If you have any questions, please feel free to post on [AI Hub Slack channel](ht
 | Mistral-7B-Instruct-v0.3 | 2.27.7 |  Snapdragon® 8 Elite |
 | Phi-3.5-Mini-Instruct | 2.29.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite<br>Snapdragon® 8 Gen 3 |
 | IBM-Granite-v3.1-8B-Instruct | 2.30.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
-| Llama-v3.2-1B-Instruct | 2.36.3 | Snapdragon® 8 Elite |
+| Falcon3-7B-Instruct | 2.37.0 | Snapdragon® 8 Elite<br>Snapdragon® X Elite |
 
 Device requirements:
 
@@ -240,6 +241,7 @@ and should be downloaded to the `genie_bundle` directory. The tokenizers are onl
 | Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
 | Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
 | IBM-Granite-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/ibm-granite/granite-3.1-8b-base/blob/main/tokenizer.json) | |
+| Falcon3-7B-Instruct | [tokenizer.json](https://huggingface.co/tiiuae/Falcon3-7B-Instruct/blob/main/tokenizer.json) | |
 
 ### [Optional] Use the Windows PowerShell LLM Runner
 
@@ -332,6 +334,19 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 | Phi-3.5-Mini-Instruct | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n |
 | Mistral-7B-Instruct-v0.3 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST] |
 | IBM-Granite-v3.1-8B-Instruct | <&#124;start_of_role&#124;>system<&#124;end_of_role&#124;>You are a helpful AI assistant.<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>user<&#124;end_of_role&#124;>What is France's capital?<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>assistant<&#124;end_of_role&#124;>\n |
+| Falcon3-7B-Instruct | <&#124;system&#124;>\nYou are a helpful friendly assistant Falcon3 from TII, try to follow instructions as much as possible.\n<&#124;user&#124;>\nWhat is France's capital?\n<&#124;assistant&#124;>\n |
+
+> [!IMPORTANT]
+> Many system prompts contain the line feed character (`\n`, ascii 0x0a) as
+> part of the correct prompt format. We have to pay extra attention to how
+> we pass this into the LLM so that it is not passed in as `\` and `n` as two
+> separate characters. This is platform specific, so more on this in the
+> sections below.
+>
+> On all platforms, we do recommend copy-pasting the prompts into a separate
+> file (e.g., `prompt.txt`) and passing that prompt into `genie-t2t-run` with
+> `--promt_file prompt.txt`. If you take this approach, please make sure
+> you replace the `\n` characters with real newlines.
 
 ### 1. Run Genie On-Device via `genie-t2t-run`
 
@@ -349,10 +364,13 @@ cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
 In Powershell, navigate to the bundle directory and run
 
 ```bash
-./genie-t2t-run.exe -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWhat is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+./genie-t2t-run.exe -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>`n`nWhat is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 ```
 
 Note that this prompt format is specific to Llama 3.
+
+Also note that we changed `\n` to `` `n ``, since that is how to pass a proper
+line feed character in Windows Powershell.
 
 #### Genie on Android
 
@@ -394,8 +412,13 @@ export ADSP_LIBRARY_PATH=$PWD
 Then run:
 
 ```bash
-./genie-t2t-run -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n\nWhat is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+./genie-t2t-run -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>"$'\n\n'$"What is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
 ```
+
+Note that in order to pass real line feed characters into Genie, we have to
+replace the `"\n\n"` with `$'\n\n'$`. This is a Bash convention and may not
+apply to other shells. We generally recommend using a prompt file instead where
+you can use real newlines.
 
 #### Sample Output
 

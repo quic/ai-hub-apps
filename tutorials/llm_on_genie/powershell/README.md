@@ -37,5 +37,5 @@ If you want to change this only for a single PowerShell session, execute:
 
 ```powershell
 chcp 65001
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8]
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 ```
