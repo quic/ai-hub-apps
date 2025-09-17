@@ -3,7 +3,7 @@ param (
     [string]$extra_reqs_file = ""
 )
 
-python -m pip install "qai_hub_models[$model]==0.36"
+python -m pip install "qai_hub_models[$model]==0.37.1"
 # Onnxruntime and onnxruntime-qnn conflict because they install the same binaries.
 # Uninstall both to avoid conflicts. Then reinstall qnn to make sure we have the right binaries.
 python -m pip uninstall --yes onnxruntime onnxruntime-qnn

@@ -41,7 +41,7 @@ In your currently active python environment, the above script will install:
 7. Export model:
 
 ```powershell
-python -m qai_hub_models.models.stable_diffusion_v2_1.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD" --fetch-static-assets
+python -m qai_hub_models.models.stable_diffusion_v2_1.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD" --fetch-static-assets v0.36.0
 # WARNING: Do not rename `model.bin` files. This will break the demo.
 Expand-Archive -Path .\build\stable_diffusion_v2_1\precompiled\qualcomm-snapdragon-x-elite\Stable-Diffusion-v2.1_text_encoder_w8a16.onnx.zip -DestinationPath .\build\stable_diffusion_v2_1\precompiled\qualcomm-snapdragon-x-elite
 mv .\build\stable_diffusion_v2_1\precompiled\qualcomm-snapdragon-x-elite\model.onnx .\build\stable_diffusion_v2_1\precompiled\qualcomm-snapdragon-x-elite\text_encoder.onnx
