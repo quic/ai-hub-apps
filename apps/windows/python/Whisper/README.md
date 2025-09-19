@@ -52,10 +52,10 @@ In your currently active python environment, the above script will install:
 ```powershell
 python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD"  --fetch-static-assets v0.36.0
 # WARNING: Do not rename `model.bin` files. This will break the demo.
-Expand-Archive -Path .\build\whisper_base\HfWhisperEncoder.onnx.zip -DestinationPath .\build\whisper_base\
-mv .\build\whisper_base\model.onnx .\build\whisper_base\HfWhisperEncoder
-Expand-Archive -Path .\build\whisper_base\HfWhisperDecoder.onnx.zip -DestinationPath .\build\whisper_base\
-mv .\build\whisper_base\model.onnx .\build\whisper_base\HfWhisperDecoder
+Expand-Archive -Path .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperEncoder_float.onnx.zip -DestinationPath .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\
+mv .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\model.onnx .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\HfWhisperEncoder
+Expand-Archive -Path .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperDecoder_float.onnx.zip -DestinationPath .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\
+mv .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\model.onnx .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\HfWhisperDecoder
 ```
 
 8. Get microphone device number:

@@ -44,13 +44,13 @@ def main():
     parser.add_argument(
         "--encoder-path",
         type=str,
-        default="build\\whisper_base\\HfWhisperEncoder\\model.onnx",
+        default="build\\whisper_base\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperEncoder\\model.onnx",
         help="Encoder model path",
     )
     parser.add_argument(
         "--decoder-path",
         type=str,
-        default="build\\whisper_base\\HfWhisperDecoder\\model.onnx",
+        default="build\\whisper_base\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperDecoder\\model.onnx",
         help="Decoder model path",
     )
     parser.add_argument(
