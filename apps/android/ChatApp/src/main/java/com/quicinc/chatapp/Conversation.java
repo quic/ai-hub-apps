@@ -91,13 +91,15 @@ public class Conversation extends AppCompatActivity {
                         service.execute(new Runnable() {
                             @Override
                             public void run() {
+                                final long startTime = System.currentTimeMillis();
+                                
                                 genieWrapper.getResponseForPrompt(userInputMsg, new StringCallback() {
                                     @Override
                                     public void onNewString(String response) {
                                         runOnUiThread(() -> {
                                             // Update the last item in the adapter
-                                            adapter.updateBotMessage(response);
-                                            adapter.notifyItemChanged(botResponseMsgIndex);
+                                            adapter.updateBotMessage(response, startTime);                        
+                                            adapter.notifyItemChanged(messages.size() - 1);
                                         });
                                     }
                                 });
