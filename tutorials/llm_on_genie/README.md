@@ -161,8 +161,13 @@ Set up Hugging Face token locally by following the instructions [here](https://h
 ### Download or Generate Genie Compatible QNN Binaries
 
 Some of the models can be downloaded directly from [AI
-Hub](https://aihub.qualcomm.com). For Llama, it has to be exported through [AI Hub
-Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
+Hub](https://aihub.qualcomm.com). If you download the model,
+you need to prepare a Genie bundle manually by following [these
+instructions](manual_bundle.md).
+
+For Llama and other recipe-based models, it has to be exported through [AI Hub
+Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models),
+which will help construct the Genie bundle as well.
 
 To generate the Llama assets, we will run a single command that performs the
 following steps:
@@ -175,11 +180,7 @@ license if you haven't already done so.
 3. Download compiled context binaries. Note that there are multiple binaries as
    we have split up the model.
 
-Make a directory to put in all deployable assets. For this example we use
-
-```bash
-mkdir -p genie_bundle
-```
+4. Prepare auxiliary files, such as tokenizer and Genie configurations.
 
 #### Exporting Llama models takes time and resources.
 
@@ -193,7 +194,7 @@ instructions of how to increase your swap space.
 #### For Android on Snapdragon® 8 Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-8-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-8-elite --skip-profiling --output-dir genie_bundle
 ```
 
 For Snapdragon 8 Gen 3, please use `--chipset qualcomm-snapdragon-8gen3`.
@@ -201,115 +202,17 @@ For Snapdragon 8 Gen 3, please use `--chipset qualcomm-snapdragon-8gen3`.
 #### For Windows on Snapdragon® X Elite
 
 ```bash
-python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-x-elite --skip-inferencing --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_8b_instruct.export --chipset qualcomm-snapdragon-x-elite --skip-profiling --output-dir genie_bundle
 ```
 
-Note: For older devices, you may need to adjust the context length using
-`--context-length <context-length>`.
+Note: For more memory-constrained devices, you may need to adjust the context
+length using `--context-length <context-length>`.
 
-The `genie_bundle` would now contain both the intermediate models (`token`,
-`prompt`) and the final context binaries (`*.bin`). Remove the intermediate
-models to have a smaller deployable artifact:
-
-```bash
-# Remove intermediate assets
-rm -rf genie_bundle/{prompt,token}
-```
-
-## Prepare Genie Configs
-
-### Tokenizer
-
-To download the tokenizer, go to the source model's Hugging Face page and go to "Files
-and versions." You can find a Hugging Face link through the model card on
-[AI Hub](https://aihub.qualcomm.com/). This will take you to the Qualcomm Hugging Face page,
-which in turn will have a link to the source Hugging Face page. The file will be named `tokenizer.json`
-and should be downloaded to the `genie_bundle` directory. The tokenizers are only hosted on the source Hugging Face page.
-
-| Model name | Tokenizer | Notes |
-| --- | --- | --- |
-| Llama-v2-7B-Chat | [tokenizer.json](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf/blob/main/tokenizer.json) | |
-| Llama-v3-8B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Meta-Llama-3-8B/blob/main/tokenizer.json) | |
-| Llama-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/tokenizer.json) | |
-| Llama-SEA-LION-v3.5-8B-R | [tokenizer.json](https://huggingface.co/aisingapore/Llama-SEA-LION-v3.5-8B-R/blob/main/tokenizer.json) | |
-| Llama-v3.2-3B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct/blob/main/tokenizer.json) | |
-| Llama-v3.2-1B-Instruct | [tokenizer.json](https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct/blob/main/tokenizer.json) | |
-| Llama3-TAIDE-LX-8B-Chat-Alpha1 | [tokenizer.json](https://huggingface.co/taide/Llama3-TAIDE-LX-8B-Chat-Alpha1/blob/main/tokenizer.json) | |
-| Baichuan2-7B | [tokenizer.json](https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-models/models/baichuan2_7b_quantized/v2/tokenizer.json) | |
-| Qwen2-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2-7B-Instruct/blob/main/tokenizer.json) | |
-| Qwen2.5-7B-Instruct | [tokenizer.json](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct/blob/main/tokenizer.json) | |
-| Phi-3.5-Mini-Instruct | [tokenizer.json](https://huggingface.co/microsoft/Phi-3.5-mini-instruct/blob/main/tokenizer.json) | To see appropriate spaces in the output, remove lines 193-196 (Strip rule) in the tokenizer file. |
-| Mistral-7B-Instruct-v0.3 | [tokenizer.json](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3/blob/main/tokenizer.json) | |
-| IBM-Granite-v3.1-8B-Instruct | [tokenizer.json](https://huggingface.co/ibm-granite/granite-3.1-8b-base/blob/main/tokenizer.json) | |
-| Falcon3-7B-Instruct | [tokenizer.json](https://huggingface.co/tiiuae/Falcon3-7B-Instruct/blob/main/tokenizer.json) | |
-
-### [Optional] Use the Windows PowerShell LLM Runner
-
-**Do not use this script to create your Genie bundle if you are building Windows ChatApp. Continue with the rest of the tutorial instead.**
-
-The easiest path to running an LLM on a Windows on Snapdragon® device is to use the [PowerShell implementation](powershell/)
-of the rest of this tutorial. It will automatically generate the appropriate configuration files and execute `genie-t2t-run.exe`
-on a prompt of your choosing.
-
-### Genie Config
-
-Check out the [AI Hub Apps repository](https://github.com/quic/ai-hub-apps)
-using Git:
-
-```bash
-git clone https://github.com/quic/ai-hub-apps.git
-```
-
-Now run (replacing `llama_v3_8b_instruct` with the desired model id):
-
-```bash
-cp ai-hub-apps/tutorials/llm_on_genie/configs/genie/llama_v3_8b_instruct.json genie_bundle/genie_config.json
-```
-
-For Windows laptops, please set `use-mmap` to `false`.
-
-If you customized context length by adding `--context-length` to the export
-command, please open `genie_config.json` and modify the `"size"` option (under
-`"dialog"` -> `"context"`) to be consistent.
-
-In `genie_bundle/genie_config.json`, also ensure that the list of bin files in
-`ctx-bins` matches with the bin files under `genie_bundle`. Genie will look for
-QNN binaries specified here.
-
-### HTP Backend Config
-
-Copy the HTP config template:
-
-```bash
-cp ai-hub-apps/tutorials/llm_on_genie/configs/htp/htp_backend_ext_config.json.template genie_bundle/htp_backend_ext_config.json
-```
-
-Edit `soc_model` and `dsp_arch` in `genie_bundle/htp_backend_ext_config.json`
-depending on your target device (should be consistent with the `--chipset` you
-specified in the export command):
-
-| Generation               | `soc_model` | `dsp_arch` |
-|--------------------------|--------|----------|
-| Snapdragon® Gen 2        | 43     | v73      |
-| Snapdragon® Gen 3        | 57     | v75      |
-| Snapdragon® 8 Elite      | 69     | v79      |
-| Snapdragon® X Elite      | 60     | v73      |
-| Snapdragon® X Plus       | 60     | v73      |
-
-## Collect & Finalize Genie Bundle
-
-When finished with the above steps, your bundle should look like this:
-```
-genie_bundle/
-   genie_config.json
-   htp_backend_ext_config.json
-   tokenizer.json
-   <model_id>_part_1_of_N.bin
-   ...
-   <model_id>_part_N_of_N.bin
-```
-
-where <model_id> is the name of the model. This is the name of the json you copied from `configs/genie/<model_name>.json`.
+The export script will place context binaries, tokenizer, and Genie
+configuration files into the `genie_bundle` folder. If you plan to run this
+directly through `genie-t2t-run`, then please follow the instructions printed
+at the end of the export script to copy the QAIRT files into the bundle as
+well.
 
 ## Run LLM on Device
 
@@ -352,16 +255,7 @@ All the LLMs have different formats. To get sensible output from the LLMs, it is
 
 #### Genie on Windows with Snapdragon® X
 
-Copy Genie's shared libraries and executable to our bundle.
-(Note you can skip this step if you used the powershell script to prepare your bundle.)
-
-```bash
-cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
-cp $QNN_SDK_ROOT/lib/aarch64-windows-msvc/* genie_bundle
-cp $QNN_SDK_ROOT/bin/aarch64-windows-msvc/genie-t2t-run.exe genie_bundle
-```
-
-In Powershell, navigate to the bundle directory and run
+In PowerShell, navigate to the bundle directory and run
 
 ```bash
 ./genie-t2t-run.exe -c genie_config.json -p "<|begin_of_text|><|start_header_id|>user<|end_header_id|>`n`nWhat is France's capital?<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
@@ -372,21 +266,10 @@ Note that this prompt format is specific to Llama 3.
 Also note that we changed `\n` to `` `n ``, since that is how to pass a proper
 line feed character in Windows Powershell.
 
+For languages that use non-latin characters (e.g., Chinese, Arabic), you may
+need to first [configure Windows to use UTF-8](windows/utf8.md).
+
 #### Genie on Android
-
-Copy Genie's shared libraries and executable to our bundle.
-
-```bash
-# For 8 Gen 2
-cp $QNN_SDK_ROOT/lib/hexagon-v73/unsigned/* genie_bundle
-# For 8 Gen 3
-cp $QNN_SDK_ROOT/lib/hexagon-v75/unsigned/* genie_bundle
-# For 8 Elite
-cp $QNN_SDK_ROOT/lib/hexagon-v79/unsigned/* genie_bundle
-# For all devices
-cp $QNN_SDK_ROOT/lib/aarch64-android/* genie_bundle
-cp $QNN_SDK_ROOT/bin/aarch64-android/genie-t2t-run genie_bundle
-```
 
 Copy `genie_bundle` from the host machine to the target device using ADB and
 open up an interactive shell on the target device:
