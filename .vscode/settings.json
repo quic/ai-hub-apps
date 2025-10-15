@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "python/qai_hub_apps"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+}

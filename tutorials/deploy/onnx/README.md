@@ -17,7 +17,7 @@ cd deploy/onnx && pip install -r requirements.txt
 1. Export AI Hub Model which uses Quantize Jobs and target ONNX as the runtime.
 
 ```bash
-python qai_hub_models/models/googlenet_quantized/export.py --target-runtime onnx
+python qai_hub_models/models/googlenet/export.py --target-runtime onnx --quantize
 ```
 
 The export script downloads the compiled asset to your local machine.

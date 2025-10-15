@@ -36,7 +36,7 @@ Comments have been left in [TFLiteHelpers.java](src/main/java/com/qualcomm/tflit
 
 | INPUT | Description | Shape | Data Type
 | -- | -- | -- | --
-| Image | An RGB image | [1, Height, Width, 3] | float32 input expecting inputs normalized by a per-channel mean and standard deviation (see app code for details)
+| Image | An RGB image | [1, Height, Width, 3] | float32 input expecting inputs normalized to [0, 1]
 
 | OUTPUT | Description | Shape | Data Type
 | -- | -- | -- | --

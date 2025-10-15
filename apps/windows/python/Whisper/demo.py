@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------
-# Copyright (c) 2024 Qualcomm Innovation Center, Inc. All rights reserved.
+# Copyright (c) 2025 Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause
 # ---------------------------------------------------------------------
 import argparse
@@ -7,10 +7,7 @@ from datetime import datetime
 
 import sounddevice as sd
 from qai_hub_models.models._shared.hf_whisper.app import HfWhisperApp
-from qai_hub_models.utils.onnx_torch_wrapper import (
-    OnnxModelTorchWrapper,
-    OnnxSessionOptions,
-)
+from qai_hub_models.utils.onnx_torch_wrapper import OnnxModelTorchWrapper
 
 
 def main():
@@ -44,13 +41,13 @@ def main():
     parser.add_argument(
         "--encoder-path",
         type=str,
-        default="build\\whisper_base\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperEncoder\\model.onnx",
+        default="build\\whisper_base_float\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperEncoder\\model.onnx",
         help="Encoder model path",
     )
     parser.add_argument(
         "--decoder-path",
         type=str,
-        default="build\\whisper_base\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperDecoder\\model.onnx",
+        default="build\\whisper_base_float\\precompiled\\qualcomm-snapdragon-x-elite\\HfWhisperDecoder\\model.onnx",
         help="Decoder model path",
     )
     parser.add_argument(
@@ -65,11 +62,6 @@ def main():
     if args.list_audio_devices:
         print(sd.query_devices())
         return
-
-    # Disable compile caching becuase Stable Diffusion is Pre-Compiled
-    # This is needed due to a bug in onnxruntime 1.22, and can be removed after the next ORT release.
-    options = OnnxSessionOptions.aihub_defaults()
-    options.context_enable = False
 
     print("Loading model...")
     app = HfWhisperApp(

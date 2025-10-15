@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    compileSdk Integer.valueOf(androidCompileSDK)
+
+    defaultConfig {
+        applicationId "com.quicinc.objectdetection"
+        minSdk Integer.valueOf(androidMinSDK)
+        targetSdk Integer.valueOf(androidTargetSDK)
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue( "string", "tfLiteModelAsset", project.properties['objectdetection_tfLiteModelAsset'])
+        resValue( "string", "tfLiteLabelsAsset", project.properties['objectdetection_tfLiteLabelsAsset'])
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.valueOf("VERSION_$javaSourceCompatibilityVersion")
+        targetCompatibility JavaVersion.valueOf("VERSION_$javaTargetCompatibilityVersion")
+    }
+
+    preBuild.doFirst {
+        if (!file("./src/main/assets/" + project.properties["objectdetection_tfLiteModelAsset"]).exists()) {
+            throw new RuntimeException(missingModelErrorMsg)
+        }
+
+        if (!file("./src/main/assets/" + project.properties["classification_tfLiteLabelsAsset"]).exists()) {
+            throw new RuntimeException(missingLabelsErrorMsg)
+        }
+
+    }
+
+    namespace 'com.quicinc.objectdetection'
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    api 'org.tensorflow:tensorflow-lite:2.16.1'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.16.1'
+    implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.16.1'
+    implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
+    implementation 'org.opencv:opencv:4.10.0'
+    implementation "com.qualcomm.qti:qnn-runtime:$qnnVersion"
+    implementation "com.qualcomm.qti:qnn-litert-delegate:$qnnVersion"
+}
+
+if (System.getProperty("user.dir") != project.rootDir.path) {
+    throw new RuntimeException("This project should be opened from the `android` directory (parent of ObjectDetection directory), NOT the ObjectDetection directory.")
+}

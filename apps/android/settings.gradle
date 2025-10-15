@@ -23,11 +23,12 @@ if (Boolean.valueOf(properties["includeClassificationApp"])) {
 if (Boolean.valueOf(properties["includeSuperResolutionApp"])) {
     include ':SuperResolution'
 }
-
 if (Boolean.valueOf(properties["includeSemanticSegmentationApp"])) {
     include ':SemanticSegmentation'
 }
-
+if (Boolean.valueOf(properties["includeObjectDetectionApp"])) {
+    include ':ObjectDetection'
+}
 if (Boolean.valueOf(properties["includeChatApp"])) {
     include ':ChatApp'
 }

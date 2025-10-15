@@ -6,16 +6,19 @@
             "version": 1,
             "size": 4096,
             "n-vocab": 128256,
-            "bos-token": -1,
-            "eos-token": [128001, 128009, 128008]
+            "bos-token": 128000,
+            "eos-token": [
+                128001,
+                128008,
+                128009
+            ]
         },
         "sampler": {
             "version": 1,
             "seed": 42,
             "temp": 0.8,
             "top-k": 40,
-            "top-p": 0.95,
-            "greedy": true
+            "top-p": 0.95
         },
         "tokenizer": {
             "version": 1,

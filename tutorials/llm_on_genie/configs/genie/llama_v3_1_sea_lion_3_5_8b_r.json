@@ -6,15 +6,15 @@
             "version": 1,
             "size": 4096,
             "n-vocab": 128256,
-            "bos-token": -1,
-            "eos-token": [128001, 128009, 128008]
+            "bos-token": 128000,
+            "eos-token": 128001
         },
         "sampler": {
             "version": 1,
             "seed": 42,
-            "temp": 0.85,
+            "temp": 0.8,
             "top-k": 40,
-            "top-p": 0.6
+            "top-p": 0.95
         },
         "tokenizer": {
             "version": 1,
@@ -44,11 +44,11 @@
                 "binary": {
                     "version": 1,
                     "ctx-bins": [
-                        "llama_v3_1_sea_lion_3_5_r_8b_chat_part_1_of_5.bin",
-                        "llama_v3_1_sea_lion_3_5_r_8b_chat_part_2_of_5.bin",
-                        "llama_v3_1_sea_lion_3_5_r_8b_chat_part_3_of_5.bin",
-                        "llama_v3_1_sea_lion_3_5_r_8b_chat_part_4_of_5.bin",
-                        "llama_v3_1_sea_lion_3_5_r_8b_chat_part_5_of_5.bin"
+                        "llama_v3_1_sea_lion_3_5_8b_r_part_1_of_5.bin",
+                        "llama_v3_1_sea_lion_3_5_8b_r_part_2_of_5.bin",
+                        "llama_v3_1_sea_lion_3_5_8b_r_part_3_of_5.bin",
+                        "llama_v3_1_sea_lion_3_5_8b_r_part_4_of_5.bin",
+                        "llama_v3_1_sea_lion_3_5_8b_r_part_5_of_5.bin"
                     ]
                 },
                 "positional-encoding": {

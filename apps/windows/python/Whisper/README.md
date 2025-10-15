@@ -50,12 +50,12 @@ In your currently active python environment, the above script will install:
 7. Export model:
 
 ```powershell
-python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD"  --fetch-static-assets v0.36.0
+python -m qai_hub_models.models.whisper_base.export --target-runtime precompiled_qnn_onnx --device "Snapdragon X Elite CRD"  --fetch-static-assets v0.39.1
 # WARNING: Do not rename `model.bin` files. This will break the demo.
-Expand-Archive -Path .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperEncoder_float.onnx.zip -DestinationPath .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\
-mv .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\model.onnx .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\HfWhisperEncoder
-Expand-Archive -Path .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperDecoder_float.onnx.zip -DestinationPath .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\
-mv .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\model.onnx .\build\whisper_base\precompiled\qualcomm-snapdragon-x-elite\HfWhisperDecoder
+Expand-Archive -Path .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperEncoder_float.onnx.zip -DestinationPath .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite
+mv .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\job*optimized_onnx .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\HfWhisperEncoder
+Expand-Archive -Path .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\Whisper-Base_HfWhisperDecoder_float.onnx.zip -DestinationPath .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite
+mv .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\job*optimized_onnx .\build\whisper_base_float\precompiled\qualcomm-snapdragon-x-elite\HfWhisperDecoder
 ```
 
 8. Get microphone device number:

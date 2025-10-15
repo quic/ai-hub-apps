@@ -7,8 +7,7 @@
             "size": 4096,
             "n-vocab": 128256,
             "bos-token": 128000,
-            "eos-token": 128001,
-            "eot-token": 128009
+            "eos-token": 128001
         },
         "sampler": {
             "version": 1,
@@ -33,11 +32,11 @@
                     "spill-fill-bufsize": 0,
                     "mmap-budget": 0,
                     "poll": true,
-                    "pos-id-dim": 64,
                     "cpu-mask": "0xe0",
                     "kv-dim": 128,
-                    "rope-theta": 500000,
-                    "allow-async-init": false
+                    "pos-id-dim": 64,
+                    "allow-async-init": false,
+                    "rope-theta": 500000
                 },
                 "extensions": "htp_backend_ext_config.json"
             },

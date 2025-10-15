@@ -118,3 +118,6 @@ dmypy.json
 # Hub exports
 **/*.mlmodel
 **/*.tflite
+
+# Other auxiliary assets
+apps/android/ObjectDetection/src/main/assets/labels.txt

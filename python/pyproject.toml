@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qai_hub_apps"
+authors = [
+    {name = "Qualcomm® Technologies, Inc", email = "ai_hub_support@qti.qualcomm.com"},
+]
+description = "Helpers for building, testing, and inspecting metadata for AI Hub Apps."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dynamic = ["version", "dependencies", "optional-dependencies"]
+
+[tool.setuptools.dynamic]
+version = {attr = "qai_hub_apps.__version__"}
+dependencies = {file = "qai_hub_apps/requirements.txt"}
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = {file = "qai_hub_apps/requirements-dev.txt"}
