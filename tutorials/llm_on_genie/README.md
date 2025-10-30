@@ -62,7 +62,7 @@ Download the specific version of the QAIRT SDK from the [Qualcomm Software
 Center](https://softwarecenter.qualcomm.com/catalog/item/Qualcomm_AI_Runtime_Community)
 and copy it to the target device. If the target has internet connectivity, you
 can also download it directly using `wget` with the URL shown in the Software
-Center.
+Center. Alternately, download [QAIRT SDK](https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK) and install it via [QPM.](https://docs.qualcomm.com/bundle/publicresource/topics/80-88500-5/install_qualcomm_package_manager_qpm.html)
 
 Once downloaded, please set the following environment variables:
 
@@ -170,7 +170,7 @@ python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --chipset qualcomm
 python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --chipset qualcomm-snapdragon-8gen3 --skip-profiling --output-dir genie_bundle
 
 # Snapdragon X Elite
-python -m qai_hub_models.models.llama_v3_3b_instruct.export --chipset qualcomm-snapdragon-x-elite --skip-profiling --output-dir genie_bundle
+python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --chipset qualcomm-snapdragon-x-elite --skip-profiling --output-dir genie_bundle
 ```
 
 > [!NOTE]
