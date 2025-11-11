@@ -7,7 +7,7 @@ from datetime import datetime
 
 import sounddevice as sd
 from qai_hub_models.models._shared.hf_whisper.app import HfWhisperApp
-from qai_hub_models.utils.onnx_torch_wrapper import OnnxModelTorchWrapper
+from qai_hub_models.utils.onnx.torch_wrapper import OnnxModelTorchWrapper
 
 
 def main():

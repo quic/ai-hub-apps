@@ -10,7 +10,7 @@ from PIL import Image
 from qai_hub_models.models._shared.stable_diffusion.app import StableDiffusionApp
 from qai_hub_models.utils.args import add_output_dir_arg
 from qai_hub_models.utils.display import display_or_save_image, to_uint8
-from qai_hub_models.utils.onnx_torch_wrapper import OnnxModelTorchWrapper
+from qai_hub_models.utils.onnx.torch_wrapper import OnnxModelTorchWrapper
 from transformers import CLIPTokenizer
 
 DEFAULT_PROMPT = "A girl taking a walk at sunset"

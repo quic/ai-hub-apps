@@ -156,11 +156,21 @@ hf auth login
 
 Generate assets for Llama 3.2 3B using the export script below. It downloads
 model weights from Hugging Face, compiles for your target device, and prepares a
-bundle for deployment.
+bundle for deployment. First, install AI Hub Models with the right dependencies
+for Llama 3.2 3B:
+
+```
+pip install "qai-hub-models[llama-v3-2-3b-instruct]"
+```
+
+For other models, please confirm the exact command in the model's README file
+(linked from the model cards at [Qualcomm AI Hub
+Models](https://aihub.qualcomm.com/models)).
 
 > [!IMPORTANT]
 > The export command may take 2–3 hours and requires significant memory (RAM +
-> swap) on the host.
+> swap) on the host. If you are prompted that your memory is insufficient,
+> please see [Increase Swap space](increase_swap.md).
 
 ```bash
 # Snapdragon 8 Elite
@@ -180,6 +190,10 @@ python -m qai_hub_models.models.llama_v3_2_3b_instruct.export --chipset qualcomm
 The export script places context binaries, tokenizer, and Genie configuration
 files into the `genie_bundle` folder. If you plan to run directly via
 `genie-t2t-run`, follow the instructions printed at the end of the export.
+
+For some older models, the tokenizer and Genie configuration is not
+automatically created by the export script. In such case, see [Prepare Genie
+bundle manually](manual_bundle.md).
 
 ## Step 3: Run the LLM on-device
 
