@@ -14,9 +14,8 @@ The app aims to showcase an example of combining streaming camera, TFLite, and O
 ## Build the APK
 
 1. Download or export a [compatible model](#compatible-ai-hub-models) from [AI Hub Models](https://aihub.qualcomm.com/mobile/models).
-2. Copy the `.tflite` file to `src/main/assets/<your_model>.tflite`
-3. In [../gradle.properties](../gradle.properties), modify the value of `semanticsegmentation_tfLiteModelAsset` to the name of your model file (`<your_model>.tflite`)
-4. Open **the PARENT folder (`android`) (NOT THIS FOLDER)** in Android Studio, run gradle sync, and build the `SemanticSegmentation` target.
+2. Copy the `.tflite` file to `src/main/assets/segmenter.tflite`
+3. Open this folder in Android Studio, run gradle sync, and build the `SemanticSegmentation` target.
 
 ## Supported Hardware (TF Lite Delegates)
 

@@ -31,7 +31,6 @@ There are three steps to run
 ## Requirements
 
 > [!IMPORTANT]
-
 Target device requirements:
 
 - Hexagon architecture v73 or above (please see [Devices](https://app.aihub.qualcomm.com/devices/) list).
@@ -330,6 +329,7 @@ Replace `llama-v3.2-3b-instruct` with the desired Llama model from [AI Hub
 Models](https://github.com/quic/ai-hub-models/tree/main/qai_hub_models/models).
 Note to replace `_` with `-` (e.g., `llama_v3.2_3b_instruct` -> `llama-v3.2-3b-instruct`).
 
+
 ### Prompt Formats
 
 Different LLMs have different prompt formats. To get sensible output, it is
@@ -347,4 +347,5 @@ found on the Hugging Face repository for each model. A few examples are below.
 | Phi-3.5-Mini-Instruct                                                                                    | <&#124;system&#124;>\nYou are a helpful assistant. Be helpful but brief.<&#124;end&#124;>\n<&#124;user&#124;>What is France's capital?\n<&#124;end&#124;>\n<&#124;assistant&#124;>\n                                                                                                                                                                                                     |
 | Mistral-7B-Instruct-v0.3                                                                                 | &lt;s&gt;[INST] You are a helpful assistant\n\nTranslate 'Good morning, how are you?' into French.[/INST]                                                                                                                                                                                                                                                                                |
 | IBM-Granite-v3.1-8B-Instruct                                                                             | <&#124;start_of_role&#124;>system<&#124;end_of_role&#124;>You are a helpful AI assistant.<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>user<&#124;end_of_role&#124;>What is France's capital?<&#124;end_of_text&#124;>\n <&#124;start_of_role&#124;>assistant<&#124;end_of_role&#124;>\n                                                                                        |
-| Falcon3-7B-Instruct                                                                                      | <&#124;system&#124;>\nYou are a helpful friendly assistant Falcon3 from TII, try to follow instructions as much as possible.\n<&#124;user&#124;>\nWhat is France's capital?\n<&#124;assistant&#124;>\n                                                                                                                                                                                   |
+| Falcon3-7B-Instruct                                                                                      | <&#124;system&#124;>\nYou are a helpful friendly assistant Falcon3 from TII, try to follow instructions as much as possible.\n<&#124;user&#124;>\nWhat is France's capital?\n<&#124;assistant&#124;>\n                                                                                        |
+| Llama-3-ELYZA-JP-8B                                                                                      | <&#124;begin_of_text&#124;><&#124;start_header_id&#124;>system<&#124;end_header_id&#124;>\n\nあなたは誠実で優秀な日本人のアシスタントです。特に指示が無い場合は、常に日本語で回答してください。<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>user<&#124;end_header_id&#124;>\n\n仕事の熱意を取り戻すためのアイデアを5つ挙げてください。<&#124;eot_id&#124;>\n<&#124;start_header_id&#124;>assistant<&#124;end_header_id&#124;>\n                                                                                        |

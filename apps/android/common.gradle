@@ -1,6 +1,7 @@
 // Used by AI Hub Apps build system to verify API versions match the globally-required API versions (from apps/versions.yaml).
 task printAPIVersions {
     doFirst {
+        println "ndk=${android.ndkVersion}"
         println "minAPI=${android.defaultConfig.minSdk}"
         println "targetAPI=${android.defaultConfig.targetSdk}"
         println "compileAPI=${android.compileSdk}"

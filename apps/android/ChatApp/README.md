@@ -149,14 +149,14 @@ cd <ai-hub-apps-repo-root>/apps/android/ChatApp/
 
     - If you are using a model that is not one of the Llama 3 models, you will have to update the prompt format in `PromptHandler.cpp` first. Check out the Prompt Formats section in the [LLM On-Device Deployment tutorial](https://github.com/quic/ai-hub-apps/tree/main/tutorials/llm_on_genie#prompt-formats) to learn more.
 
-7. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
+7. Update `<ai-hub-apps-repo-root>/apps/android/ChatApp/build.gradle` with path to QNN SDK root directory, or set the environment variable "QAIRT_SDK_ROOT" to the QNN SDK root directory. If you are on QNN version 2.28.2 and have extracted to the default location on Linux, it may look like this:
 
     ```code
     def qnnSDKLocalPath="/opt/qcom/aistack/qairt/2.28.2.241116"
     ```
 
 8. Build APK
-    - Open **the PARENT folder (`android`) (NOT THIS FOLDER)** in Android Studio
+    - Open this folder in Android Studio
     - Run gradle sync
     - Build the `ChatApp` target
         - Click on `Build` -> `Build Bundle(s) / APK(s)` -> `Build APK(s)`

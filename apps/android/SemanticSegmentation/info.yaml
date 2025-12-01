@@ -1,0 +1,8 @@
+name: Semantic Segmentation
+license_url: https://github.com/quic/ai-hub-apps/blob/main/LICENSE
+license_type: bsd-3-clause
+models: ['ffnet_40s', 'ffnet_54s', 'ffnet_78s', 'ffnet_78s_lowres', 'ffnet_122ns_lowres']
+model_file_paths: ['src/main/assets/segmenter.tflite']
+runtime: tflite
+precisions: [float]
+app_type: 'android'

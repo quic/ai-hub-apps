@@ -7,7 +7,7 @@
 
 using namespace AppUtils;
 
-// Prompt formats: LLAMA3, LLAMA3_TAIDE, LLAMA2
+// Prompt formats: LLAMA3, LLAMA3_TAIDE, LLAMA3_ELYZA, LLAMA2
 #define LLAMA3
 
 #ifdef LLAMA3
@@ -26,6 +26,16 @@ constexpr const std::string_view c_end_assistant = "<|eot_id|>";
 constexpr const std::string_view c_begin_system =
     "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n你是一個來自台灣的AI助理，你的名字是 "
     "TAIDE，樂於以台灣人的立場幫助使用者，會用繁體中文回答問題<|eot_id|>\n\n";
+constexpr const std::string_view c_begin_user = "<|start_header_id|>user<|end_header_id|>\n\n";
+constexpr const std::string_view c_end_user = "<|eot_id|>";
+constexpr const std::string_view c_begin_assistant = "<|start_header_id|>assistant<|end_header_id|>\n\n";
+constexpr const std::string_view c_end_assistant = "<|eot_id|>";
+
+#elif defined LLAMA3_ELYZA
+// Llama-3-Elyza-JP-8B
+constexpr const std::string_view c_begin_system = "<|begin_of_text|><|start_header_id|>system<|end_header_id|>"
+                                                  "\n\nあなたは誠実で優秀な日本人のアシスタントです。特に指示が無い場合"
+                                                  "は、常に日本語で回答してください。<|eot_id|>\n\n";
 constexpr const std::string_view c_begin_user = "<|start_header_id|>user<|end_header_id|>\n\n";
 constexpr const std::string_view c_end_user = "<|eot_id|>";
 constexpr const std::string_view c_begin_assistant = "<|start_header_id|>assistant<|end_header_id|>\n\n";

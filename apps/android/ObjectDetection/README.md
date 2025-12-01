@@ -12,14 +12,10 @@ The app aims to showcase an example of combining streaming camera, TFLite, and O
 3. [Enable USB debugging](https://developer.android.com/studio/debug/dev-options) on your Android device.
 
 ## Build the APK
-
 1. Download or export a [compatible model](#compatible-ai-hub-models) from [AI Hub Models](https://aihub.qualcomm.com/mobile/models).
-2. Copy the `.tflite` file to `src/main/assets/objectdetection.tflite`
-4. Copy the labels file (see list below) to `src/main/assets/labels.txt`
-3. (Optional) Both model and labels file can have custom names. If so,
-   please edit [../gradle.properties](../gradle.properties) and update
-   `objectdetection_tfLiteModelAsset` and `objectdetection_tfLiteLabelsAsset`.
-5. Open **the PARENT folder (`android`) (NOT THIS FOLDER)** in Android Studio, run gradle sync, and build the `ObjectDetection` target.
+2. Copy the `.tflite` file to `src/main/assets/detector.tflite`
+3. Copy the labels file (see list below) to `src/main/assets/labels.txt`
+4. Open this folder in Android Studio, run gradle sync, and build the `OBjectDetection` target.
 
 ## Supported Hardware (TF Lite Delegates)
 

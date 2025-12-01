@@ -1,8 +1,8 @@
-name: Image Classification
+name: Object Detection
 license_url: https://github.com/quic/ai-hub-apps/blob/main/LICENSE
 license_type: bsd-3-clause
-models: ['mobilenet_v2']
-model_file_paths: ['src/main/assets/classifier.tflite']
+models: ['yolox']
+model_file_paths: ['src/main/assets/detector.tflite']
 runtime: tflite
 precisions: [float]
 app_type: 'android'

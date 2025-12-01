@@ -1,18 +1,19 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.application' version '8.13.0'
 }
 
 android {
-    compileSdk Integer.valueOf(androidCompileSDK)
+    ndkVersion '27.3.13750724'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.quicinc.semanticsegmentation"
-        minSdk Integer.valueOf(androidMinSDK)
-        targetSdk Integer.valueOf(androidTargetSDK)
+        minSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resValue( "string", "tfLiteModelAsset", project.properties['semanticsegmentation_tfLiteModelAsset'])
+        resValue( "string", "tfLiteModelAsset", "segmenter.tflite")
     }
 
     buildTypes {
@@ -23,13 +24,13 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.valueOf("VERSION_$javaSourceCompatibilityVersion")
-        targetCompatibility JavaVersion.valueOf("VERSION_$javaTargetCompatibilityVersion")
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     preBuild.doFirst {
-        if (!file("./src/main/assets/" + project.properties["semanticsegmentation_tfLiteModelAsset"]).exists()) {
-            throw new RuntimeException(missingModelErrorMsg)
+        if (!file("./src/main/assets/segmenter.tflite").exists()) {
+            throw new RuntimeException("segmenter.tflite is missing. Please refer to the app README for instructions on how to compile and place the model(s).")
         }
     }
 
@@ -40,15 +41,16 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    api 'org.tensorflow:tensorflow-lite:2.16.1'
-    implementation 'org.tensorflow:tensorflow-lite-gpu:2.16.1'
-    implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.16.1'
+    api 'org.tensorflow:tensorflow-lite:2.17.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu:2.17.0'
+    implementation 'org.tensorflow:tensorflow-lite-gpu-api:2.17.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
     implementation 'org.opencv:opencv:4.10.0'
-    implementation "com.qualcomm.qti:qnn-runtime:$qnnVersion"
-    implementation "com.qualcomm.qti:qnn-litert-delegate:$qnnVersion"
+    implementation "com.qualcomm.qti:qnn-runtime:2.39.0"
+    implementation "com.qualcomm.qti:qnn-litert-delegate:2.39.0"
 }
 
-if (System.getProperty("user.dir") != project.rootDir.path) {
-    throw new RuntimeException("This project should be opened from the `android` directory (parent of SemanticSegmentation directory), NOT the SemanticSegmentation directory.")
+// Include utilities needed by the AI Hub Apps test suite.
+if (file('../common.gradle').exists()) {
+    apply from: '../common.gradle'
 }

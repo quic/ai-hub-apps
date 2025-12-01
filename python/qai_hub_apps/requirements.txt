@@ -1,2 +1,0 @@
-qai_hub_models
-typed-argument-parser

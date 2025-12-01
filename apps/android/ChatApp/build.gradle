@@ -1,31 +1,31 @@
 import java.nio.file.Paths
 
 plugins {
-    id "com.android.application"
+    id 'com.android.application' version '8.13.0'
 }
 
 // Path to local QAIRT SDK.
 // Download QAIRT SDK from https://qpm.qualcomm.com/#/main/tools/details/Qualcomm_AI_Runtime_SDK
 // e.g. "/opt/qcom/aistack/qairt/2.33.0.250327"
 //      "C:\\Qualcomm\\AIStack\\QAIRT\\2.33.0.250327"
-def qnnSDKLocalPath= ""   // <-- Please add QNN SDK root path
+def qnnSDKLocalPath= System.getenv("QAIRT_SDK_ROOT") ?: "<UNSET QAIRT SDK PATH>"   // <-- Please add QNN SDK root path
 
 // List of model assets
 def models = ["llm"]
 // Relative asset path for model configuration and binaries
 def relAssetsPath = "src/main/assets/models"
-def buildDir = project(":ChatApp").getLayout().getBuildDirectory()
+def buildDir = project.getLayout().getBuildDirectory()
 def libsDir = buildDir.dir("libs")
 
 android {
-    compileSdk Integer.valueOf(androidCompileSDK)
+    ndkVersion '27.3.13750724'
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.quicinc.chatapp"
 
-        // TODO: use androidMinSDK value from gradle.properties once it updates to 31
-        minSdk Integer.valueOf(31)
-        targetSdk Integer.valueOf(androidTargetSDK)
+        minSdk 31
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         externalNativeBuild {
@@ -49,8 +49,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.valueOf("VERSION_$javaSourceCompatibilityVersion")
-        targetCompatibility JavaVersion.valueOf("VERSION_$javaTargetCompatibilityVersion")
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     namespace "com.quicinc.chatapp"
@@ -125,6 +125,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.2.0"
 }
 
-if (System.getProperty("user.dir") != project.rootDir.path) {
-    throw new RuntimeException("This project should be opened from the `android` directory (parent of ChatApp directory), NOT the ChatApp directory.")
+// Include utilities needed by the AI Hub Apps test suite.
+if (file('../common.gradle').exists()) {
+    apply from: '../common.gradle'
 }

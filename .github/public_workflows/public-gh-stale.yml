@@ -24,6 +24,6 @@ jobs:
           close-issue-message: >
             Closing this issue due to inactivity. If you feel this issue is still relevant,
             please reopen it and provide additional information.
-          exempt-issue-labels: 'Feature Request'
+          exempt-issue-labels: 'Feature Request,help wanted'
           enable-statistics: true
           repo-token: ${{ secrets.QAIHM_BOT_TOKEN }}
