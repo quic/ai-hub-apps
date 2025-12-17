@@ -1,0 +1,8 @@
+name: Image Classification
+license_url: https://github.com/quic/ai-hub-apps/blob/main/LICENSE
+license_type: bsd-3-clause
+models: ['mobilenet_v2']
+model_file_paths: ['/assets/models/classification.onnx']
+runtime: onnx
+precisions: [float]
+app_type: 'windows'

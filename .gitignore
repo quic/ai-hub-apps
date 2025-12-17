@@ -13,6 +13,8 @@ __pycache__/
 **/gradle
 **/gradlew*
 **/*.egg-info
+*.cxx/
+**/local.properties
 
 # Model File Formats
 **/*.onnx

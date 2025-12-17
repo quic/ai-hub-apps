@@ -55,8 +55,8 @@ dependencies {
     implementation "org.tensorflow:tensorflow-lite-gpu:2.17.0"
     implementation "org.tensorflow:tensorflow-lite-gpu-api:2.17.0"
     implementation 'org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.4'
-    implementation "com.qualcomm.qti:qnn-runtime:2.39.0"
-    implementation "com.qualcomm.qti:qnn-litert-delegate:2.39.0"
+    implementation "com.qualcomm.qti:qnn-runtime:2.40.0"
+    implementation "com.qualcomm.qti:qnn-litert-delegate:2.40.0"
 }
 
 // Include utilities needed by the AI Hub Apps test suite.

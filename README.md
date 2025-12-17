@@ -7,7 +7,7 @@ Each app is designed to work with one or more models from [Qualcomm® AI Hub Mod
 With this repository, you can...
 * Explore apps optimized for on-device deployment of various machine learning tasks.
 * View open-source app recipes for running [Qualcomm® AI Hub Models](https://aihub.qualcomm.com/) on local devices.
-* Find tutorials for end-to-end workflows
+* Find tutorials for end-to-end workflows.
 
 ## Overview
 
@@ -23,23 +23,25 @@ With this repository, you can...
 ### Supported compute units
 * CPU, GPU, NPU (includes [hexagon HTP](https://developer.qualcomm.com/hardware/qualcomm-innovators-development-kit/ai-resources-overview/ai-hardware-cores-accelerators))
 
+
 ### Chipsets supported for NPU Acceleration
-* [Snapdragon 8 Elite](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-elite-mobile-platform)
-* [Snapdragon 8 Gen 3](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-3-mobile-platform)
-* [Snapdragon 8 Gen 2](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-2-mobile-platform)
-* [Snapdragon 8 Gen 1](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-8-gen-1-mobile-platform)
-* [Snapdragon 888/888+](https://www.qualcomm.com/products/mobile/snapdragon/smartphones/snapdragon-8-series-mobile-platforms/snapdragon-888-5g-mobile-platform)
+* [Snapdragon X2 Elite](https://www.qualcomm.com/laptops/products/snapdragon-x2-elite)
+* [Snapdragon X Elite](https://www.qualcomm.com/laptops/products/snapdragon-x-elite)
+* [Snapdragon 8 Elite Gen 5](https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-5-mobile-platform)
+* [Snapdragon 8 Elite](https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-elite-mobile-platform)
+* [Snapdragon 8 Gen 3](https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-3-mobile-platform)
+* [Snapdragon 8 Gen 2](https://www.qualcomm.com/smartphones/products/8-series/snapdragon-8-gen-2-mobile-platform)
 * ... and all other [Snapdragon® chipsets supported by the QAIRT SDK](https://docs.qualcomm.com/bundle/publicresource/topics/80-63442-50/overview.html#supported-snapdragon-devices)
 
 _Weight and activation type required for NPU Acceleration:_
 * Floating Point: FP16 (All Snapdragon® chipsets with Hexagon® Architecture v69 or newer)
-* Integer : INT8 (All Snapdragon® chipsets)
+* Integer : INT8 or INT16 (All Snapdragon® chipsets)
 
-__NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipsets.__
+__NOTE: Some of these apps will run without NPU acceleration on non-Snapdragon® chipsets.__
 
 ## Getting Started with Apps
 
-1. Search for your desired OS & app in [this folder](apps), or in the [app directory](#app-directory) at the bottom of this file.
+1. Search for your desired OS & app in [this folder](apps), or in the tables at the bottom of this file.
 
 2. The README of the selected app will contain build & installation instructions.
 
@@ -62,6 +64,7 @@ __NOTE: These apps will run without NPU acceleration on non-Snapdragon® chipset
 | [Object Detection](apps/windows/cpp/ObjectDetection) | C++ | ONNX | OpenCV |
 | [Super Resolution](apps/windows/cpp/SuperResolution) | C++ | ONNX | OpenCV |
 | [Whisper Speech-to-Text](apps/windows/python/Whisper) | Python | ONNX |
+| [Stable Diffusion Image Generation](apps/windows/python/StableDiffusion) | Python | ONNX |
 
 ## _Tutorials_ Directory
 

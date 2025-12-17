@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -39,6 +40,12 @@ public class Conversation extends AppCompatActivity {
         Message_RecyclerViewAdapter adapter = new Message_RecyclerViewAdapter(this, messages);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Disable change animations
+        RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
+        if (animator instanceof SimpleItemAnimator){
+            ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
+        }
 
         ImageButton sendUserMsgButton = (ImageButton) findViewById(R.id.send_button);
         TextView userMsg = (TextView) findViewById(R.id.user_input);
@@ -81,10 +88,12 @@ public class Conversation extends AppCompatActivity {
                         userMsg.setText("");
 
                         // Insert user message in the conversation
+                        int start = adapter.getItemCount();
                         adapter.addMessage(new ChatMessage(userInputMsg, MessageSender.USER));
-                        adapter.notifyItemInserted(adapter.getItemCount() - 1);
+                        adapter.addMessage(new ChatMessage("", MessageSender.BOT));
+                        adapter.notifyItemRangeInserted(start, 2);
 
-                        int botResponseMsgIndex = adapter.getItemCount();
+                        int botResponseMsgIndex = adapter.getItemCount() - 1;
                         recyclerView.smoothScrollToPosition(botResponseMsgIndex);
 
                         ExecutorService service = Executors.newSingleThreadExecutor();
@@ -98,14 +107,22 @@ public class Conversation extends AppCompatActivity {
                                             // Update the last item in the adapter
                                             adapter.updateBotMessage(response);
                                             adapter.notifyItemChanged(botResponseMsgIndex);
+
+                                            RecyclerView.LayoutManager lm = recyclerView.getLayoutManager();
+                                            if (lm instanceof LinearLayoutManager) {
+                                                LinearLayoutManager layoutManager = (LinearLayoutManager) lm;
+                                                int lastVisible = layoutManager.findLastVisibleItemPosition();
+
+                                                if (lastVisible == messages.size() - 1) {
+                                                    recyclerView.scrollToPosition(messages.size() - 1);
+                                                }
+                                            }
                                         });
                                     }
                                 });
                             }
                         });
 
-                        // Scroll to last message
-                        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                     }
                 }
             });
