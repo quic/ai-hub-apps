@@ -44,6 +44,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Build natively on the host instead of inside a Docker container",
     )
     parser.addoption(
+        "--device",
+        default=None,
+        help="Hub device name to fetch assets for and run on (default: the app's "
+        "tested device)",
+    )
+    parser.addoption(
         "--cli-version",
         default=None,
         help="qai-hub-apps CLI version to install on the QDC device (default: latest)",
@@ -81,6 +87,11 @@ def test_stage(request: pytest.FixtureRequest) -> str:
 @pytest.fixture(scope="session")
 def use_docker(request: pytest.FixtureRequest) -> bool:
     return not request.config.getoption("--no-docker")
+
+
+@pytest.fixture(scope="session")
+def device_override(request: pytest.FixtureRequest) -> str | None:
+    return request.config.getoption("--device")
 
 
 @pytest.fixture(scope="session")

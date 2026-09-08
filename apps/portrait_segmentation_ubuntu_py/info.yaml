@@ -20,6 +20,8 @@ languages: ['Python']
 base_docker: ubuntu.dockerfile
 use_case: 'Semantic Segmentation'
 supported_devices:
-  - name: "Dragonwing IQ-9075 EVK"
+  - name: "Arduino VENTUNO Q"
     status: "Tested"
+  - name: "Dragonwing IQ-9075 EVK"
+    status: "Not Tested"
 related_models: ['sinet']

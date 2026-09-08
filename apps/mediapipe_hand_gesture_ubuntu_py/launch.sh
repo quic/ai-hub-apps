@@ -74,7 +74,7 @@ echo "::done::Docker image"
 # Forward every QAI_HUB_APPS_* variable the CLI injected into the container
 device_env_args=()
 for var in "${!QAI_HUB_APPS_@}"; do
-    device_env_args+=(-e "$var")
+    device_env_args+=(-e "$var=${!var}")
 done
 
 echo "::step::Running mediapipe_hand_gesture_ubuntu_py in Docker"

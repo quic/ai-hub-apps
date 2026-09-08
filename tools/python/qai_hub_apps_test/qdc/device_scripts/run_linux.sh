@@ -5,7 +5,20 @@
 # ---------------------------------------------------------------------
 set -euo pipefail
 
-mount -o rw,remount /
+# QC Linux devices boot with a read-only rootfs and run as root, so it must be
+# remounted rw. Ubuntu devices are already writable and needs sudo, so the
+# remount is skipped there. Anything unrecognized is treated as QC Linux.
+is_ubuntu() {
+    grep -qiE '^(ID|ID_LIKE)=.*(ubuntu|debian)' /etc/os-release 2>/dev/null
+}
+
+remount_rootfs_rw() {
+    if is_ubuntu; then
+        echo "Ubuntu device detected; skipping rootfs remount."
+    else
+        mount -o rw,remount /
+    fi
+}
 
 APP_DIR=/data/local/tmp/TestContent/app
 LOG_DIR=/data/local/tmp/QDC_logs
@@ -14,7 +27,13 @@ export QAIHA_APP_ROOT="$APP_DIR"
 USE_DOCKER="<<USE_DOCKER>>"
 
 mkdir -p "$LOG_DIR"
+# tee rather than redirect: a `set -e` abort (e.g. a failed assignment, which
+# bash reports nothing for) otherwise leaves script.log empty and the job's
+# console log silent, with no indication of where it stopped.
 exec > "$LOG_DIR/script.log" 2>&1
+trap 'echo "run_linux.sh: aborted at line $LINENO (exit $?)" >&2' ERR
+
+remount_rootfs_rw
 
 cd "$APP_DIR"
 
@@ -26,10 +45,43 @@ export QAI_HUB_APPS_LOG_LEVEL=debug
 # No TTY on the QDC device; skip install-time approval prompts.
 export NON_INTERACTIVE=true
 
-# The device Python has no venv module and apt is unavailable; use uv to provision
-# an isolated Python and venv for the CLI.
-pip3 install uv
-export PATH="/root/.local/bin:$PATH"
+# The device Python has no venv module, so uv provisions an isolated Python and
+# venv for the CLI. QC Linux ships pip as `pip3`; Ubuntu devices ship no pip at
+# all, so pip itself has to be bootstrapped there before uv can be installed.
+SUDO=""
+if [ "$(id -u)" -ne 0 ]; then
+    SUDO="sudo -n"
+fi
+
+# Ubuntu 23.04+ marks the system Python as externally managed (PEP 668) and
+# rejects a plain install; retry with the opt-out flag where it is supported.
+pip_install_uv() {
+    "$@" install uv || "$@" install --break-system-packages uv
+}
+
+install_uv() {
+    if command -v uv >/dev/null 2>&1; then
+        return 0
+    fi
+
+    for pip in pip3 pip; do
+        if command -v "$pip" >/dev/null 2>&1; then
+            pip_install_uv "$pip"
+            return 0
+        fi
+    done
+
+    # No pip on the device. ensurepip is stdlib and needs no network, but Debian
+    # and Ubuntu strip it out of the base python3 package, so fall back to apt.
+    if ! python3 -m ensurepip --upgrade; then
+        $SUDO apt-get update
+        $SUDO apt-get install -y python3-pip
+    fi
+    pip_install_uv python3 -m pip
+}
+
+install_uv
+export PATH="$HOME/.local/bin:/root/.local/bin:$PATH"
 uv python install "<<PYTHON_VERSION>>"
 
 CLI_VENV=/data/local/tmp/cli-venv
@@ -47,6 +99,6 @@ TEST_ARGS=(--app-path "$APP_DIR" --device "<<DEVICE_NAME>>" --model-id "<<MODEL_
 
 qai-hub-apps test "${TEST_ARGS[@]}"
 
-mount -o rw,remount /
+remount_rootfs_rw
 
 touch /data/local/tmp/QDCTestDone.txt

@@ -20,6 +20,7 @@ Usage:
   pytest -m device_test --model-selection first --test-stage build
   pytest -m device_test --model-selection first --test-stage all --qdc-token $QDC_API_TOKEN
   pytest -m device_test --model-selection first --test-stage all --qdc-token $QDC_API_TOKEN --cli-source s3 --cli-version <ver>
+  pytest -m device_test --model-selection first --test-stage all --qdc-token $QDC_API_TOKEN --device "Arduino VENTUNO Q"
 """
 
 from __future__ import annotations
@@ -32,6 +33,7 @@ from pathlib import Path
 import pytest
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_fixed
 
+from qai_hub_apps_test.configs.field_types import Device
 from qai_hub_apps_test.configs.info_yaml import AppType, QAIHAAppInfo
 
 pytestmark = pytest.mark.device_test
@@ -101,6 +103,30 @@ def _run_build(build_cmd: list[str]) -> None:
     env = os.environ.copy()
     env["QAI_HUB_APPS_EXPERIMENTAL"] = "1"
     _run_streamed(build_cmd, env=env)
+
+
+def _resolve_device(app_info: QAIHAAppInfo, device_override: str | None) -> Device:
+    """Return the device to test ``app_info`` on, preferring ``device_override``.
+
+    Parameters
+    ----------
+    app_info
+        The app under test.
+    device_override
+        Device name from --device, or None to use the app's tested device.
+
+    Returns
+    -------
+    Device
+        The resolved device.
+    """
+    if device_override:
+        return Device(device_override)
+    tested_device = app_info.tested_device
+    if tested_device is None:
+        pytest.fail(f"No supported_devices defined in {app_info.id}/info.yaml")
+    assert tested_device is not None
+    return tested_device
 
 
 def _select_models(app_info: QAIHAAppInfo, mode: str) -> list[str]:
@@ -180,16 +206,14 @@ def test_1_fetch_app(
     app_to_test: tuple[QAIHAAppInfo, str],
     tmp_path_factory: pytest.TempPathFactory,
     fetched_dirs: dict,
+    device_override: str | None,
 ) -> None:
     """Fetch app + model via qai-hub-apps CLI."""
     app_info, model_id = app_to_test
 
     if app_info.skip_test:
         pytest.skip(app_info.skip_test)
-    tested_device = app_info.tested_device
-    if tested_device is None:
-        pytest.fail(f"No supported_devices defined in {app_info.id}/info.yaml")
-    assert tested_device is not None
+    device = _resolve_device(app_info, device_override)
 
     out_parent = tmp_path_factory.mktemp(f"{app_info.id}__{model_id}")
     fetch_cmd = [
@@ -206,7 +230,7 @@ def test_1_fetch_app(
             "--model",
             model_id,
             "--chipset",
-            tested_device.chipset,
+            device.chipset,
         ]
     _run_fetch(fetch_cmd)
     fetched_dirs[(app_info.id, model_id)] = out_parent / app_info.id
@@ -247,6 +271,7 @@ def test_3_on_device_app(
     use_docker: bool,
     cli_version: str | None,
     cli_bundle: tuple[str, str] | None,
+    device_override: str | None,
 ) -> None:
     """Submit app to QDC for on-device execution."""
     app_info, model_id = app_to_test
@@ -266,12 +291,8 @@ def test_3_on_device_app(
 
     if not qdc_token:
         pytest.fail("--qdc-token is required for on-device tests")
-    tested_device = app_info.tested_device
-    if tested_device is None:
-        pytest.fail(f"No supported_devices defined in {app_info.id}/info.yaml")
-    assert tested_device is not None
 
-    device = tested_device.reference_device_name
+    device = _resolve_device(app_info, device_override).reference_device_name
 
     # Windows apps run natively on-device (no Windows container), even though the host
     # build can use Docker.

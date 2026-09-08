@@ -180,6 +180,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/palm_detector.tflite
@@ -203,6 +204,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/yolo_2d_detection.tflite
@@ -282,6 +284,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/sinet.tflite
@@ -303,6 +306,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/posenet_mobilenet.tflite
@@ -375,6 +379,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/deeplab_xception.tflite
@@ -485,6 +490,7 @@ apps:
   languages:
   - Python
   supported_devices:
+  - Arduino VENTUNO Q
   - Dragonwing IQ-9075 EVK
   model_file_paths:
   - models/yamnet.tflite
