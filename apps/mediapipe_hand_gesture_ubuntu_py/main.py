@@ -432,7 +432,9 @@ def main(args: argparse.Namespace) -> None:
         "models/hand_landmark_detector.tflite", experimental_delegates=[delegate]
     )
 
-    gesture_classifier = Interpreter("models/canned_gesture_classifier.tflite")
+    gesture_classifier = Interpreter(
+        "models/canned_gesture_classifier.tflite", experimental_delegates=[delegate]
+    )
 
     hand_detector.allocate_tensors()
     landmark_detector.allocate_tensors()
@@ -471,7 +473,7 @@ def main(args: argparse.Namespace) -> None:
                 [
                     ("Palm detector", "TFLITE (NPU)"),
                     ("Landmark detector", "TFLITE (NPU)"),
-                    ("Gesture classifier", "TFLITE (CPU)"),
+                    ("Gesture classifier", "TFLITE (NPU)"),
                 ],
             ),
         ],
