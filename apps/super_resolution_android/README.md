@@ -68,18 +68,29 @@ The APKs will be at:
 > sudo update-binfmts --enable qemu-x86_64
 > ```
 
-Build our Docker image with all required dependencies, including the supported Android and QAIRT SDKs.
-```bash
-docker build --build-arg BUILD_TYPE=build -t aiha-superres .
-```
-Build the APK:
-```bash
-docker run --name superres-container aiha-superres bash -c "source /app/scripts/android_utils.sh && cd /app && gradle assembleDebug assembleAndroidTest"
+`build.sh` builds the APKs inside a container that carries the supported Android and
+QAIRT SDKs, then writes them to `build/outputs`. Android apps have no native build path,
+so Docker is required.
 
-mkdir ./build
-
-docker cp superres-container:/app/build/outputs ./build/outputs
+```bash
+./build.sh
 ```
+
+On a Windows host, use `.\build.ps1` instead. Add `--clean` / `-Clean` to discard prior
+build state and rebuild from scratch.
+
+> [!IMPORTANT]
+> You currently need to build the base image that carries the toolchain, then point the
+> app at it. From this app directory:
+>
+> ```bash
+> docker build -f base.Dockerfile -t qai-hub-apps-android-base:local .
+> export QAIHA_BASE_IMAGE=qai-hub-apps-android-base:local
+> ```
+>
+> The image is reused by every later build, and the same one works for every Android
+> app on the same CLI version. If the CLI is upgraded (or downgraded), make sure to
+> rebuild the base. Android apps have no native build path, so this step is required.
 
 #### Install & Run
 

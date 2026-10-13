@@ -13,6 +13,7 @@ import qai_hub_apps_test.bundlers as bundlers_mod
 from qai_hub_apps_test.bundlers import bundle_app
 from qai_hub_apps_test.configs.info_yaml import AppLanguage
 from qai_hub_apps_test.conftest import FAKE_VERSIONS, make_sample_app_info
+from qai_hub_apps_test.utils.paths import DOCKER_ROOT
 
 pytestmark = pytest.mark.bundler_unit
 
@@ -212,8 +213,13 @@ def test_bundle_app_includes_dockerfile(
     bundle_app(dummy_python_app_path, out_dir, utils_parent=dummy_python_utils_path)
 
     dockerfile = out_dir / "my_dummy_app" / "Dockerfile"
+    base_dockerfile = out_dir / "my_dummy_app" / "base.Dockerfile"
     assert dockerfile.is_file()
     assert "FROM some/base:tag" in dockerfile.read_text()
+    assert base_dockerfile.is_file()
+    assert (
+        base_dockerfile.read_text() == (DOCKER_ROOT / "ubuntu.dockerfile").read_text()
+    )
 
 
 def test_bundle_app_no_dockerfile_when_base_docker_unset(
@@ -224,6 +230,7 @@ def test_bundle_app_no_dockerfile_when_base_docker_unset(
     out_dir = tmp_path / "out"
     bundle_app(dummy_python_app_path, out_dir, utils_parent=dummy_python_utils_path)
     assert not (out_dir / "my_dummy_app" / "Dockerfile").exists()
+    assert not (out_dir / "my_dummy_app" / "base.Dockerfile").exists()
 
 
 def test_bundle_app_missing_dockerfile_raises(

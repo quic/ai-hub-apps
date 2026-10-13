@@ -50,18 +50,33 @@ Open `SuperResolution.sln` and build the `ARM64` configuration. The project rest
 - **vcpkg** (OpenCV) is configured in [manifest mode](https://learn.microsoft.com/en-us/vcpkg/concepts/manifest-mode). If OpenCV headers are missing, run `vcpkg integrate install` in a Visual Studio terminal.
 
 ### Option B: Using Docker
-Build our Docker image with all required dependencies, including the supported MS Build Tools, ONNX Runtime QNN, and OpenCV.
-```powershell
-docker build --build-arg BUILD_TYPE=build -t aiha-superresolution-win .
-```
-Build the EXE:
-```powershell
-docker run --name superresolution-container aiha-superresolution-win powershell -c '. ./install_build.ps1; & $env:MSBUILD_EXE SuperResolution.sln /p:Configuration=Release /p:Platform=ARM64'
 
-mkdir ./ARM64
+`build.ps1` builds the ARM64 binaries inside a Windows container that carries the
+supported MS Build Tools, ONNX Runtime QNN, and OpenCV, then writes them to `ARM64`.
 
-docker cp superresolution-container:C:\app\ARM64 .
+```powershell
+.\build.ps1
 ```
+
+Add `-Clean` to discard prior build artifacts first, or `-NoDocker` to build natively
+with the host MSBuild instead. A Docker build needs a Windows host with the daemon in
+windows-container mode; windows containers do not exist for ARM64, so this path runs on
+an x86-64 build host.
+
+> [!IMPORTANT]
+> To use the Docker path, you currently need to build the base image that carries the
+> toolchain, then point the app at it. From this app directory, with the Docker daemon
+> in windows-container mode:
+>
+> ```powershell
+> docker build -f base.Dockerfile -t qai-hub-apps-windows-base:local .
+> $env:QAIHA_BASE_IMAGE = "qai-hub-apps-windows-base:local"
+> ```
+>
+> The image is reused by every later build, and the same one works for every Windows
+> C++ app on the same CLI version. If the CLI is upgraded (or downgraded), make sure to
+> rebuild the base. Alternatively, build natively with `-NoDocker` and skip Docker
+> entirely.
 
 ### Install & Run
 ```powershell

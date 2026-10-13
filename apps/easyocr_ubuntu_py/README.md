@@ -44,6 +44,20 @@ Model weights are not included. Download the `easyocr` w8a8 TFLite bundle from
 
 Follow [these instructions](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) to install Docker.
 
+> [!IMPORTANT]
+> To use the Docker path, you currently need to build the base image that carries the
+> toolchain, then point the app at it. From this app directory:
+>
+> ```bash
+> docker build -f base.Dockerfile -t qai-hub-apps-ubuntu-base:local .
+> export QAIHA_BASE_IMAGE=qai-hub-apps-ubuntu-base:local
+> ```
+>
+> The image is reused by every later build, and the same one works for every Ubuntu app
+> on the same CLI version. If the CLI is upgraded (or downgraded), make sure to rebuild
+> the base. Alternatively, run the app natively on the host with `--no-docker` and skip
+> Docker entirely.
+
 ### Install Ubuntu host packages (Dragonwing devices)
 
 ```bash

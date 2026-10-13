@@ -19,7 +19,7 @@ from qai_hub_apps_test.bundlers.windows.bundle import (
     bundle_source as _bundle_windows_cpp_source,
 )
 from qai_hub_apps_test.configs.info_yaml import AppLanguage, AppType, QAIHAAppInfo
-from qai_hub_apps_test.utils.paths import find_app_dir
+from qai_hub_apps_test.utils.paths import DOCKER_ROOT, find_app_dir
 
 
 def bundle_app(
@@ -89,6 +89,16 @@ def bundle_app(
             raise FileNotFoundError(
                 f"App '{app_info.id}' sets base_docker but has no Dockerfile. "
                 "Run 'python -m qai_hub_apps_test.scripts.generate_app_scripts'."
+            )
+
+        # Interim: users build the base image themselves, so ship its dockerfile
+        # alongside the app. The bases only COPY the app-agnostic shared scripts,
+        # which the bundle already carries, so it builds from the bundle as-is.
+        # Drop this (and the README instructions) once
+        # https://github.com/qcom-ai-hub/ai-hub-apps-internal/pull/463 merges.
+        if app_info.base_docker is not None:
+            shutil.copy2(
+                DOCKER_ROOT / app_info.base_docker, tmp_dir / "base.Dockerfile"
             )
 
         if make_zip:
