@@ -1,0 +1,1 @@
+../_shared/python/compare_images.py

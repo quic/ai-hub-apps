@@ -1,0 +1,104 @@
+# Image Colourization app
+
+A Python app using GStreamer, OpenCV, and LiteRT that performs real-time image
+colourization on a live camera stream, streaming a colourized frame for each input
+frame.
+
+The app is model-agnostic: it reads the model file name and input geometry from
+the `metadata.json` that ships with the AI Hub model asset, so the same code
+runs colourization models exported from
+[AI Hub Models](https://github.com/qualcomm/ai-hub-models) (DDColor, ...).
+
+## Requirements
+
+- ARM64 Ubuntu 22.04+ or compatible Linux
+- Docker
+
+## Setup
+
+### Option A: Using the CLI (Recommended)
+
+Install the CLI and fetch the app with the model:
+
+```bash
+pip install qai-hub-apps
+qai-hub-apps fetch colourization_ubuntu_py --model ddcolor --output-dir ~
+cd ~/colourization_ubuntu_py
+```
+
+> [!NOTE]
+> To use a model you exported yourself with [AI Hub Models](https://github.com/qualcomm/ai-hub-models),
+> pass the exported model path to `--model` in place of a model ID. The CLI places the exported
+> assets into the app automatically:
+>
+> ```bash
+> qai-hub-apps fetch colourization_ubuntu_py --model <path/to/exported_model>
+> ```
+
+### Option B: Cloning the Repo
+
+If you cloned the release branch, the app directory is already self-contained — but **model weights are not included**. Download a compatible model from [AI Hub Models](https://aihub.qualcomm.com/iot/models), unzip the bundle and copy both files into the `models/` directory before building:
+- `models/<model>.tflite` — the model weights
+- `models/metadata.json` — the model I/O metadata that ships in the bundle
+
+## Build
+
+### Install Docker
+
+Follow [these instructions](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository) to install Docker.
+
+### Install Ubuntu host packages (Dragonwing devices)
+
+Add the Qualcomm PPA and install the required host packages:
+
+```bash
+sudo apt-add-repository -y ppa:ubuntu-qcom-iot/qcom-ppa
+sudo apt-get update
+sudo apt-get install qcom-fastrpc1 qcom-fastrpc-dev
+```
+
+If you are using a built-in camera on the Dragonwing RB3, also install `qcom-camera-server`:
+
+```bash
+sudo apt-get install qcom-camera-server
+```
+
+After installing, reboot the device.
+
+## Run
+
+`./launch.sh` builds the app's Docker image — with all required runtime
+dependencies, including the supported QAIRT SDK — on first use, installs the
+app's dependencies inside the container, then runs the app. App arguments go
+after `--`; add `--no-docker` to run natively on the host instead.
+
+Start with the app's self-test:
+
+```bash
+./launch.sh --test -- --hexagon-version <HEX_VER>
+```
+
+`test.sh` downloads a test image, streams it as a still video, and runs the app against it using the QAIRT runtime.
+
+### List available cameras
+
+```bash
+./launch.sh -- --list-devices
+```
+
+### Run with a specific camera
+
+```bash
+./launch.sh -- --hexagon-version <HEX_VER> --video-device /dev/video0
+```
+
+> [!IMPORTANT]
+> `--hexagon-version` must match your device's Hexagon DSP version unless it can be detected from the configured target device. For example, the [Dragonwing RB3 Gen 2](https://www.qualcomm.com/developer/hardware/rb3-gen-2-development-kit) uses Hexagon v68. To find the Hexagon version for your device, visit the [AI Hub device catalogue](https://workbench.aihub.qualcomm.com/devices/).
+
+> [!NOTE]
+> To use the integrated camera of a Dragonwing RB3, the `qtiqmmfsrc` GStreamer plugin must be used.
+> `./launch.sh -- --hexagon-version v68 --video-gstreamer-source "qtiqmmfsrc name=camsrc camera=0"`.
+
+This serves the live stream (left) and the colourized result (right) on port 8080.
+Open a browser at `http://<device-ip>:8080` and press `s` to colourize the current
+frame; press `s` again to re-capture.
