@@ -10,7 +10,7 @@ export QAIHA_APP_ROOT="$SCRIPT_DIR"
 source ../_shared/scripts/pip_utils.sh
 source ../_shared/scripts/qairt_utils.sh
 
-TEST_IMAGE_URL="https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-apps/apps/ocr_ubuntu_py/test/gracewood.png"
+TEST_IMAGE_URL="https://qaihub-public-assets.s3.us-west-2.amazonaws.com/qai-hub-apps/apps/easyocr_ubuntu_py/test/gracewood.png"
 TEST_IMAGE="$SCRIPT_DIR/gracewood.png"
 
 REFERENCE_TEXT="$SCRIPT_DIR/gracewood_output.txt"

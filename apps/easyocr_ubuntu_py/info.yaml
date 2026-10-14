@@ -3,7 +3,7 @@ id: easyocr_ubuntu_py
 license_url: https://github.com/qualcomm/ai-hub-apps/blob/main/LICENSE
 license_type: bsd-3-clause
 runtime: tflite
-status: unpublished
+status: published
 domain: 'Computer Vision'
 headline: 'On-device optical character recognition with TFLite'
 description: 'A sample app for Ubuntu integrating EasyOCR, a two-stage text detector (CRAFT) plus text recognizer (CTC), run via TFLite Runtime. It uses GStreamer for input video/images and provides a minimal web interface to stream output frames with recognized text overlaid, suitable for embedded applications.'
