@@ -6,16 +6,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from packaging.version import parse as parse_version
-
 from qai_hub_apps._internal.utils.paths import APPS_ROOT
 
 _DEFAULT_VERSIONS_ENV = APPS_ROOT / "_shared" / "scripts" / "versions.env"
-
-
-def is_dev(version: str) -> bool:
-    """Return True if ``version`` is a development (pre-)release."""
-    return parse_version(version).is_devrelease
 
 
 def load_versions(path: Path = _DEFAULT_VERSIONS_ENV) -> dict[str, str]:

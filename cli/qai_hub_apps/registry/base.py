@@ -41,7 +41,7 @@ from qai_hub_apps.errors import (
 )
 from qai_hub_apps.logging_utils import is_quiet
 from qai_hub_apps.registry.remote import ensure_registry
-from qai_hub_apps.utils.devices import device_to_chipset, is_aot_runtime
+from qai_hub_apps.utils.devices import is_aot_runtime
 from qai_hub_apps.utils.github import make_issue_url
 from qai_hub_apps.utils.scripts import confirm
 from qai_hub_apps.validate import is_app_supported
@@ -122,44 +122,10 @@ class App:
                 f"Supported devices: {available}"
             )
 
-    def _resolve_device_chipset(self, device: str) -> str:
-        """Resolve a ``supported_devices`` entry to its chipset.
-
-        An entry that is not a known AI Hub device is a bug in the app's
-        registry data, surfaced with a link to file an issue.
-        """
-        try:
-            chipset = device_to_chipset(device)
-            logger.debug(
-                "Resolved supported device '%s' to chipset '%s' for app '%s'",
-                device,
-                chipset,
-                self.id,
-            )
-            return chipset
-        except KeyError as e:
-            issue_url = make_issue_url(
-                title=f"Unknown supported_device for app '{self.id}'",
-                body=(
-                    f"App: {self.id}\n"
-                    f"Version: {__version__}\n"
-                    f"supported_devices entry: {device}\n"
-                    f"AI Hub Models version: {QAIHM_VERSION}\n"
-                    f"Error: {e}"
-                ),
-            )
-            raise AppIncompatibleError(
-                f"Supported device '{device}' for app '{self.id}' is not a "
-                f"known AI Hub device. This is likely a bug - please file an "
-                f"issue and we'll look into it:\n  {issue_url}"
-            ) from e
-
     @functools.cached_property
     def supported_chipsets(self) -> frozenset[str]:
         """The chipsets of the app's ``supported_devices``, resolved and cached."""
-        return frozenset(
-            self._resolve_device_chipset(device) for device in self.supported_devices
-        )
+        return frozenset(d.chipset for d in self.supported_devices)
 
     def _ensure_chipset_supported(self, chipset: str) -> None:
         """Raise if *chipset* is not one of the app's supported chipsets.
@@ -375,20 +341,6 @@ class App:
                 raise AppIncompatibleError(
                     f"The model '{model_id}' for '{self.id}' ({__version__}) has {len(src_names)} "
                     f"file(s) but {len(dst_paths)} were expected. "
-                    f"This is likely a bug - please file an issue and we'll look into it:\n"
-                    f"  {issue_url}"
-                )
-            dst_parents = {Path(p).parent for p in dst_paths}
-            if len(dst_parents) > 1:
-                issue_url = make_issue_url(
-                    title=f"model_file_paths directory mismatch for app '{self.id}'",
-                    body=(
-                        f"App: {self.id}\n"
-                        f"model_file_paths: {[str(p) for p in dst_paths]}"
-                    ),
-                )
-                raise AppIncompatibleError(
-                    f"All model_file_paths for '{self.id}' must share the same parent directory. "
                     f"This is likely a bug - please file an issue and we'll look into it:\n"
                     f"  {issue_url}"
                 )

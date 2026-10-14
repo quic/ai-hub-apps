@@ -22,7 +22,7 @@ import json
 import sys
 
 from qai_hub_apps.registry import Registry
-from qai_hub_apps._internal.configs.info_yaml import QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import AppInfoInternal
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -41,7 +41,7 @@ for app in registry.apps:
     all_apps.add(app.id)
     if args.only and app.id not in args.only:
         continue
-    info, _ = QAIHAAppInfo.from_app(app.id)
+    info, _ = AppInfoInternal.from_app(app.id)
     groups[info.app_type.value].append(app.id)
 
 if args.only:

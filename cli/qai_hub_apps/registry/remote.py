@@ -14,14 +14,20 @@ from platformdirs import user_cache_dir
 from qai_hub_apps import _BUNDLED_REGISTRY, PACKAGE_NAME, _is_dev
 from qai_hub_apps.errors import RegistryFetchError
 
-_S3_BASE = "https://qaihub-public-assets.s3.us-west-2.amazonaws.com"
-_S3_PREFIX = "qai-hub-apps/releases"
-_S3_PREFIX_DEV = f"{_S3_PREFIX}/dev"
+# Where releases are published.
+PUBLIC_ASSETS_S3_BUCKET = "qaihub-public-assets"
+S3_REGION = "us-west-2"
+ASSETS_S3_BASE = f"https://{PUBLIC_ASSETS_S3_BUCKET}.s3.{S3_REGION}.amazonaws.com"
+RELEASES_S3_PREFIX = "qai-hub-apps/releases"
+
+
+def s3_prefix_for(version: str) -> str:
+    """S3 key prefix for a release. Dev versions go under a separate "dev" subfolder."""
+    return f"{RELEASES_S3_PREFIX}/dev" if _is_dev(version) else RELEASES_S3_PREFIX
 
 
 def _registry_s3_url(version: str) -> str:
-    prefix = _S3_PREFIX_DEV if _is_dev(version) else _S3_PREFIX
-    return f"{_S3_BASE}/{prefix}/{quote(version)}/registry.yaml"
+    return f"{ASSETS_S3_BASE}/{s3_prefix_for(version)}/{quote(version)}/registry.yaml"
 
 
 def _get_cached_registry_path(version: str) -> Path:

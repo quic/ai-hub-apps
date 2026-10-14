@@ -63,8 +63,9 @@ dev = [
     "boto3>=1.26,<=1.40.0",              # for fetching test assets
     "botocore>=1.26,<=1.40.0",
     "boto3-stubs[s3,sts]>=1.26,<=1.40.0",
+    "pre-commit",
+    "mypy",
 ]
-precommit = ["pre-commit", "mypy", "boto3-stubs[s3,sts]>=1.26,<=1.40.0"]
 
 [tool.pytest.ini_options]
 python_files = ["*_test.py"]
@@ -73,6 +74,8 @@ addopts = "--cov=qai_hub_apps --cov-report=term-missing --cov-fail-under=100 -m 
 
 [tool.coverage.report]
 omit = ["*_test.py", "*conftest.py", "qai_hub_apps/_internal/*"]
+# A file with a `# pragma: exclude file` comment is skipped entirely.
+exclude_also = ["\\A(?s:.*# pragma: exclude file.*)\\Z"]
 
 [tool.pydoclint]
 style = 'numpy'

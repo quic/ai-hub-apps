@@ -11,7 +11,7 @@ set -euo pipefail
 REPO=$(git rev-parse --show-toplevel)
 
 source "$REPO/qaiha-dev/bin/activate" 2>/dev/null || {
-    echo "[ERROR] qaiha-dev not found. run 'bash tools/setup_env.sh --extras precommit'"
+    echo "[ERROR] qaiha-dev not found. run 'bash tools/setup_env.sh'"
     exit 1
 }
 

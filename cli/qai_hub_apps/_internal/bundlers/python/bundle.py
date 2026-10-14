@@ -38,7 +38,7 @@ from qai_hub_apps._internal.bundlers.python.utils_resolver import resolve_utils_
 from qai_hub_apps._internal.bundlers.shell.bundle import (
     bundle_scripts as _bundle_scripts,
 )
-from qai_hub_apps._internal.configs.info_yaml import AppLanguage, QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import AppInfoInternal, AppLanguage
 
 
 def bundle_source(
@@ -64,7 +64,7 @@ def bundle_source(
     """
     if utils_parent is None:
         utils_parent = resolve_utils_root(None)
-    app_info, _ = QAIHAAppInfo.from_app(app_root)
+    app_info, _ = AppInfoInternal.from_app(app_root)
 
     if AppLanguage.PYTHON not in app_info.languages:
         raise ValueError(

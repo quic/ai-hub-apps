@@ -9,7 +9,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from qai_hub_apps.configs.app_yaml import AppLanguage, AppType
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME, AppLanguage, AppType
 from qai_hub_apps.configs.model_asset import ModelAsset
 from qai_hub_apps.conftest import make_app_info
 from qai_hub_apps.errors import InvalidArgumentError, QAIHubAppsError
@@ -39,7 +39,7 @@ def test_resolve_app_from_dir_missing_info_raises(tmp_path, sample_registry_yaml
 def test_resolve_app_from_dir_malformed_info_raises(tmp_path, sample_registry_yaml):
     app_dir = tmp_path / "app"
     app_dir.mkdir()
-    (app_dir / "info.yaml").write_text("not a mapping\n", encoding="utf-8")
+    (app_dir / INFO_FILENAME).write_text("not a mapping\n", encoding="utf-8")
     with pytest.raises(InvalidArgumentError, match="Could not read an app 'id'"):
         _resolve_app_from_dir(app_dir, Registry.load(sample_registry_yaml))
 

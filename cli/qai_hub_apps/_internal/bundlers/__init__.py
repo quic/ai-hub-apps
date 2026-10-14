@@ -18,7 +18,11 @@ from qai_hub_apps._internal.bundlers.python.bundle import (
 from qai_hub_apps._internal.bundlers.windows.bundle import (
     bundle_source as _bundle_windows_cpp_source,
 )
-from qai_hub_apps._internal.configs.info_yaml import AppLanguage, AppType, QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import (
+    AppInfoInternal,
+    AppLanguage,
+    AppType,
+)
 from qai_hub_apps._internal.utils.paths import DOCKER_ROOT, find_app_dir
 
 
@@ -62,7 +66,7 @@ def bundle_app(
         If the app type/language combination is not supported for bundling.
     """
     app_dir: Path = find_app_dir(app) if isinstance(app, str) else app
-    app_info, _ = QAIHAAppInfo.from_app(app_dir)
+    app_info, _ = AppInfoInternal.from_app(app_dir)
 
     output_dir.mkdir(parents=True, exist_ok=True)
 

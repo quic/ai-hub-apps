@@ -8,6 +8,8 @@ from pathlib import Path
 
 from platformdirs import user_cache_dir
 
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME
+
 # Repository Global Paths
 REPOSITORY_ROOT = Path(os.path.dirname(__file__)).parent.parent.parent.parent
 CACHE_ROOT = Path(user_cache_dir("qaiha"))
@@ -26,7 +28,7 @@ if not all((REPOSITORY_ROOT / m).exists() for m in _REPO_MARKERS):
 
 
 def is_app_root(path: str | os.PathLike) -> bool:
-    return (Path(path) / "info.yaml").exists()
+    return (Path(path) / INFO_FILENAME).exists()
 
 
 def _get_all_apps(
@@ -100,10 +102,10 @@ def find_app_dir(app_id: str) -> Path:
     # Local import to avoid circular dependency:
     # configs/info_yaml.py already imports from utils/paths (APPS_ROOT, REPOSITORY_ROOT),
     # so a top-level import here would create a cycle.
-    from qai_hub_apps._internal.configs.info_yaml import QAIHAAppInfo
+    from qai_hub_apps._internal.configs.info_yaml import AppInfoInternal
 
     for rel_path in get_all_apps():
-        info, app_dir = QAIHAAppInfo.from_app(rel_path)
+        info, app_dir = AppInfoInternal.from_app(rel_path)
         if info.id == app_id:
             return app_dir
     raise ValueError(

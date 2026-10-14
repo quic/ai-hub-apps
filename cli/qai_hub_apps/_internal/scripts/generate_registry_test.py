@@ -11,11 +11,10 @@ import pytest
 
 import qai_hub_apps._internal.scripts.generate_registry as gen_mod
 from qai_hub_apps._internal.configs.info_yaml import (
+    AppInfoInternal,
     AppLanguage,
     AppStatus,
-    QAIHAAppInfo,
 )
-from qai_hub_apps._internal.configs.registry_yaml import AppRegistry
 from qai_hub_apps._internal.conftest import make_sample_app_info
 from qai_hub_apps._internal.scripts.generate_registry import (
     RegistryScope,
@@ -24,6 +23,7 @@ from qai_hub_apps._internal.scripts.generate_registry import (
     upload_app,
     upload_registry,
 )
+from qai_hub_apps.configs.registry_yaml import AppRegistry
 
 pytestmark = pytest.mark.bundler_unit
 
@@ -33,7 +33,7 @@ _CLI_VERSION = "0.27.0"
 
 def _make_one_app_per_status(
     tmp_path: Path,
-) -> list[tuple[QAIHAAppInfo, Path]]:
+) -> list[tuple[AppInfoInternal, Path]]:
     """One app per AppStatus, each in a directory named after its status value."""
     apps = []
     for status in AppStatus:
@@ -63,7 +63,7 @@ def test_constructs_url_from_relative_path() -> None:
 
 def test_upload_registry_s3_key_format(tmp_path: Path) -> None:
     registry_path = tmp_path / "registry.yaml"
-    registry_path.write_text("schema_version: '1.0'\n")
+    registry_path.write_text("schema_version: '1.2'\n")
 
     bucket = MagicMock()
     upload_registry(registry_path, bucket, "qai-hub-apps/releases", _CLI_VERSION)

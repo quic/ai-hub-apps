@@ -34,8 +34,8 @@ import sys
 
 from setuptools_scm import get_version
 
+from qai_hub_apps import _is_dev
 from qai_hub_apps._internal.utils.paths import REPOSITORY_ROOT
-from qai_hub_apps._internal.utils.versions import is_dev
 
 
 def resolve_version(target: str) -> str:
@@ -79,11 +79,11 @@ def main() -> None:
     ).stdout.strip()
 
     print(
-        f"Resolved version: {version} (is_dev={is_dev(version)}, sha={sha})",
+        f"Resolved version: {version} (is_dev={_is_dev(version)}, sha={sha})",
         file=sys.stderr,
     )
     print(f"version={version}")
-    print(f"is_dev={'true' if is_dev(version) else 'false'}")
+    print(f"is_dev={'true' if _is_dev(version) else 'false'}")
     print(f"sha={sha}")
 
 

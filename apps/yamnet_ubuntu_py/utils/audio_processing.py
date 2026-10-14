@@ -137,7 +137,7 @@ def _mel_filterbank(
         magnitude spectrogram.
     """
 
-    def hz_to_mel(freq: np.ndarray) -> np.ndarray:
+    def hz_to_mel(freq: float) -> np.floating:
         return 2595.0 * np.log10(1.0 + freq / 700.0)
 
     def mel_to_hz(mels: np.ndarray) -> np.ndarray:

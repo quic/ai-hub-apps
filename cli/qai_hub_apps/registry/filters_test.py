@@ -117,13 +117,13 @@ def test_model_no_match():
 
 
 def test_device_matches_leniently():
-    app_filter = AppFilter(device="snapdragon 8 elite qrd")
-    assert app_filter.matches(_app(supported_devices=["Snapdragon® 8 Elite QRD"]))
+    app_filter = AppFilter(device="SNAPDRAGON-X-ELITE-CRD")
+    assert app_filter.matches(_app(supported_devices=["Snapdragon X Elite CRD"]))
 
 
 def test_device_no_match():
     app_filter = AppFilter(device="Snapdragon X Elite CRD")
-    assert not app_filter.matches(_app(supported_devices=["Snapdragon 8 Elite QRD"]))
+    assert not app_filter.matches(_app(supported_devices=["Dragonwing IQ-9075 EVK"]))
 
 
 def test_device_matches_app_with_no_declared_devices():

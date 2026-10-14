@@ -17,26 +17,25 @@ from tap import Tap
 if TYPE_CHECKING:
     from mypy_boto3_s3.service_resource import Bucket
 
+from qai_hub_apps import _is_dev
 from qai_hub_apps._internal.bundlers import bundle_app
 from qai_hub_apps._internal.configs.asset_bases_yaml import AssetBases
 from qai_hub_apps._internal.configs.info_yaml import (
+    AppInfo,
+    AppInfoInternal,
     AppLanguage,
     AppStatus,
     AppType,
     AppUrl,
-    QAIHAAppInfo,
-    QAIHACLIAppInfo,
 )
-from qai_hub_apps._internal.configs.registry_yaml import AppRegistry
 from qai_hub_apps._internal.utils.aws import (
-    ASSETS_S3_BASE,
     QAIHM_PUBLIC_S3_BUCKET,
     get_qaihm_s3,
-    s3_prefix_for,
     upload_public_file,
 )
 from qai_hub_apps._internal.utils.paths import REPOSITORY_ROOT, get_all_apps
-from qai_hub_apps._internal.utils.versions import is_dev
+from qai_hub_apps.configs.registry_yaml import AppRegistry
+from qai_hub_apps.registry.remote import ASSETS_S3_BASE, s3_prefix_for
 
 
 @unique
@@ -54,7 +53,7 @@ class RegistryScope(Enum):
     TEST = "test"
     ALL = "all"
 
-    def includes(self, info: QAIHAAppInfo) -> bool:
+    def includes(self, info: AppInfoInternal) -> bool:
         """Whether an app with this info belongs to this scope."""
         if self is RegistryScope.PRODUCTION:
             return info.status in (AppStatus.PUBLISHED, AppStatus.DEPRECATED)
@@ -69,7 +68,7 @@ class RegistryScope(Enum):
         raise NotImplementedError(f"Unhandled registry scope: {self}")
 
 
-def _is_supported_app(info: QAIHAAppInfo) -> bool:
+def _is_supported_app(info: AppInfoInternal) -> bool:
     """Whether an app can be bundled/registered by the CLI.
 
     Supported: Android apps, any Python app, and Windows C++ apps.
@@ -81,16 +80,16 @@ def _is_supported_app(info: QAIHAAppInfo) -> bool:
     return info.app_type == AppType.WINDOWS and AppLanguage.CPP in info.languages
 
 
-def _to_cli_info(info: QAIHAAppInfo, **updates: object) -> QAIHACLIAppInfo:
+def _to_cli_info(info: AppInfoInternal, **updates: object) -> AppInfo:
     """Project full app info onto the CLI-facing subset, applying *updates*.
 
     Structured ``supported_devices`` entries are flattened to device names, as
     test status is internal to CI.
     """
-    fields = {name: getattr(info, name) for name in QAIHACLIAppInfo.model_fields}
+    fields = {name: getattr(info, name) for name in AppInfo.model_fields}
     fields["supported_devices"] = [d.name for d in info.supported_devices]
     fields.update(updates)
-    return QAIHACLIAppInfo.model_validate(fields)
+    return AppInfo.model_validate(fields)
 
 
 def _read_cli_version() -> str:
@@ -117,7 +116,7 @@ class GenerateRegistryParser(Tap):
     force: bool = False
 
 
-def _resolve_repo_url(info: QAIHAAppInfo, repo_base: str, ref: str) -> str:
+def _resolve_repo_url(info: AppInfoInternal, repo_base: str, ref: str) -> str:
     """Return the full GitHub URL for an app's source.
 
     Uses app_repo_url directly if set (e.g. external repos); otherwise
@@ -152,11 +151,11 @@ def upload_app(
 
 def generate_registry(
     output_dir: Path,
-    all_apps: list[tuple[QAIHAAppInfo, Path]],
+    all_apps: list[tuple[AppInfoInternal, Path]],
     repo_base: str,
     ref: str,
     cli_version: str,
-    schema_version: str = "1.0",
+    schema_version: str = "1.2",
     min_cli_version: str = "0.0.1",
     build_and_upload: bool = False,
     scope: RegistryScope = RegistryScope.PRODUCTION,
@@ -169,7 +168,7 @@ def generate_registry(
     output_dir:
         Directory where registry.yaml will be written.
     all_apps:
-        Every (QAIHAAppInfo, app_dir) pair in the repo, unfiltered.
+        Every (AppInfoInternal, app_dir) pair in the repo, unfiltered.
     repo_base:
         GitHub repo base URL (no ref), e.g. https://github.com/qualcomm/ai-hub-apps
     ref:
@@ -202,8 +201,8 @@ def generate_registry(
     print(f"Ref:       {ref} (repo base: {repo_base})")
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    public_apps: list[tuple[QAIHAAppInfo, Path]] = []
-    excluded: list[QAIHAAppInfo] = []
+    public_apps: list[tuple[AppInfoInternal, Path]] = []
+    excluded: list[AppInfoInternal] = []
     for info, app_dir in all_apps:
         if info.id != app_dir.name:
             raise SystemExit(
@@ -242,7 +241,7 @@ def generate_registry(
 
     # Dev releases go to a separate "dev" subfolder; mirrored client-side in
     # cli/qai_hub_apps/registry/remote.py.
-    dev_release = is_dev(cli_version)
+    dev_release = _is_dev(cli_version)
     s3_prefix = s3_prefix_for(cli_version)
     s3_base = ASSETS_S3_BASE
 
@@ -261,7 +260,7 @@ def generate_registry(
             )
         bucket, _ = get_qaihm_s3(QAIHM_PUBLIC_S3_BUCKET, requires_admin=False)
 
-    bundled_apps: list[QAIHACLIAppInfo] = []
+    bundled_apps: list[AppInfo] = []
 
     if build_and_upload:
         with tempfile.TemporaryDirectory() as build_dir:
@@ -324,7 +323,7 @@ def generate_registry(
 def main() -> None:
     args = GenerateRegistryParser().parse_args()
     repo_base = AssetBases.load().app_repo_base
-    all_apps = [QAIHAAppInfo.from_app(rel_path) for rel_path in get_all_apps()]
+    all_apps = [AppInfoInternal.from_app(rel_path) for rel_path in get_all_apps()]
     generate_registry(
         args.output_dir,
         all_apps,

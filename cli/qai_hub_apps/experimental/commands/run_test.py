@@ -13,7 +13,7 @@ import pytest
 
 from qai_hub_apps.configs.app_yaml import AppLanguage, AppType
 from qai_hub_apps.configs.model_asset import ModelAsset
-from qai_hub_apps.conftest import make_app_info, make_device
+from qai_hub_apps.conftest import TEST_DEVICE_2, make_app_info, make_device
 from qai_hub_apps.errors import QAIHubAppsError
 from qai_hub_apps.experimental.commands import run as run_mod
 from qai_hub_apps.experimental.commands.run import (
@@ -140,7 +140,7 @@ def test_run_run_windows_app_runs_natively(tmp_path, stub_run_run, caplog):
 
 
 def test_run_run_device_override(tmp_path, stub_run_run, monkeypatch):
-    override = make_device(name="Device B")
+    override = make_device(name="Dragonwing IQ-9075 EVK")
     monkeypatch.setattr(
         run_mod, "resolve_device_info", MagicMock(return_value=override)
     )
@@ -151,13 +151,13 @@ def test_run_run_device_override(tmp_path, stub_run_run, monkeypatch):
         None,
         tmp_path,
         registry,
-        ModelAsset(model_id="m", device="Device B"),
+        ModelAsset(model_id="m", device="Dragonwing IQ-9075 EVK"),
     )
     assert stub_run_run.ensure_run_supported.call_args.args[1] is override
 
 
 def test_run_run_android_prompts_for_device(tmp_path, stub_run_run, monkeypatch):
-    android = [make_device(name="Device A"), make_device(name="Device B")]
+    android = [make_device(name="Device A"), make_device(name="Dragonwing IQ-9075 EVK")]
     monkeypatch.setattr(
         run_mod, "list_android_devices", MagicMock(return_value=android)
     )
@@ -165,7 +165,7 @@ def test_run_run_android_prompts_for_device(tmp_path, stub_run_run, monkeypatch)
     monkeypatch.setattr(run_mod, "prompt_for_device", prompt)
     registry = MagicMock()
     registry.find_by_id.return_value = _make_app(
-        AppType.ANDROID, supported_devices=["Device B"]
+        AppType.ANDROID, supported_devices=[TEST_DEVICE_2]
     )
     run_run("test_app", None, tmp_path, registry, None)
     # Only the app's supported devices are offered.

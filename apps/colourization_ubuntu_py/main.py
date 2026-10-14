@@ -330,7 +330,7 @@ def main(args: argparse.Namespace) -> None:
             )
         return sections
 
-    def do_capture(frame: np.ndarray) -> None:
+    def do_capture(frame: np.ndarray | None) -> None:
         """Colourize the latest frame into the "Colourized" window."""
         nonlocal _last_latency_ms
         if frame is None:

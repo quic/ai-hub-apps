@@ -4,14 +4,15 @@
 # ---------------------------------------------------------------------
 from __future__ import annotations
 
-from dataclasses import dataclass
 from pathlib import Path
 
+from pydantic import ConfigDict, model_validator
+
+from qai_hub_apps.configs.base_config import BaseConfig
 from qai_hub_apps.utils.devices import device_to_chipset
 
 
-@dataclass(frozen=True)
-class ModelAsset:
+class ModelAsset(BaseConfig):
     """Identifies a model to bundle into an app.
 
     Either ``model_id`` (downloaded from AI Hub) or ``path`` (a locally-exported
@@ -22,14 +23,18 @@ class ModelAsset:
     ``chipset`` and ``device`` are mutually exclusive ways to target an asset.
     """
 
+    model_config = ConfigDict(frozen=True)
+
     model_id: str | None = None
     chipset: str | None = None
     device: str | None = None
     path: Path | None = None
 
-    def __post_init__(self) -> None:
+    @model_validator(mode="after")
+    def _check_exclusive_target(self) -> ModelAsset:
         if self.chipset is not None and self.device is not None:
             raise ValueError("Provide at most one of 'chipset' or 'device'.")
+        return self
 
     def resolved_chipset(self) -> str | None:
         """The chipset this targets, whichever way the target was named.

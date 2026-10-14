@@ -4,8 +4,8 @@
 # ---------------------------------------------------------------------
 from __future__ import annotations
 
-from qai_hub_apps._internal.configs.base_config import BaseConfig
 from qai_hub_apps._internal.utils.paths import APPS_ROOT
+from qai_hub_apps.configs.base_config import BaseConfig
 
 _DEFAULT_ASSET_BASES: AssetBases | None = None
 

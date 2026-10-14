@@ -10,7 +10,7 @@ import pytest
 
 from qai_hub_apps.commands.list_apps import run_info, run_list
 from qai_hub_apps.configs.app_yaml import AppLanguage, AppType
-from qai_hub_apps.conftest import make_app_info
+from qai_hub_apps.conftest import TEST_DEVICE, make_app_info
 from qai_hub_apps.errors import AppNotFoundError
 from qai_hub_apps.registry.base import App
 from qai_hub_apps.registry.filters import AppFilter
@@ -166,16 +166,14 @@ def test_run_list_no_matches_omits_hints_for_model_and_device(capsys):
         (AppFilter(precisions=frozenset({"float"})), "Precision", "float"),
         (AppFilter(models=("test",)), "Models", "test_model"),
         (
-            AppFilter(device="Snapdragon 8 Elite QRD"),
+            AppFilter(device="Snapdragon X Elite CRD"),
             "Supported Devices",
-            "Snapdragon 8 Elite QRD",
+            "Snapdragon X Elite CRD",
         ),
     ],
 )
 def test_filter_adds_its_column(app_filter, header, cell, capsys):
-    registry = _make_registry_with_apps(
-        make_app_info(supported_devices=["Snapdragon 8 Elite QRD"])
-    )
+    registry = _make_registry_with_apps(make_app_info(supported_devices=[TEST_DEVICE]))
     run_list(registry, app_filter)
     out = capsys.readouterr().out
     assert header in out

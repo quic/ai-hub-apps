@@ -24,6 +24,8 @@ from qai_hub_apps._internal.qdc.qdc_jobs import (
     QDCJobs,
 )
 from qai_hub_apps._internal.utils.paths import REPOSITORY_ROOT
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME
+from qai_hub_apps.configs.manifest import MANIFEST_FILENAME
 
 TEXT_LOG_EXTENSIONS = (".log", ".stdout", ".txt", ".json")
 
@@ -400,7 +402,7 @@ class AppTestAndroidArtifactHandler(AppTestArtifactHandler):
 
         # The CLI resolves the app from info.yaml and execs launch.sh (which installs
         # the APKs from build/outputs); keep only those to keep the upload small.
-        keep = {"info.yaml", "launch.sh", "build", "scripts", "qai_hub_apps.json"}
+        keep = {INFO_FILENAME, "launch.sh", "build", "scripts", MANIFEST_FILENAME}
         for item in os.listdir(copied_app_dir):
             item_path = os.path.join(copied_app_dir, item)
             if item in keep:

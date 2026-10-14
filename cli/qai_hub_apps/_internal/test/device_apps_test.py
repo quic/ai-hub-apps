@@ -33,8 +33,8 @@ from pathlib import Path
 import pytest
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_fixed
 
-from qai_hub_apps._internal.configs.field_types import Device
-from qai_hub_apps._internal.configs.info_yaml import AppType, QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import AppInfoInternal, AppType
+from qai_hub_apps.configs.field_types import Device
 
 pytestmark = pytest.mark.device_test
 
@@ -87,7 +87,7 @@ def _run_fetch(fetch_cmd: list[str]) -> None:
     """
     env = os.environ.copy()
     # tenacity attaches .statistics to the wrapper at runtime; not in its stubs.
-    if _run_fetch.statistics["attempt_number"] > 1:
+    if _run_fetch.statistics["attempt_number"] > 1:  # type: ignore[attr-defined]
         env["QAIHM_CLI_USE_INTERNAL_RELEASES"] = "1"
     _run_streamed(fetch_cmd, env=env)
 
@@ -100,14 +100,16 @@ def _run_build(build_cmd: list[str]) -> None:
     The retry adds --clean to clear up partial build state from previous attempt.
     """
     # tenacity attaches .statistics to the wrapper at runtime; not in its stubs.
-    if _run_build.statistics["attempt_number"] > 1 and "--clean" not in build_cmd:
+    if _run_build.statistics["attempt_number"] > 1 and (  # type: ignore[attr-defined]
+        "--clean" not in build_cmd
+    ):
         build_cmd = [*build_cmd, "--clean"]
     env = os.environ.copy()
     env["QAI_HUB_APPS_EXPERIMENTAL"] = "1"
     _run_streamed(build_cmd, env=env)
 
 
-def _resolve_device(app_info: QAIHAAppInfo, device_override: str | None) -> Device:
+def _resolve_device(app_info: AppInfoInternal, device_override: str | None) -> Device:
     """Return the device to test ``app_info`` on, preferring ``device_override``.
 
     Parameters
@@ -131,7 +133,7 @@ def _resolve_device(app_info: QAIHAAppInfo, device_override: str | None) -> Devi
     return tested_device
 
 
-def _select_models(app_info: QAIHAAppInfo, mode: str) -> list[str]:
+def _select_models(app_info: AppInfoInternal, mode: str) -> list[str]:
     # Apps with disable_cli_model_fetch download their model at runtime; the model is
     # never fetched, so yield a single param to avoid redundant fetch/build/device runs.
     if app_info.disable_cli_model_fetch:
@@ -147,19 +149,19 @@ def _select_models(app_info: QAIHAAppInfo, mode: str) -> list[str]:
     return list(models)
 
 
-def _build_params(model_selection: str) -> list[tuple[QAIHAAppInfo, str]]:
+def _build_params(model_selection: str) -> list[tuple[AppInfoInternal, str]]:
     """Build (app_info, model_id) pairs from the CLI registry.
 
-    Uses Registry.load() from CLI. For each app in the registry, loads the full QAIHAAppInfo from
+    Uses Registry.load() from CLI. For each app in the registry, loads the full AppInfoInternal from
     the local apps/<id>/info.yaml to access internal fields.
     """
     from qai_hub_apps.registry import (
         Registry,  # lazy import, CLI not required for other tests
     )
 
-    params: list[tuple[QAIHAAppInfo, str]] = []
+    params: list[tuple[AppInfoInternal, str]] = []
     for app in Registry.load().apps:
-        app_info, _ = QAIHAAppInfo.from_app(app.id)
+        app_info, _ = AppInfoInternal.from_app(app.id)
         params.extend(
             (app_info, model_id)
             for model_id in _select_models(app_info, model_selection)
@@ -167,7 +169,7 @@ def _build_params(model_selection: str) -> list[tuple[QAIHAAppInfo, str]]:
     return params
 
 
-def _param_id(val: tuple[QAIHAAppInfo, str]) -> str:
+def _param_id(val: tuple[AppInfoInternal, str]) -> str:
     app_info, model_id = val
     return f"{app_info.id}-{model_id}"
 
@@ -205,7 +207,7 @@ def built_dirs() -> dict[tuple[str, str], Path]:
 
 
 def test_1_fetch_app(
-    app_to_test: tuple[QAIHAAppInfo, str],
+    app_to_test: tuple[AppInfoInternal, str],
     tmp_path_factory: pytest.TempPathFactory,
     fetched_dirs: dict,
     device_override: str | None,
@@ -239,7 +241,7 @@ def test_1_fetch_app(
 
 
 def test_2_build_app(
-    app_to_test: tuple[QAIHAAppInfo, str],
+    app_to_test: tuple[AppInfoInternal, str],
     fetched_dirs: dict,
     built_dirs: dict,
     test_stage: str,
@@ -266,7 +268,7 @@ def test_2_build_app(
 
 
 def test_3_on_device_app(
-    app_to_test: tuple[QAIHAAppInfo, str],
+    app_to_test: tuple[AppInfoInternal, str],
     built_dirs: dict,
     qdc_token: str | None,
     test_stage: str,

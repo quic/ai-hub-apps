@@ -8,14 +8,16 @@ from pathlib import Path
 
 import pytest
 
-from qai_hub_apps._internal.configs.field_types import Precision, TargetRuntime
 from qai_hub_apps._internal.configs.info_yaml import (
+    AppInfoInternal,
     AppLanguage,
     AppLicense,
     AppOS,
     AppType,
-    QAIHAAppInfo,
 )
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME
+from qai_hub_apps.configs.field_types import TargetRuntime
+from qai_hub_apps.conftest import app_info_defaults
 
 _FIXTURES = Path(__file__).parent / "test" / "fixtures"
 
@@ -31,33 +33,21 @@ FAKE_VERSIONS = {
 }
 
 
-def make_sample_app_info(**overrides: object) -> QAIHAAppInfo:
-    """Factory for QAIHAAppInfo with sensible defaults. Accepts keyword overrides."""
-    defaults: dict = dict(
-        name="Test App",
-        id="test_app",
-        status="published",
-        headline="Test headline",
-        description="Test description",
-        domain="Test",
-        use_case="Testing",
-        app_repo_url="https://github.com/test/app",
-        app_type=AppType.UBUNTU,
-        runtime=TargetRuntime.ONNX,
-        related_models=["test_model"],
-        precisions=[Precision.FLOAT],
-        languages=[AppLanguage.PYTHON],
-        os=AppOS(name="Ubuntu", version="24.04+"),
-        license_url="https://github.com/qualcomm/ai-hub-apps/blob/main/LICENSE",
-        license_type=AppLicense.BSD_3_CLAUSE,
-        private_model_s3_paths={},
+def make_sample_app_info(**overrides: object) -> AppInfoInternal:
+    """Factory for AppInfoInternal with sensible defaults. Accepts keyword overrides."""
+    return AppInfoInternal(
+        **app_info_defaults(
+            os=AppOS(name="Ubuntu", version="24.04+"),
+            license_url="https://github.com/qualcomm/ai-hub-apps/blob/main/LICENSE",
+            license_type=AppLicense.BSD_3_CLAUSE,
+            private_model_s3_paths={},
+            **overrides,
+        )
     )
-    defaults.update(overrides)
-    return QAIHAAppInfo(**defaults)
 
 
 @pytest.fixture
-def sample_app_info() -> QAIHAAppInfo:
+def sample_app_info() -> AppInfoInternal:
     return make_sample_app_info()
 
 
@@ -112,7 +102,7 @@ def dummy_python_app_path(tmp_path: Path) -> Path:
     app_dir = tmp_path / "my_dummy_app"
     app_dir.mkdir()
     make_sample_app_info(id="my_dummy_app").to_yaml(
-        app_dir / "info.yaml", write_if_empty=True
+        app_dir / INFO_FILENAME, write_if_empty=True
     )
     (app_dir / "main.py").write_text(
         "from qai_hub_apps_utils.helper import do_something\ndo_something()\n"
@@ -144,7 +134,7 @@ def dummy_android_app_path(tmp_path: Path) -> Path:
         app_type=AppType.ANDROID,
         languages=[AppLanguage.JAVA],
         runtime=TargetRuntime.TFLITE,
-    ).to_yaml(app_dir / "info.yaml", write_if_empty=True)
+    ).to_yaml(app_dir / INFO_FILENAME, write_if_empty=True)
 
     (app_dir / "build.gradle").write_text((_FIXTURES / "build.gradle").read_text())
 

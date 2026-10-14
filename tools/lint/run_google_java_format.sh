@@ -11,7 +11,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lint_common.sh"
 GJF_JAR="$TOOLS_DIR/google-java-format.jar"
 
 if [ ! -x "$JAVA" ] || [ ! -f "$GJF_JAR" ]; then
-    echo "[ERROR] lint toolchain missing. Run 'bash tools/setup_env.sh --extras precommit'" >&2
+    echo "[ERROR] lint toolchain missing. Run 'bash tools/setup_env.sh'" >&2
     exit 1
 fi
 

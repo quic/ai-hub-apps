@@ -18,14 +18,16 @@ if TYPE_CHECKING:
     from mypy_boto3_s3.service_resource import Bucket
 
 from qai_hub_apps._internal.utils.aws import (
-    ASSETS_S3_BASE,
     QAIHM_PUBLIC_S3_BUCKET,
     QAIHM_PUBLIC_WHEELS_S3_BUCKET,
-    RELEASES_S3_PREFIX,
     attempt_with_s3_credentials_warning,
     get_qaihm_s3,
-    s3_prefix_for,
     upload_public_file,
+)
+from qai_hub_apps.registry.remote import (
+    ASSETS_S3_BASE,
+    RELEASES_S3_PREFIX,
+    s3_prefix_for,
 )
 
 # Single object in the wheels bucket served for the `.../qai-hub-apps/` path.

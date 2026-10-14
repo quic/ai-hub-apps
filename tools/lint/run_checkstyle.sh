@@ -11,7 +11,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/lint_common.sh"
 CHECKSTYLE_JAR="$TOOLS_DIR/checkstyle.jar"
 
 if [ ! -x "$JAVA" ] || [ ! -f "$CHECKSTYLE_JAR" ]; then
-    echo "[ERROR] lint toolchain missing. Run 'bash tools/setup_env.sh --extras precommit'" >&2
+    echo "[ERROR] lint toolchain missing. Run 'bash tools/setup_env.sh'" >&2
     exit 1
 fi
 

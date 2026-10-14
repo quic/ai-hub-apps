@@ -31,7 +31,7 @@ from qai_hub_models_cli.proto_helpers.release_assets import (
 )
 from qai_hub_models_cli.versions import CURRENT_VERSION
 
-from qai_hub_apps._internal.configs.info_yaml import AppStatus, QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import AppInfoInternal, AppStatus
 from qai_hub_apps._internal.utils.paths import get_all_apps
 
 pytestmark = pytest.mark.verify_related_models
@@ -72,11 +72,11 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> None:
     """Parametrize ``app_info`` with every app that declares the fixture."""
     if "app_info" not in metafunc.fixturenames:
         return
-    apps = [QAIHAAppInfo.from_app(p)[0] for p in get_all_apps()]
+    apps = [AppInfoInternal.from_app(p)[0] for p in get_all_apps()]
     metafunc.parametrize("app_info", apps, ids=[a.id for a in apps])
 
 
-def test_related_models(app_info: QAIHAAppInfo) -> None:
+def test_related_models(app_info: AppInfoInternal) -> None:
     if app_info.skip_related_models_verify:
         pytest.skip(app_info.skip_related_models_verify)
     if app_info.status == AppStatus.PUBLISHED_WEBSITE_ONLY:

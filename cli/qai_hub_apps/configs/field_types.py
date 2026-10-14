@@ -15,6 +15,7 @@ provides, exposing them as plain string tokens usable as Pydantic fields.
 
 from __future__ import annotations
 
+# pragma: exclude file
 from typing import Any
 
 from qai_hub_models_cli.proto_helpers.platform import get_platform, resolve_chipset
@@ -25,7 +26,7 @@ from qai_hub_models_cli.proto_helpers.platform_enums import (
     runtime_str_to_proto,
 )
 
-from qai_hub_apps._internal.configs.proto_token import ProtoToken
+from qai_hub_apps.configs.proto_token import ProtoToken
 
 
 class Precision(ProtoToken):

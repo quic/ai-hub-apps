@@ -7,16 +7,11 @@
 # which includes the internal tooling (qai_hub_apps._internal).
 #
 # Usage:
-#   bash tools/setup_env.sh [--venv <path>] [--python <exe>] [--extras <extra>] [--with-cli] [--with-qdc-sdk]
+#   bash tools/setup_env.sh [--venv <path>] [--python <exe>] [--with-cli] [--with-qdc-sdk]
 #
 # Defaults:
 #   --venv    qaiha-dev
 #   --python  python3
-#   --extras  dev
-#
-# Available extras:
-#   dev        Full test install: pytest, qai-hub-models-cli, boto3, etc. (default)
-#   precommit  Light install: pre-commit + mypy only (for CI lint checks)
 #
 # Flags:
 #   --with-cli      Also install the qai-hub-apps CLI package (cli/)
@@ -26,7 +21,6 @@ set -euo pipefail
 
 VENV_PATH="qaiha-dev"
 PYTHON="python3"
-EXTRAS="dev"
 WITH_CLI=false
 WITH_QDC_SDK=false
 
@@ -36,8 +30,6 @@ while [ $# -gt 0 ]; do
         --venv)          VENV_PATH="$2"; shift ;;
         --python=*)      PYTHON="${1##--python=}" ;;
         --python)        PYTHON="$2"; shift ;;
-        --extras=*)      EXTRAS="${1##--extras=}" ;;
-        --extras)        EXTRAS="$2"; shift ;;
         --with-cli)      WITH_CLI=true ;;
         --with-qdc-sdk)  WITH_QDC_SDK=true ;;
         *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -56,7 +48,7 @@ else
     echo "Virtual environment already exists at $VENV_PATH"
 fi
 
-INSTALL_TARGET="$REPO_ROOT/cli/[$EXTRAS]"
+INSTALL_TARGET="$REPO_ROOT/cli/[dev]"
 
 if command -v uv &>/dev/null; then
     uv pip install --python "$VENV_PATH/bin/python" -e "$INSTALL_TARGET"
@@ -68,11 +60,9 @@ if [ "$WITH_CLI" = true ]; then
     echo "Note: --with-cli is a no-op; the CLI package is installed above."
 fi
 
-# The precommit extra runs the Java/Kotlin pre-commit hooks, which need a JVM
-# toolchain (JDK + google-java-format + ktlint).
-if [ "$EXTRAS" = "precommit" ]; then
-    bash "$REPO_ROOT/tools/lint/install_lint_tools.sh"
-fi
+# The Java/Kotlin pre-commit hooks need a JVM toolchain
+# (JDK + google-java-format + ktlint).
+bash "$REPO_ROOT/tools/lint/install_lint_tools.sh"
 
 if [ "$WITH_QDC_SDK" = true ]; then
     echo "Downloading and installing QDC SDK wheel..."

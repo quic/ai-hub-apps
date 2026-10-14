@@ -60,12 +60,11 @@ Available flags for `setup_env.sh`:
 | `--with-qdc-sdk` | Download and install the Qualcomm Device Cloud SDK wheel |
 | `--venv <path>` | Custom venv path (default: `qaiha-dev`) |
 | `--python <exe>` | Python executable to use (default: `python3`) |
-| `--extras <name>` | Extras to install: `dev` (default) or `precommit` |
 
 ### Pre-commit Hooks
 
 ```bash
-pip install pre-commit && pre-commit install
+pre-commit install
 
 # Run all hooks manually
 pre-commit run --all-files
@@ -75,13 +74,7 @@ pre-commit run --config .pre-commit-line-ending-check.yaml --all-files
 ```
 
 The Java/Kotlin hooks (`google-java-format`, `checkstyle`, `ktlint`) need a JVM toolchain.
-Bootstrapping with the `precommit` extra provisions it automatically into
-`.lint-tools/` (git-ignored):
-
-```bash
-bash tools/setup_env.sh --extras precommit     # Linux
-. tools/setup_env.ps1 -Extras precommit        # Windows
-```
+`setup_env` provisions it automatically into `.lint-tools/` (git-ignored).
 
 Tool versions are pinned in `tools/versions.env`.
 

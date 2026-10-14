@@ -56,7 +56,7 @@ jobs:
       env:
         SUDO_PASSWORD: ${{ secrets.TETRASERVICE_PASSWORD }}
       run: |
-        bash tools/setup_env.sh --python="${{ steps.setup_python.outputs.python-path }}" --venv="${{ env.VENV_PATH }}" --extras precommit
+        bash tools/setup_env.sh --python="${{ steps.setup_python.outputs.python-path }}" --venv="${{ env.VENV_PATH }}"
         source "${{ env.VENV_PATH }}/bin/activate"
 
     - name: Run Pre-Commit

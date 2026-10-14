@@ -7,7 +7,7 @@ from __future__ import annotations
 import logging
 
 from packaging.version import Version
-from pydantic import model_validator
+from pydantic import ConfigDict, model_validator
 
 from qai_hub_apps import __version__, _is_dev
 from qai_hub_apps.configs.app_yaml import AppInfo
@@ -25,6 +25,10 @@ logger = logging.getLogger(__name__)
 
 
 class AppRegistry(BaseConfig):
+    """Registry of all published AI Hub Apps, produced at release time."""
+
+    model_config = ConfigDict(extra="ignore", revalidate_instances="always")
+
     schema_version: str
     min_cli_version: str
     version: str | None = None

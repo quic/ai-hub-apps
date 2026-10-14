@@ -10,7 +10,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from qai_hub_apps.configs.app_yaml import AppLanguage, AppType
-from qai_hub_apps.conftest import make_app_info, make_device
+from qai_hub_apps.conftest import TEST_DEVICE, make_app_info, make_device
 from qai_hub_apps.errors import AppIncompatibleError, QAIHubAppsError
 from qai_hub_apps.experimental.validate import platform_check
 from qai_hub_apps.experimental.validate.platform_check import (
@@ -158,6 +158,6 @@ def test_run_android_on_macos_raises(monkeypatch):
 
 
 def test_ensure_device_supported_rejects_other_device():
-    app = App(make_app_info(supported_devices=["Device A"]))
+    app = App(make_app_info(supported_devices=[TEST_DEVICE]))
     with pytest.raises(AppIncompatibleError, match="does not support the configured"):
         ensure_device_supported(app, "Device B")

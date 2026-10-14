@@ -6,16 +6,11 @@
 # which includes the internal tooling (qai_hub_apps._internal).
 #
 # Usage:
-#   . tools/setup_env.ps1 [-Venv <path>] [-Python <exe>] [-Extras <extra>] [-WithCli]
+#   . tools/setup_env.ps1 [-Venv <path>] [-Python <exe>] [-WithCli]
 #
 # Defaults:
 #   -Venv    qaiha-dev
 #   -Python  python
-#   -Extras  dev
-#
-# Available extras:
-#   dev        Full test install: pytest, qai-hub-models-cli, boto3, etc. (default)
-#   precommit  Light install: pre-commit + mypy only (for CI lint checks)
 #
 # Flags:
 #   -WithCli      Also install the qai-hub-apps CLI package (cli/)
@@ -24,7 +19,6 @@
 param(
     [string]$Venv = "qaiha-dev",
     [string]$Python = "python",
-    [string]$Extras = "dev",
     [switch]$WithCli,
     [switch]$WithQdcSdk
 )
@@ -41,7 +35,7 @@ if (-not (Test-Path $Venv)) {
     Write-Host "Virtual environment already exists at $Venv"
 }
 
-$InstallTarget = "$RepoRoot\cli\[$Extras]"
+$InstallTarget = "$RepoRoot\cli\[dev]"
 
 $uvAvailable = Get-Command uv -ErrorAction SilentlyContinue
 if ($uvAvailable) {
@@ -54,11 +48,9 @@ if ($WithCli) {
     Write-Host "Note: -WithCli is a no-op; the CLI package is installed above."
 }
 
-# The precommit extra runs the Java/Kotlin pre-commit hooks, which need a JVM
-# toolchain (JDK + google-java-format + ktlint)
-if ($Extras -eq "precommit") {
-    . "$RepoRoot\tools\lint\install_lint_tools.ps1"
-}
+# The Java/Kotlin pre-commit hooks need a JVM toolchain
+# (JDK + google-java-format + ktlint)
+. "$RepoRoot\tools\lint\install_lint_tools.ps1"
 
 if ($WithQdcSdk) {
     Write-Host "Downloading and installing QDC SDK wheel..."

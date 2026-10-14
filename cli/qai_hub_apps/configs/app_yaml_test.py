@@ -63,39 +63,34 @@ def test_app_info_optional_model_file_paths_defaults_empty():
     assert info.model_file_paths == []
 
 
-def test_app_info_optional_environment_defaults_none():
-    info = AppInfo(**_REQUIRED_FIELDS)
-    assert info.environment is None
-
-
 def test_supported_devices_accepts_names():
-    info = AppInfo(**_REQUIRED_FIELDS, supported_devices=["Device A", "Device B"])
-    assert info.supported_devices == ["Device A", "Device B"]
-
-
-def test_supported_devices_accepts_mappings():
     info = AppInfo.model_validate(
         {
             **_REQUIRED_FIELDS,
             "supported_devices": [
-                {"name": "Device A", "status": "Tested"},
-                {"name": "Device B", "status": "Not Tested"},
+                "Snapdragon X Elite CRD",
+                "Dragonwing IQ-9075 EVK",
             ],
         }
     )
-    assert info.supported_devices == ["Device A", "Device B"]
+    assert info.supported_devices == [
+        "Snapdragon X Elite CRD",
+        "Dragonwing IQ-9075 EVK",
+    ]
 
 
-def test_supported_devices_mapping_without_name_raises():
+def test_supported_devices_rejects_unknown_device():
     with pytest.raises(ValidationError):
         AppInfo.model_validate(
-            {**_REQUIRED_FIELDS, "supported_devices": [{"status": "Tested"}]}
+            {**_REQUIRED_FIELDS, "supported_devices": ["Not A Real Device"]}
         )
 
 
 def test_supported_devices_non_list_raises():
     with pytest.raises(ValidationError):
-        AppInfo.model_validate({**_REQUIRED_FIELDS, "supported_devices": "Device A"})
+        AppInfo.model_validate(
+            {**_REQUIRED_FIELDS, "supported_devices": "Snapdragon X Elite CRD"}
+        )
 
 
 def test_app_url_source_field():
@@ -188,3 +183,40 @@ precisions: [float]
     p.write_text(content)
     with pytest.raises(ValidationError):
         AppInfo.from_yaml(p)
+
+
+def test_model_file_paths_and_dir_mutually_exclusive():
+    with pytest.raises(ValidationError, match="mutually exclusive"):
+        AppInfo.model_validate(
+            {
+                **_REQUIRED_FIELDS,
+                "model_file_paths": ["models/a.onnx"],
+                "model_file_dir": "models",
+            }
+        )
+
+
+def test_disable_cli_model_fetch_forbids_model_location():
+    with pytest.raises(ValidationError, match="disable_cli_model_fetch"):
+        AppInfo(
+            **_REQUIRED_FIELDS,
+            disable_cli_model_fetch=True,
+            model_file_dir="models",
+        )
+
+
+def test_model_file_paths_must_share_a_parent():
+    with pytest.raises(ValidationError, match="same parent directory"):
+        AppInfo.model_validate(
+            {
+                **_REQUIRED_FIELDS,
+                "model_file_paths": ["models/a.onnx", "assets/b.onnx"],
+            }
+        )
+
+
+def test_model_file_paths_in_one_dir_is_allowed():
+    info = AppInfo.model_validate(
+        {**_REQUIRED_FIELDS, "model_file_paths": ["models/a.onnx", "models/b.onnx"]}
+    )
+    assert len(info.model_file_paths) == 2

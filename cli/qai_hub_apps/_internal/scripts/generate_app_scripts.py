@@ -11,7 +11,11 @@ from pathlib import Path
 from jinja2 import Environment, FileSystemLoader
 from tap import Tap
 
-from qai_hub_apps._internal.configs.info_yaml import AppLanguage, AppType, QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import (
+    AppInfoInternal,
+    AppLanguage,
+    AppType,
+)
 from qai_hub_apps._internal.scripts.generate_registry import RegistryScope
 from qai_hub_apps._internal.utils.paths import DOCKER_ROOT, get_all_apps
 from qai_hub_apps._internal.utils.versions import load_versions
@@ -81,7 +85,7 @@ def _android_instrumentation_runner(app_dir: Path) -> str:
     return f"{_android_package(app_dir)}.test/{match.group(1)}"
 
 
-def _base_image_context(info: QAIHAAppInfo) -> dict[str, object]:
+def _base_image_context(info: AppInfoInternal) -> dict[str, object]:
     """Return the prebuilt base image and tag for an app's docker build.
 
     Empty for apps with no ``base_docker``. Otherwise the ``base_docker`` name
@@ -122,7 +126,7 @@ def _base_image_context(info: QAIHAAppInfo) -> dict[str, object]:
 
 
 def _launch_plan(
-    info: QAIHAAppInfo, app_dir: Path
+    info: AppInfoInternal, app_dir: Path
 ) -> list[tuple[str, str, dict[str, object]]]:
     """Return one ``(template, out_filename, context)`` per launch script."""
     context: dict[str, object] = {"header": HEADER, "app_id": info.id}
@@ -147,7 +151,7 @@ def _launch_plan(
 
 
 def _build_plan(
-    info: QAIHAAppInfo, app_dir: Path
+    info: AppInfoInternal, app_dir: Path
 ) -> list[tuple[str, str, dict[str, object]]]:
     """Return one ``(template, out_filename, context)`` per build script.
 
@@ -188,7 +192,7 @@ def _build_plan(
     ]
 
 
-def _dockerfile_plan(info: QAIHAAppInfo) -> list[tuple[str, str, dict[str, object]]]:
+def _dockerfile_plan(info: AppInfoInternal) -> list[tuple[str, str, dict[str, object]]]:
     """Return ``[(template, out_filename, context)]`` for an app's Dockerfile.
 
     Empty for apps that never run ``docker build``.
@@ -232,7 +236,7 @@ def generate_app_scripts(
     print(f"Scope:     {scope.value}")
     print(f"App:       {app_id or 'all in-scope apps'}")
 
-    all_apps = [QAIHAAppInfo.from_app(rel) for rel in get_all_apps()]
+    all_apps = [AppInfoInternal.from_app(rel) for rel in get_all_apps()]
     all_apps = [(info, d) for info, d in all_apps if scope.includes(info)]
     if app_id is not None:
         all_apps = [(info, d) for info, d in all_apps if info.id == app_id]

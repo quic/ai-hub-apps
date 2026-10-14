@@ -14,6 +14,7 @@ from qai_hub_apps._internal.bundlers import bundle_app
 from qai_hub_apps._internal.configs.info_yaml import AppLanguage
 from qai_hub_apps._internal.conftest import FAKE_VERSIONS, make_sample_app_info
 from qai_hub_apps._internal.utils.paths import DOCKER_ROOT
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME
 
 pytestmark = pytest.mark.bundler_unit
 
@@ -24,7 +25,7 @@ def test_bundle_app_non_python_raises(tmp_path: Path) -> None:
     app_dir = tmp_path / "myapp"
     app_dir.mkdir()
     make_sample_app_info(id="myapp", languages=[AppLanguage.CPP]).to_yaml(
-        app_dir / "info.yaml", write_if_empty=True
+        app_dir / INFO_FILENAME, write_if_empty=True
     )
     with pytest.raises(NotImplementedError):
         bundle_app(app_dir, tmp_path / "out")
@@ -205,7 +206,7 @@ def test_bundle_app_includes_dockerfile(
     tmp_path: Path,
 ) -> None:
     make_sample_app_info(id="my_dummy_app", base_docker="ubuntu.dockerfile").to_yaml(
-        dummy_python_app_path / "info.yaml", write_if_empty=True
+        dummy_python_app_path / INFO_FILENAME, write_if_empty=True
     )
     (dummy_python_app_path / "Dockerfile").write_text("FROM some/base:tag\n")
 
@@ -240,7 +241,7 @@ def test_bundle_app_missing_dockerfile_raises(
 ) -> None:
     """An app that sets base_docker but was never passed through generate_app_scripts."""
     make_sample_app_info(id="my_dummy_app", base_docker="ubuntu.dockerfile").to_yaml(
-        dummy_python_app_path / "info.yaml", write_if_empty=True
+        dummy_python_app_path / INFO_FILENAME, write_if_empty=True
     )
 
     with pytest.raises(FileNotFoundError, match=r"generate_app_scripts"):

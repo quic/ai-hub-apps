@@ -7,21 +7,32 @@ from enum import Enum, unique
 from os import PathLike
 from pathlib import Path
 
-from pydantic import ConfigDict, Field, field_validator, model_validator
+from pydantic import Field, model_validator
 
-from qai_hub_apps._internal.configs.base_config import BaseConfig
-from qai_hub_apps._internal.configs.field_types import Device, Precision, TargetRuntime
 from qai_hub_apps._internal.utils.paths import APPS_ROOT, REPOSITORY_ROOT
+from qai_hub_apps.configs.app_yaml import (
+    INFO_FILENAME,
+    AppInfo,
+    AppLanguage,
+    AppStatus,
+    AppType,
+    AppUrl,
+)
+from qai_hub_apps.configs.base_config import BaseConfig
+from qai_hub_apps.configs.field_types import Device, Precision
 
-
-@unique
-class AppStatus(Enum):
-    UNPUBLISHED = "unpublished"  # WIP: not on the website or CLI, but tested in CI
-    PUBLISHED = "published"  # Live on the website, in the CLI, and tested
-    PUBLISHED_WEBSITE_ONLY = (
-        "published_website_only"  # On the website only; not CLI-fetchable or tested
-    )
-    DEPRECATED = "deprecated"  # Like published, but carries a deprecation notice
+__all__ = [
+    "AppInfo",
+    "AppInfoInternal",
+    "AppLanguage",
+    "AppLicense",
+    "AppOS",
+    "AppStatus",
+    "AppType",
+    "AppUrl",
+    "DeviceTestStatus",
+    "SupportedDevice",
+]
 
 
 @unique
@@ -36,22 +47,6 @@ class AppLicense(Enum):
     GPL_3_0 = "gpl-3.0"
     OTHER_NON_COMMERCIAL = "other-non-commercial"
     CC_BY_NON_COMMERCIAL_4_0 = "cc-by-non-commercial-4.0"
-
-
-@unique
-class AppLanguage(Enum):
-    PYTHON = "Python"
-    CPP = "C++"
-    JAVA = "Java"
-    KOTLIN = "Kotlin"
-    GO = "Go"
-
-
-@unique
-class AppType(Enum):
-    ANDROID = "android"
-    WINDOWS = "windows"
-    UBUNTU = "ubuntu"
 
 
 @unique
@@ -70,81 +65,8 @@ class AppOS(BaseConfig):
     version: str
 
 
-class AppUrl(BaseConfig):
-    source: str
-
-
-class QAIHACLIAppInfo(BaseConfig):
-    """CLI-facing subset of app info — the fields written to registry.yaml."""
-
-    model_config = ConfigDict(extra="ignore")
-
-    name: str
-    id: str
-    status: AppStatus
-    headline: str
-    description: str
-    domain: str
-    use_case: str
-    app_repo_url: str | None = None
-    app_type: AppType
-    runtime: list[TargetRuntime]
-    related_models: list[str]
-    precisions: list[Precision]
-    languages: list[AppLanguage]
-    # Flat device names; generate_registry flattens info.yaml's structured
-    # supported_devices onto this field.
-    supported_devices: list[Device] = Field(default_factory=list)
-    model_file_paths: list[
-        Path
-    ] = []  # Destination paths for each downloaded model file
-    model_file_dir: str | None = None  # Directory to unzip all model files into
-    # Set True for apps that download their model at runtime
-    disable_cli_model_fetch: bool = False
-    url: AppUrl | None = None
-    # Optional message shown by the CLI for DEPRECATED apps. If unset, a default
-    # deprecation message is used.
-    deprecation_notice: str | None = None
-
-    # Supported AI Hub Models version (this version is used by the CLI to download model assets)
-    # If None, assumes any version is supported.
-    qaihm_version: str | None = None
-
-    @field_validator("runtime", mode="before")
-    @classmethod
-    def _normalize_runtime(cls, value: object) -> object:
-        """Normalize runtime; a single value is wrapped into a list."""
-        if isinstance(value, str):
-            return [value]
-        return value
-
-    @model_validator(mode="after")
-    def _validate_model_location(self) -> "QAIHACLIAppInfo":
-        has_paths = bool(self.model_file_paths)
-        has_dir = self.model_file_dir is not None
-        if has_paths and has_dir:
-            raise ValueError(
-                "model_file_paths and model_file_dir are mutually exclusive; set only one."
-            )
-        if self.disable_cli_model_fetch and (has_paths or has_dir):
-            raise ValueError(
-                "Apps with disable_cli_model_fetch=True must not set "
-                "model_file_paths or model_file_dir."
-            )
-        if has_paths and len(self.model_file_paths) > 1:
-            parents = {Path(p).parent for p in self.model_file_paths}
-            if len(parents) > 1:
-                raise ValueError(
-                    f"All model_file_paths must share the same parent directory, "
-                    f"got: {sorted(str(p) for p in parents)}"
-                )
-        return self
-
-
-class QAIHAAppInfo(QAIHACLIAppInfo):
+class AppInfoInternal(AppInfo):
     """Full internal app info — adds CI/build fields on top of CLI-facing fields."""
-
-    model_config = ConfigDict(extra="ignore")
 
     ##########################
     # General Information
@@ -153,6 +75,10 @@ class QAIHAAppInfo(QAIHACLIAppInfo):
     # Operating system the app targets (name + minimum version). Used by
     # website-import; not consumed by CI/build tooling here.
     os: AppOS
+
+    # Optional when app_repo_relative_path is set; generate_registry resolves a
+    # concrete URL before writing the registry, where it is required.
+    app_repo_url: str | None = None  # type: ignore[assignment]
 
     skip_test: str | None = None
     skip_related_models_verify: str | None = None
@@ -164,7 +90,7 @@ class QAIHAAppInfo(QAIHACLIAppInfo):
     )
 
     @model_validator(mode="after")
-    def _validate_supported_devices(self) -> "QAIHAAppInfo":
+    def _validate_supported_devices(self) -> "AppInfoInternal":
         if not self.supported_devices:
             return self
         tested = [
@@ -190,7 +116,7 @@ class QAIHAAppInfo(QAIHACLIAppInfo):
         )
 
     @model_validator(mode="after")
-    def _validate_repo(self) -> "QAIHAAppInfo":
+    def _validate_repo(self) -> "AppInfoInternal":
         if not self.app_repo_url and not self.app_repo_relative_path:
             raise ValueError(
                 f"App '{self.id}': one of app_repo_url or app_repo_relative_path must be set"
@@ -214,7 +140,7 @@ class QAIHAAppInfo(QAIHACLIAppInfo):
     )
 
     @staticmethod
-    def from_app(path: str | PathLike) -> tuple["QAIHAAppInfo", Path]:
+    def from_app(path: str | PathLike) -> tuple["AppInfoInternal", Path]:
         """
         Load an app info from this directory or yaml file.
 
@@ -226,6 +152,6 @@ class QAIHAAppInfo(QAIHACLIAppInfo):
                 path = REPOSITORY_ROOT / path
             else:
                 path = APPS_ROOT / path
-        yaml_path = path / "info.yaml" if os.path.isdir(path) else path
+        yaml_path = path / INFO_FILENAME if os.path.isdir(path) else path
         adir = path if os.path.isdir(path) else Path(os.path.dirname(path))
-        return QAIHAAppInfo.from_yaml(yaml_path), adir
+        return AppInfoInternal.from_yaml(yaml_path), adir

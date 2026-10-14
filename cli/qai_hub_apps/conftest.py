@@ -15,9 +15,18 @@ from qai_hub_models_cli.proto.platform_pb2 import (
     OperatingSystemType,
 )
 
-from qai_hub_apps.configs.app_yaml import AppInfo, AppLanguage, AppType
+from qai_hub_apps.configs.app_yaml import (
+    INFO_FILENAME,
+    AppInfo,
+    AppLanguage,
+    AppType,
+)
 from qai_hub_apps.registry.base import App, Registry
 from qai_hub_apps.utils import scripts
+
+TEST_DEVICE = "Snapdragon X Elite CRD"
+TEST_DEVICE_2 = "Dragonwing IQ-9075 EVK"
+TEST_ANDROID_DEVICE = "Samsung Galaxy S25"
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -27,8 +36,8 @@ def pytest_configure(config: pytest.Config) -> None:
     )
 
 
-def make_app_info(**overrides) -> AppInfo:
-    """Factory for AppInfo with sensible defaults. Accepts keyword overrides."""
+def app_info_defaults(**overrides: object) -> dict:
+    """The AppInfo field defaults shared by the CLI and internal factories."""
     defaults: dict = dict(
         name="Test App",
         id="test_app",
@@ -46,14 +55,19 @@ def make_app_info(**overrides) -> AppInfo:
         url=None,
     )
     defaults.update(overrides)
-    return AppInfo(**defaults)
+    return defaults
+
+
+def make_app_info(**overrides) -> AppInfo:
+    """Factory for AppInfo with sensible defaults. Accepts keyword overrides."""
+    return AppInfo(**app_info_defaults(**overrides))
 
 
 def make_device(
-    name: str = "Snapdragon 8 Elite QRD",
+    name: str = TEST_ANDROID_DEVICE,
     ostype: int = OperatingSystemType.OPERATING_SYSTEM_TYPE_ANDROID,
     os_version: str = "15",
-    chipset: str = "qualcomm-snapdragon-8-elite",
+    chipset: str = "qualcomm-snapdragon-8-elite-for-galaxy",
 ) -> DeviceInfo:
     """Factory for a DeviceInfo proto with sensible defaults."""
     return DeviceInfo(
@@ -94,7 +108,7 @@ def sample_app_dir(tmp_path) -> Callable[[App], Path]:
     def _make(app: App) -> Path:
         app_dir = tmp_path / app.id
         app_dir.mkdir(parents=True, exist_ok=True)
-        (app_dir / "info.yaml").write_text(f"id: {app.id}\n", encoding="utf-8")
+        (app_dir / INFO_FILENAME).write_text(f"id: {app.id}\n", encoding="utf-8")
         (app_dir / "build.sh").write_text("#!/usr/bin/env bash\n", encoding="utf-8")
         (app_dir / "build.ps1").write_text("", encoding="utf-8")
         return app_dir

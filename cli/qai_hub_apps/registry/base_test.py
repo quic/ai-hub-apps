@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
@@ -14,7 +15,7 @@ from qai_hub_models_cli.proto_helpers.release_assets import AssetNotFoundError
 from qai_hub_apps.configs.app_yaml import AppLanguage, AppType, AppUrl
 from qai_hub_apps.configs.manifest import MANIFEST_FILENAME, Manifest, ModelProvenance
 from qai_hub_apps.configs.model_asset import ModelAsset
-from qai_hub_apps.conftest import make_app_info
+from qai_hub_apps.conftest import TEST_DEVICE, TEST_DEVICE_2, make_app_info
 from qai_hub_apps.errors import (
     AppIncompatibleError,
     AppNotFoundError,
@@ -544,26 +545,6 @@ def test_fetch_model_file_paths_count_mismatch_raises(monkeypatch, tmp_path):
         app.fetch(tmp_path, model_asset=asset)
 
 
-def test_fetch_model_file_paths_different_dirs_raises(monkeypatch, tmp_path):
-    """AppIncompatibleError when model_file_paths span different parent directories."""
-    monkeypatch.setattr("qai_hub_apps.registry.base.download", fake_download)
-    monkeypatch.setattr("qai_hub_apps.registry.base._is_dev", lambda: False)
-    monkeypatch.setattr(
-        "qai_hub_apps.registry.base.get_asset_url",
-        MagicMock(return_value="https://example.com/model.zip"),
-    )
-
-    info = make_app_info(
-        url=AppUrl(source="https://example.com/app.zip"),
-        related_models=["test_model"],
-        model_file_paths=["models/a.onnx", "assets/b.onnx"],
-    )
-    app = App(info)
-    asset = ModelAsset(model_id="test_model", chipset=None)
-    with pytest.raises(AppIncompatibleError, match="same parent directory"):
-        app.fetch(tmp_path, model_asset=asset)
-
-
 def test_fetch_model_missing_metadata_json_raises(monkeypatch, tmp_path):
     """A model asset without metadata.json raises AppIncompatibleError."""
     no_metadata = _make_fake_download(model_files=["model.onnx"], with_metadata=False)
@@ -635,9 +616,11 @@ def test_detail_fields_skips_empty_domain():
 
 
 def test_detail_fields_includes_supported_devices():
-    app = App(make_app_info(supported_devices=["Device A", "Device B"]))
+    app = App(make_app_info(supported_devices=[TEST_DEVICE, TEST_DEVICE_2]))
     fields = dict(app.detail_fields())
-    assert fields["Supported Devices"] == "Device A, Device B"
+    assert (
+        fields["Supported Devices"] == "Snapdragon X Elite CRD, Dragonwing IQ-9075 EVK"
+    )
 
 
 def test_registry_apps_returns_all(sample_registry_yaml):
@@ -868,20 +851,10 @@ def test_fetch_app_unsupported_platform_warns(monkeypatch, tmp_path, caplog):
     assert "This app may not be supported on the current device." in caplog.text
 
 
-def test_supported_chipsets_unknown_device_raises_with_issue_url(monkeypatch):
-    monkeypatch.setattr(
-        "qai_hub_apps.registry.base.device_to_chipset",
-        MagicMock(side_effect=KeyError("Bogus")),
-    )
-    app = App(make_app_info(supported_devices=["Bogus"]))
-    with pytest.raises(AppIncompatibleError, match="known AI Hub device"):
-        _ = app.supported_chipsets
-
-
 def test_ensure_chipset_supported_noop_without_devices(monkeypatch):
     # An app with no supported_devices places no restriction on --chipset.
     monkeypatch.setattr(
-        "qai_hub_apps.registry.base.device_to_chipset",
+        "qai_hub_apps.configs.field_types.resolve_chipset",
         MagicMock(side_effect=AssertionError("should not resolve")),
     )
     app = App(make_app_info(supported_devices=[]))
@@ -902,14 +875,15 @@ def test_fetch_unsupported_chipset_raises(monkeypatch, tmp_path):
         MagicMock(return_value="https://example.com/model.zip"),
     )
     monkeypatch.setattr(
-        "qai_hub_apps.registry.base.device_to_chipset", lambda d: "chip-1"
+        "qai_hub_apps.configs.field_types.resolve_chipset",
+        lambda chipsets, devices, device: SimpleNamespace(name="chip-1"),
     )
 
     info = make_app_info(
         url=AppUrl(source="https://example.com/app.zip"),
         related_models=["test_model"],
         model_file_paths=["models/model.onnx"],
-        supported_devices=["Device A"],
+        supported_devices=[TEST_DEVICE],
     )
     app = App(info)
     asset = ModelAsset(model_id="test_model", chipset="chip-2")
@@ -925,14 +899,15 @@ def test_fetch_supported_chipset_succeeds(monkeypatch, tmp_path):
         MagicMock(return_value="https://example.com/model.zip"),
     )
     monkeypatch.setattr(
-        "qai_hub_apps.registry.base.device_to_chipset", lambda d: "chip-1"
+        "qai_hub_apps.configs.field_types.resolve_chipset",
+        lambda chipsets, devices, device: SimpleNamespace(name="chip-1"),
     )
 
     info = make_app_info(
         url=AppUrl(source="https://example.com/app.zip"),
         related_models=["test_model"],
         model_file_dir="models",
-        supported_devices=["Device A"],
+        supported_devices=[TEST_DEVICE],
     )
     app = App(info)
     asset = ModelAsset(model_id="test_model", chipset="chip-1")
@@ -952,12 +927,12 @@ def test_fetch_unsupported_device_raises(monkeypatch, tmp_path):
         url=AppUrl(source="https://example.com/app.zip"),
         related_models=["test_model"],
         model_file_paths=["models/model.onnx"],
-        supported_devices=["Device A"],
+        supported_devices=[TEST_DEVICE],
     )
     app = App(info)
-    asset = ModelAsset(model_id="test_model", device="Device B")
+    asset = ModelAsset(model_id="test_model", device="Dragonwing IQ-9075 EVK")
     with pytest.raises(
-        AppIncompatibleError, match="Device 'Device B' is not supported"
+        AppIncompatibleError, match="Device 'Dragonwing IQ-9075 EVK' is not supported"
     ):
         app.fetch(tmp_path, model_asset=asset)
 

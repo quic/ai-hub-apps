@@ -14,7 +14,7 @@ import yaml
 
 from qai_hub_apps import _is_dev
 from qai_hub_apps.commands.fetch import run_fetch
-from qai_hub_apps.configs.app_yaml import AppType
+from qai_hub_apps.configs.app_yaml import INFO_FILENAME, AppType
 from qai_hub_apps.configs.model_asset import ModelAsset
 from qai_hub_apps.errors import InvalidArgumentError, QAIHubAppsError
 from qai_hub_apps.experimental.validate import ensure_build_supported
@@ -29,7 +29,7 @@ def _resolve_app_from_dir(app_dir: Path, registry: Registry) -> App:
 
     The app id is read from the ``id`` field of the bundled ``info.yaml``.
     """
-    info_path = app_dir / "info.yaml"
+    info_path = app_dir / INFO_FILENAME
     logger.debug("Resolving app id from %s", info_path)
     try:
         with open(info_path, encoding="utf-8") as f:

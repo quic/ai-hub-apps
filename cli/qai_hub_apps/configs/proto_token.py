@@ -17,6 +17,7 @@ validator (the underlying proto helpers accept case-insensitive names).
 
 from __future__ import annotations
 
+# pragma: exclude file
 from collections.abc import Callable
 from typing import Any, cast
 

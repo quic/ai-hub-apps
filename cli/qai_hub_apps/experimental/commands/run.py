@@ -8,7 +8,6 @@ import logging
 import os
 import subprocess
 import sys
-from dataclasses import replace
 from pathlib import Path
 
 from qai_hub_apps import _is_dev
@@ -178,7 +177,7 @@ def run_run(
         and model_asset.device is None
         and model_asset.chipset is None
     ):
-        model_asset = replace(model_asset, device=device.name)
+        model_asset = model_asset.model_copy(update={"device": device.name})
 
     need_model_switch = (
         not app.disable_cli_model_fetch
