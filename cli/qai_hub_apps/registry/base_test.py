@@ -234,7 +234,7 @@ def test_fetch_dev_no_url_missing_bundler_raises(monkeypatch, tmp_path):
 
     info = make_app_info(url=None)
     app = App(info)
-    with pytest.raises(QAIHubAppsError, match="qai_hub_apps_test"):
+    with pytest.raises(QAIHubAppsError, match=r"qai_hub_apps\._internal"):
         app.fetch(tmp_path)
 
 

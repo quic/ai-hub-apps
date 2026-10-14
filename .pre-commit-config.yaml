@@ -93,10 +93,6 @@ repos:
         name: Ruff check (cli)
         args: [--fix, --config=cli/ruff.toml]
         files: ^cli/
-    -   id: ruff-check
-        name: Ruff check (tools)
-        args: [--fix, --config=tools/python/ruff.toml]
-        files: ^tools/python/
     -   id: ruff-format
         name: Ruff format (apps)
         files: ^apps/
@@ -104,10 +100,6 @@ repos:
         name: Ruff format (cli)
         args: [--config=cli/ruff.toml]
         files: ^cli/
-    -   id: ruff-format
-        name: Ruff format (tools)
-        args: [--config=tools/python/ruff.toml]
-        files: ^tools/python/
 -   repo: https://github.com/jsh9/pydoclint
     rev: 0.7.3
     hooks:
@@ -119,10 +111,6 @@ repos:
         name: pydoclint (cli)
         args: [--quiet, --config=cli/pyproject.toml]
         files: ^cli/
-    -   id: pydoclint
-        name: pydoclint (tools)
-        args: [--quiet, --config=tools/python/pyproject.toml]
-        files: ^tools/python/
 -   repo: local
     hooks:
     -   id: google-java-format
@@ -147,13 +135,6 @@ repos:
         name: mypy (cli)
         files: ^cli/qai_hub_apps/.*\.(py|pyi)$
         entry: tools/run_mypy.sh cli --warn-unused-configs --config-file=pyproject.toml -p qai_hub_apps
-        language: system
-        pass_filenames: false
-        require_serial: true
-    -   id: mypy
-        name: mypy (tools)
-        files: ^tools/python/qai_hub_apps_test/.*\.(py|pyi)$
-        entry: tools/run_mypy.sh tools/python --warn-unused-configs --config-file=pyproject.toml -p qai_hub_apps_test
         language: system
         pass_filenames: false
         require_serial: true

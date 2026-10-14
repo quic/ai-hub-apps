@@ -22,7 +22,7 @@ import json
 import sys
 
 from qai_hub_apps.registry import Registry
-from qai_hub_apps_test.configs.info_yaml import QAIHAAppInfo
+from qai_hub_apps._internal.configs.info_yaml import QAIHAAppInfo
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

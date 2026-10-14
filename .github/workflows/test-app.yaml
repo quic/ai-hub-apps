@@ -174,7 +174,7 @@ jobs:
         if: ${{ inputs.install_source == 'source' }}
         run: |
           ${{ env.ACTIVATE_VENV }}
-          python -m qai_hub_apps_test.scripts.generate_registry --output_dir cli/qai_hub_apps/ --scope test
+          python -m qai_hub_apps._internal.scripts.generate_registry --output_dir cli/qai_hub_apps/ --scope test
 
       - name: Configure QAI Hub client
         if: ${{ inputs.app_type == 'windows' }}
@@ -201,13 +201,13 @@ jobs:
       - name: Run tests for ${{ inputs.app }}
         run: |
           ${{ env.ACTIVATE_VENV }}
-          cd tools/python/qai_hub_apps_test/
+          cd cli/qai_hub_apps/_internal/
           python -m pytest -vv -ra -s -m device_test --model-selection "${{ inputs.model_selection }}" --test-stage "${{ inputs.test_stage }}" ${{ inputs.use_docker == false && '--no-docker' || '' }} --qdc-token "${{ env.QDC_TOKEN }}" --cli-version "${{ inputs.version }}" --cli-source "${{ inputs.install_source }}" --json-report --json-report-file="${{ inputs.app }}-results.json" -k "${{ inputs.app }}"
 
       - name: Ensure json-report-file (Linux)
         if: ${{ always() && inputs.app_type != 'windows' }}
         run: |
-          RESULTS_FILE="tools/python/qai_hub_apps_test/${{ inputs.app }}-results.json"
+          RESULTS_FILE="cli/qai_hub_apps/_internal/${{ inputs.app }}-results.json"
           if [ ! -f "$RESULTS_FILE" ]; then
             echo '{"tests":[
               {"nodeid":"test_1_fetch_app[${{ inputs.app }}-setup_failed]","outcome":"failed"},
@@ -219,7 +219,7 @@ jobs:
       - name: Ensure json-report-file (Windows)
         if: ${{ always() && inputs.app_type == 'windows' }}
         run: |
-          $resultsFile = "tools\python\qai_hub_apps_test\${{ inputs.app }}-results.json"
+          $resultsFile = "cli\qai_hub_apps\_internal\${{ inputs.app }}-results.json"
           if (-not (Test-Path $resultsFile)) {
             @'
           {"tests":[
@@ -235,4 +235,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: results-${{ inputs.app }}
-          path: tools/python/qai_hub_apps_test/${{ inputs.app }}-results.json
+          path: cli/qai_hub_apps/_internal/${{ inputs.app }}-results.json

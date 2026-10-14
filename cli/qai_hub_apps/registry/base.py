@@ -10,7 +10,7 @@ import logging
 import shutil
 import tempfile
 import zipfile
-from collections.abc import ValuesView
+from collections.abc import Callable, ValuesView
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -28,12 +28,6 @@ from qai_hub_models_cli.utils import (
 from qai_hub_models_cli.versions import CURRENT_VERSION as QAIHM_VERSION
 
 from qai_hub_apps import __version__, _is_dev
-from qai_hub_apps.registry.remote import ensure_registry
-
-try:
-    from qai_hub_apps_test.bundlers import bundle_app as _bundle_app
-except ImportError:  # pragma: no cover
-    _bundle_app = None
 from qai_hub_apps.configs.app_yaml import AppInfo, AppLanguage, AppStatus
 from qai_hub_apps.configs.manifest import Manifest, ModelProvenance
 from qai_hub_apps.configs.model_asset import ModelAsset
@@ -46,10 +40,18 @@ from qai_hub_apps.errors import (
     QAIHubAppsError,
 )
 from qai_hub_apps.logging_utils import is_quiet
+from qai_hub_apps.registry.remote import ensure_registry
 from qai_hub_apps.utils.devices import device_to_chipset, is_aot_runtime
 from qai_hub_apps.utils.github import make_issue_url
 from qai_hub_apps.utils.scripts import confirm
 from qai_hub_apps.validate import is_app_supported
+
+# _internal is dev-only tooling, absent from released wheels.
+_bundle_app: Callable[..., None] | None
+try:
+    from qai_hub_apps._internal.bundlers import bundle_app as _bundle_app
+except ImportError:  # pragma: no cover
+    _bundle_app = None
 
 if TYPE_CHECKING:
     from qai_hub_apps.registry.filters import AppFilter
@@ -201,8 +203,8 @@ class App:
         # Dev install + no URL: bundle from source on-the-fly.
         if _bundle_app is None:
             raise QAIHubAppsError(
-                "Dev install detected but qai_hub_apps_test is not installed. "
-                "Install it with: pip install -e tools/python/"
+                "Dev install detected but qai_hub_apps._internal is not available. "
+                "Install it with: pip install -e 'cli/[dev]'"
             )
         logger.debug("Dev install: bundling '%s' from source...", self.id)
         # bundle_app with make_zip=False writes to tmp/<app_id>/ == staged

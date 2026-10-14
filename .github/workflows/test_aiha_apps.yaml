@@ -118,7 +118,7 @@ jobs:
         if: ${{ inputs.install_source == 'source' }}
         run: |
           source ${{ env.VENV_PATH }}/bin/activate
-          python -m qai_hub_apps_test.scripts.generate_registry \
+          python -m qai_hub_apps._internal.scripts.generate_registry \
             --output_dir cli/qai_hub_apps/ --scope test
 
       - id: list

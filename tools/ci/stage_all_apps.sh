@@ -35,8 +35,7 @@ done
 cd "$(repo_root)"
 
 bash tools/setup_env.sh --venv="$VENV"
-bash tools/setup_env.sh --venv="$VENV" --with-cli
-"$VENV/bin/python" -m qai_hub_apps_test.scripts.generate_registry \
+"$VENV/bin/python" -m qai_hub_apps._internal.scripts.generate_registry \
     --output_dir cli/qai_hub_apps/ --scope test
 
 # fetch_all_apps.sh calls `python` and `qai-hub-apps`.

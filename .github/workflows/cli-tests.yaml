@@ -85,22 +85,27 @@ jobs:
       run: |
         bash tools/setup_env.sh --python="${{ steps.setup_python.outputs.python-path }}" --venv="${{ env.VENV_PATH }}"
 
+    # cli/pyproject.toml --ignore's qai_hub_apps/_internal, so these dev-only suites
+    # must be targeted by path; _internal/pytest.ini then applies instead of the
+    # CLI's coverage addopts.
     - name: Run Bundler Unit Tests
       run: |
         source ${{ env.VENV_PATH }}/bin/activate
-        cd tools/python && pytest \
+        cd cli && pytest \
           -vv -ra -s \
           --tb=short \
           --strict-markers \
           --color=yes \
+          qai_hub_apps/_internal \
           -m bundler_unit
 
     - name: Run Related Models Verification
       run: |
         source ${{ env.VENV_PATH }}/bin/activate
-        cd tools/python && pytest \
+        cd cli && pytest \
           -vv -ra -s \
           --tb=short \
           --strict-markers \
           --color=yes \
+          qai_hub_apps/_internal \
           -m verify_related_models

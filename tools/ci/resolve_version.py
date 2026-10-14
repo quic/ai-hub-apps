@@ -34,8 +34,8 @@ import sys
 
 from setuptools_scm import get_version
 
-from qai_hub_apps_test.utils.paths import REPOSITORY_ROOT
-from qai_hub_apps_test.utils.versions import is_dev
+from qai_hub_apps._internal.utils.paths import REPOSITORY_ROOT
+from qai_hub_apps._internal.utils.versions import is_dev
 
 
 def resolve_version(target: str) -> str:

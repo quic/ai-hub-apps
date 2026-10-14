@@ -33,24 +33,46 @@ GitHub = "https://github.com/qualcomm/ai-hub-apps"
 
 [tool.setuptools.packages.find]
 include = ["qai_hub_apps*"]
+# Internal test/build tooling.
+exclude = ["qai_hub_apps._internal*"]
 
 [tool.setuptools.exclude-package-data]
 "qai_hub_apps" = ["registry.yaml"]
+"*" = ["_internal/*", "_internal/**/*"]
 
 [tool.setuptools_scm]
 root = ".."
 version_file = "qai_hub_apps/_version.py"
 
 [project.optional-dependencies]
-dev = ["pytest==9.0.3", "pytest-mock==3.15.1", "pytest-cov==7.1.0"]
+# The Qualcomm Device Cloud SDK is installed out-of-band; see
+# tools/setup_env.sh --with-qdc-sdk.
+dev = [
+    "pytest==9.0.3",
+    "pytest-mock==3.15.1",
+    "pytest-cov==7.1.0",
+    "pytest-json-report",
+    "setuptools-scm>=9,<10",
+    "pydantic-yaml==1.4.0",
+    "ruamel.yaml==0.18.10",
+    "jinja2<=3.1.6",
+    "qai-hub",
+    "typed-argument-parser",
+    "tenacity==9.1.4",
+    "tqdm>=4.66",                        # for fetching test assets
+    "boto3>=1.26,<=1.40.0",              # for fetching test assets
+    "botocore>=1.26,<=1.40.0",
+    "boto3-stubs[s3,sts]>=1.26,<=1.40.0",
+]
+precommit = ["pre-commit", "mypy", "boto3-stubs[s3,sts]>=1.26,<=1.40.0"]
 
 [tool.pytest.ini_options]
 python_files = ["*_test.py"]
 testpaths = ["qai_hub_apps"]
-addopts = "--cov=qai_hub_apps --cov-report=term-missing --cov-fail-under=100 -m 'not integration'"
+addopts = "--cov=qai_hub_apps --cov-report=term-missing --cov-fail-under=100 -m 'not integration' --ignore=qai_hub_apps/_internal"
 
 [tool.coverage.report]
-omit = ["*_test.py", "*conftest.py"]
+omit = ["*_test.py", "*conftest.py", "qai_hub_apps/_internal/*"]
 
 [tool.pydoclint]
 style = 'numpy'

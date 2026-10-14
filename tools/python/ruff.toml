@@ -1,4 +1,0 @@
-extend = "../../ruff.toml"
-
-[lint.isort]
-known-first-party = ["qai_hub_apps_test"]

@@ -2,7 +2,7 @@
 ## Build the docker base images and push them to GHCR.
 ##
 ## After a run, pin the tag in apps/_shared/scripts/versions.env, re-run
-## `python -m qai_hub_apps_test.scripts.generate_app_scripts --scope test`
+## `python -m qai_hub_apps._internal.scripts.generate_app_scripts --scope test`
 ## and commit.
 ##
 

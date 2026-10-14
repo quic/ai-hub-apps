@@ -107,7 +107,7 @@ jobs:
           if [ "${{ inputs.target }}" == "dev" ]; then
             EXTRA="--force --scope test"
           fi
-          python -m qai_hub_apps_test.scripts.generate_registry \
+          python -m qai_hub_apps._internal.scripts.generate_registry \
             --output_dir cli/qai_hub_apps/ --build_and_upload --ref ${{ github.ref_name }} \
             --cli_version "${{ steps.version.outputs.version }}" $EXTRA
 
@@ -125,7 +125,7 @@ jobs:
         if: ${{ inputs.target != 'staging' }}
         run: |
           source ${{ env.VENV_PATH }}/bin/activate
-          python -m qai_hub_apps_test.scripts.publish_wheel_s3 \
+          python -m qai_hub_apps._internal.scripts.publish_wheel_s3 \
             --wheel_path "${{ steps.wheel.outputs.path }}" \
             --cli_version "${{ steps.version.outputs.version }}"
 

@@ -91,26 +91,26 @@ jobs:
     - name: Check registry.yaml
       run: |
         source ${{ env.VENV_PATH }}/bin/activate
-        python -m qai_hub_apps_test.scripts.generate_registry --output_dir cli/qai_hub_apps/
+        python -m qai_hub_apps._internal.scripts.generate_registry --output_dir cli/qai_hub_apps/
         if [[ -n $(git diff) || -n $(git ls-files --others --exclude-standard) ]]; then
           git diff
           git ls-files --others --exclude-standard
           echo ""
           echo "registry.yaml is out of date."
-          echo "Please run: python -m qai_hub_apps_test.scripts.generate_registry --output_dir cli/qai_hub_apps/"
+          echo "Please run: python -m qai_hub_apps._internal.scripts.generate_registry --output_dir cli/qai_hub_apps/"
           exit 1
         fi
 
     - name: Check app scripts
       run: |
         source ${{ env.VENV_PATH }}/bin/activate
-        python -m qai_hub_apps_test.scripts.generate_app_scripts --scope test
+        python -m qai_hub_apps._internal.scripts.generate_app_scripts --scope test
         if [[ -n $(git diff) || -n $(git ls-files --others --exclude-standard) ]]; then
           git diff
           git ls-files --others --exclude-standard
           echo ""
           echo "App scripts (build/launch) are out of date."
-          echo "Please run: python -m qai_hub_apps_test.scripts.generate_app_scripts --scope test"
+          echo "Please run: python -m qai_hub_apps._internal.scripts.generate_app_scripts --scope test"
           exit 1
         fi
 

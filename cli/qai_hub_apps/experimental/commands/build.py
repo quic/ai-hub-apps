@@ -112,7 +112,7 @@ def _build_command(app: App, app_dir: Path, use_docker: bool, clean: bool) -> li
     if not script.is_file():
         fix = (
             "Regenerate it with "
-            "'python -m qai_hub_apps_test.scripts.generate_app_scripts'."
+            "'python -m qai_hub_apps._internal.scripts.generate_app_scripts'."
             if _is_dev()
             else "The app bundle is incomplete; re-fetch it with --overwrite "
             "or pass an updated --app-path, then retry."

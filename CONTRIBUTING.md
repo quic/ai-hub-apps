@@ -34,13 +34,13 @@ This guide covers dev environment setup, repo architecture, app conventions, tes
 >
 > **Install git-lfs and run `git lfs install` *before cloning*.** Binary assets are
 > LFS-tracked (see `.gitattributes`) — including the static bash shim at
-> `tools/python/qai_hub_apps_test/qdc/bash_static/bash-static-x86_64` that the Android
+> `cli/qai_hub_apps/_internal/qdc/bash_static/bash-static-x86_64` that the Android
 > QDC tests bundle. A clone made without git-lfs, or with `GIT_LFS_SKIP_SMUDGE=1` set,
 > leaves these as ~130-byte text pointer files. Nothing checks this locally, so the
 > failure surfaces remotely and late: the pointer is bundled, uploaded, and the device
 > job fails with an exec-format error. If you already cloned, `git lfs install && git lfs
 > pull` fixes it; confirm with
-> `sha256sum -c tools/python/qai_hub_apps_test/qdc/bash_static/bash-static-x86_64.sha256`.
+> `sha256sum -c cli/qai_hub_apps/_internal/qdc/bash_static/bash-static-x86_64.sha256`.
 >
 > **On Windows, enable Developer Mode and set `git config --global core.symlinks true` *before cloning*.** Otherwise symlinks are checked out as plain text files and builds will fail.
 
@@ -94,9 +94,13 @@ ai-hub-apps/
 ├── apps/               # Sample applications (one subdirectory per app)
 │   └── _shared/        # Shared scripts, Gradle config, Python utilities
 ├── cli/                # qai-hub-apps CLI package (fetch, list, info)
+│   └── qai_hub_apps/
+│       └── _internal/  # Internal tooling: bundlers, script generators, QDC,
+│                       # config parsers. Dev-only -- excluded from the wheel.
 ├── tools/
-│   ├── python/         # qai_hub_apps_test: bundlers, script generators, QDC, CI scripts
-│   └── ci/             # CI utility scripts (download-qdc-wheel, build reports)
+│   ├── ci/             # CI utility scripts (download-qdc-wheel, build reports)
+│   ├── docker/         # Base images for app builds
+│   └── lint/           # Java/Kotlin lint toolchain installers
 ├── .github/workflows/  # GitHub Actions CI/CD
 └── pyproject.toml      # Root Python config (pydoclint, mypy)
 ```
@@ -142,7 +146,7 @@ support/CI reconstruct exactly which toolchain produced a given fetched app.
 
 ### The Bundlers
 
-The bundler packages an app into a self-contained directory or zip for distribution. See [`tools/python/qai_hub_apps_test/bundlers/README.md`](tools/python/qai_hub_apps_test/bundlers/README.md) for full details.
+The bundler packages an app into a self-contained directory or zip for distribution. See [`cli/qai_hub_apps/_internal/bundlers/README.md`](cli/qai_hub_apps/_internal/bundlers/README.md) for full details.
 
 - **Android bundler** — deep copies the app directory resolving all symlinks, copies and rewrites shell script `source` lines to bundle-local paths (same as Python bundler), inlines version variables from `versions.env` into `build.gradle`, and empties `common.gradle`
 - **Python bundler** — scans app source with AST to find `qai_hub_apps_utils` imports, copies only the needed shared modules (see [Shared Python Utilities](#shared-python-utilities-qai_hub_apps_utils)), merges `requirements.txt`, and rewrites shell script `source` lines to bundle-local paths
@@ -152,7 +156,7 @@ The bundler packages an app into a self-contained directory or zip for distribut
 
 | Package | Location | Purpose |
 |---------|----------|---------|
-| `qai_hub_apps_test` | `tools/python/` | Bundlers, script generators (registry + build), QDC, config parsers — see [`tools/python/README.md`](tools/python/README.md) |
+| `qai_hub_apps._internal` | `cli/qai_hub_apps/_internal/` | Bundlers, script generators (registry + build), QDC, config parsers. Dev-only: stripped from the released wheel — see [`cli/qai_hub_apps/_internal/README.md`](cli/qai_hub_apps/_internal/README.md) |
 | `qai_hub_apps` (CLI) | `cli/` | End-user CLI — see [`cli/README.md`](cli/README.md) |
 
 ---
@@ -258,7 +262,7 @@ Every app must have an `info.yaml`. Copy from a similar app and adjust.
 | `languages` | list | e.g. `['Java']`, `['Python']`, `['Java', 'C++']` |
 | `related_models` | list | All compatible model IDs (used for CLI fetch + testing). The first entry is the seed model tested on-device. CI fails if any entry has no AI Hub Models asset matching the app's `runtime`/`precisions`/`supported_devices` |
 | `precisions` | list | e.g. `[float]`, `[w4a16]` |
-| `supported_devices` | list of mappings | Each entry has `name` (**must match a key in `HUB_DEVICE_TO_QDC_DEVICE_MAP`** in `tools/python/qai_hub_apps_test/qdc/qdc_jobs.py`) and `status` (`Tested` \| `Not Tested`, default `Not Tested`). Exactly one entry must be `Tested` — that is the device the app is tested on in CI. See [Supported devices](#supported-devices) |
+| `supported_devices` | list of mappings | Each entry has `name` (**must match a key in `HUB_DEVICE_TO_QDC_DEVICE_MAP`** in `cli/qai_hub_apps/_internal/qdc/qdc_jobs.py`) and `status` (`Tested` \| `Not Tested`, default `Not Tested`). Exactly one entry must be `Tested` — that is the device the app is tested on in CI. See [Supported devices](#supported-devices) |
 | `license_type` | `bsd-3-clause` | License (almost always BSD-3) |
 | `license_url` | string | Link to LICENSE file |
 | `app_repo_relative_path` | string | Path within the public repo, usually `id` (e.g. `image_classification_android`) |
@@ -435,7 +439,7 @@ build it directly with `bash build.sh` without the CLI installed.
 ### Scripts are generated, not hand-written
 
 Build **and** launch scripts are produced from Jinja2 templates by
-`tools/python/qai_hub_apps_test/scripts/generate_app_scripts.py` — the same pattern
+`cli/qai_hub_apps/_internal/scripts/generate_app_scripts.py` — the same pattern
 as `generate_registry.py`. Each in-scope app gets a `build.sh` / `build.ps1` (see
 below) and a `launch.sh` / `launch.ps1` (see [Running Apps](#running-apps)).
 **Do not hand-edit a committed `build.*` / `launch.*`** — edit the template and
@@ -443,23 +447,23 @@ regenerate.
 
 ```bash
 # Generate for every in-scope app (default scope: production)
-python -m qai_hub_apps_test.scripts.generate_app_scripts
+python -m qai_hub_apps._internal.scripts.generate_app_scripts
 
 # CI regenerates with --scope test and fails if the result differs from what's committed
-python -m qai_hub_apps_test.scripts.generate_app_scripts --scope test
+python -m qai_hub_apps._internal.scripts.generate_app_scripts --scope test
 
 # Single app
-python -m qai_hub_apps_test.scripts.generate_app_scripts --app_id posenet_ubuntu_py
+python -m qai_hub_apps._internal.scripts.generate_app_scripts --app_id posenet_ubuntu_py
 ```
 
 The generated script (and the shared scripts it sources, e.g. `interactive.sh`) is
-carried into the bundle by the [shell bundler](tools/python/qai_hub_apps_test/bundlers/README.md).
+carried into the bundle by the [shell bundler](cli/qai_hub_apps/_internal/bundlers/README.md).
 
 ### Templates by app type
 
 The generator picks a template from the app's `app_type` + `languages`
 (`_build_plan()` in `generate_app_scripts.py`). Templates live under
-`tools/python/qai_hub_apps_test/scripts/templates/`:
+`cli/qai_hub_apps/_internal/scripts/templates/`:
 
 | App type | Template | Output | What it does |
 |----------|----------|--------|--------------|
@@ -648,7 +652,7 @@ the experimental commands without any global opt-in.
 
 ### How testing works by app type
 
-Testing follows three stages, implemented in `tools/python/qai_hub_apps_test/test/device_apps_test.py`:
+Testing follows three stages, implemented in `cli/qai_hub_apps/_internal/test/device_apps_test.py`:
 
 1. **Fetch** — `qai-hub-apps fetch <app_id> --model <model_id> --output-dir <fetched_dir>` downloads app source + model asset
 2. **Build** — `qai-hub-apps build --app-path <fetched_dir>` runs the app's bundled build script (see [Building Apps](#building-apps))
@@ -706,7 +710,7 @@ invoke it — `launch.*` owns install-runtime and docker/native execution.
 > (`test-app.yaml`, `install_source == 'source'`); a local run does not.
 >
 > ```bash
-> python -m qai_hub_apps_test.scripts.generate_registry \
+> python -m qai_hub_apps._internal.scripts.generate_registry \
 >   --output_dir cli/qai_hub_apps/ --scope test
 > ```
 >
@@ -714,15 +718,15 @@ invoke it — `launch.*` owns install-runtime and docker/native execution.
 > since the committed registry must stay production scope.
 
 ```bash
-# Full setup (CLI + QDC SDK required)
-bash tools/setup_env.sh --with-cli --with-qdc-sdk
+# Full setup (QDC SDK required for device tests)
+bash tools/setup_env.sh --with-qdc-sdk
 source qaiha-dev/bin/activate
 
 # Required before device tests — see the note above (from the repo root)
-python -m qai_hub_apps_test.scripts.generate_registry \
+python -m qai_hub_apps._internal.scripts.generate_registry \
   --output_dir cli/qai_hub_apps/ --scope test
 
-cd tools/python/qai_hub_apps_test
+cd cli/qai_hub_apps/_internal
 
 # Stage 1 only — validate fetch works (no QDC needed)
 pytest -m device_test --model-selection first --test-stage fetch
@@ -771,7 +775,7 @@ mkdir apps/<app_name>_<platform>[_<language>]
 
 Copy from a similar app (e.g. `image_classification_android/info.yaml`). Set:
 - `status: unpublished` until the app is ready (see [App Status](#app-status))
-- `supported_devices` — check `HUB_DEVICE_TO_QDC_DEVICE_MAP` in `tools/python/qai_hub_apps_test/qdc/qdc_jobs.py` for valid device names, and mark exactly one entry `Tested` (see [Supported devices](#supported-devices))
+- `supported_devices` — check `HUB_DEVICE_TO_QDC_DEVICE_MAP` in `cli/qai_hub_apps/_internal/qdc/qdc_jobs.py` for valid device names, and mark exactly one entry `Tested` (see [Supported devices](#supported-devices))
 
 ### 3. Add platform-specific files
 
@@ -815,7 +819,7 @@ Create `src/androidTest/java/com/quicinc/<app>/<App>Test.java`. See `apps/image_
 
 ```bash
 # Bundler unit tests — validates info.yaml loads, bundling works for all app types
-cd tools/python
+cd cli
 pytest -m bundler_unit -v
 
 # CLI tests — validates registry generation, fetch, and CLI commands
@@ -827,10 +831,10 @@ Both test suites must pass before opening a PR.
 
 ### 7. Regenerate and commit the registry
 
-Adding (or changing) an app means the bundled registry must be regenerated **and committed** — CI fails if `cli/qai_hub_apps/registry.yaml` is out of date. Run (requires `--with-cli` from the dev setup):
+Adding (or changing) an app means the bundled registry must be regenerated **and committed** — CI fails if `cli/qai_hub_apps/registry.yaml` is out of date. Run:
 
 ```bash
-python -m qai_hub_apps_test.scripts.generate_registry --output_dir cli/qai_hub_apps/
+python -m qai_hub_apps._internal.scripts.generate_registry --output_dir cli/qai_hub_apps/
 ```
 
 Then commit the updated `cli/qai_hub_apps/registry.yaml`. When the app is ready to publish, set `status: published` in `info.yaml` and regenerate again.
@@ -845,7 +849,7 @@ and fails if any is missing or stale (see [Building Apps](#building-apps) and
 [Running Apps](#running-apps)). Generate for your new app and commit the result:
 
 ```bash
-python -m qai_hub_apps_test.scripts.generate_app_scripts --app_id <your_app_id> --scope test
+python -m qai_hub_apps._internal.scripts.generate_app_scripts --app_id <your_app_id> --scope test
 ```
 
 If the generator errors that there's no template for your app's `app_type` /
@@ -857,7 +861,7 @@ apps also need a hand-written `run.sh` / `run.ps1` (Android apps do not — see
 ### 9. Run on-device tests locally
 
 ```bash
-cd tools/python/qai_hub_apps_test
+cd cli/qai_hub_apps/_internal
 
 # Full on-device test (requires QDC API token). The default --cli-source (source) builds
 # and bundles a wheel from your checkout, so the device runs your branch's CLI.

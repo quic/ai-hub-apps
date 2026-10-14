@@ -1,9 +1,8 @@
 {
     "python.testing.pytestArgs": [
-        "python/qai_hub_apps"
+        "cli/qai_hub_apps"
     ],
     "python.analysis.extraPaths": [
-        "./tools/python",
         "./cli"
     ],
     "python.testing.unittestEnabled": false,

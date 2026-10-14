@@ -1,3 +1,0 @@
-pre-commit
-mypy
-boto3-stubs[s3,sts]>=1.26,<=1.40.0 # type stubs for boto3/botocore

@@ -2,7 +2,8 @@
 # Copyright (c) 2025 Qualcomm Technologies, Inc. and/or its subsidiaries.
 # SPDX-License-Identifier: BSD-3-Clause
 # ---------------------------------------------------------------------
-# Create a Python virtual environment and install qai_hub_apps_test.
+# Create a Python virtual environment and install the qai-hub-apps CLI package,
+# which includes the internal tooling (qai_hub_apps._internal).
 #
 # Usage:
 #   . tools/setup_env.ps1 [-Venv <path>] [-Python <exe>] [-Extras <extra>] [-WithCli]
@@ -40,7 +41,7 @@ if (-not (Test-Path $Venv)) {
     Write-Host "Virtual environment already exists at $Venv"
 }
 
-$InstallTarget = "$RepoRoot\tools\python\[$Extras]"
+$InstallTarget = "$RepoRoot\cli\[$Extras]"
 
 $uvAvailable = Get-Command uv -ErrorAction SilentlyContinue
 if ($uvAvailable) {
@@ -50,7 +51,7 @@ if ($uvAvailable) {
 }
 
 if ($WithCli) {
-    . "$RepoRoot\tools\ci\install_cli.ps1" -Source source -Venv $Venv
+    Write-Host "Note: -WithCli is a no-op; the CLI package is installed above."
 }
 
 # The precommit extra runs the Java/Kotlin pre-commit hooks, which need a JVM
