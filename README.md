@@ -88,6 +88,7 @@ __NOTE: Some of these apps will run without NPU acceleration on non-Snapdragon®
 | [3D Object Detection](apps/object_detection_3d_ubuntu_py) | Python | TensorFlow Lite | GStreamer |
 | [Semantic Segmentation](apps/semantic_segmentation_ubuntu_py) | Python | TensorFlow Lite | GStreamer |
 | [LiDAR Semantic Segmentation](apps/lidar_segmentation_ubuntu_py) | Python | TensorFlow Lite | |
+| [EasyOCR Text Recognition](apps/easyocr_ubuntu_py) | Python | TensorFlow Lite | GStreamer |
 <!-- /UBUNTU_APPS -->
 
 _\* Source available on GitHub; not included in the CLI release._
