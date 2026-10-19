@@ -44,11 +44,21 @@ class GenieXChatTest {
 
     private var savedHeadsUp: String? = null
     private var savedZenMode: String? = null
+    private var savedStayOn: String? = null
+    private var savedScreenOffTimeout: String? = null
 
     @Before
     fun setUp() {
         device.wakeUp()
         device.executeShellCommand("wm dismiss-keyguard")
+
+        // Keep the screen on for the whole run. The model download alone can outlast the
+        // default screen-off timeout; once the screen sleeps UiAutomator can't see the app's
+        // views. Restored in tearDown().
+        savedStayOn = device.executeShellCommand("settings get global stay_on_while_plugged_in").trim()
+        savedScreenOffTimeout = device.executeShellCommand("settings get system screen_off_timeout").trim()
+        device.executeShellCommand("settings put global stay_on_while_plugged_in 7")
+        device.executeShellCommand("settings put system screen_off_timeout $SCREEN_OFF_TIMEOUT_MS")
 
         // Suppress notifications so a heads-up popup can't steal a tap; restored in tearDown().
         savedHeadsUp =
@@ -77,6 +87,41 @@ class GenieXChatTest {
         savedZenMode?.takeIf { it != "null" }?.let {
             device.executeShellCommand("settings put global zen_mode $it")
         }
+        restoreSetting("global", "stay_on_while_plugged_in", savedStayOn)
+        restoreSetting("system", "screen_off_timeout", savedScreenOffTimeout)
+    }
+
+    /**
+     * Restores a setting captured in setUp(). `settings get` prints "null" for a key that was
+     * never set, in which case the key is deleted so the value this test wrote doesn't leak.
+     */
+    private fun restoreSetting(
+        namespace: String,
+        key: String,
+        saved: String?,
+    ) {
+        when (saved) {
+            null -> return
+            "null" -> device.executeShellCommand("settings delete $namespace $key")
+            else -> device.executeShellCommand("settings put $namespace $key $saved")
+        }
+    }
+
+    /**
+     * Waits for the view with resource [id] and returns it. Re-wakes the device first as a
+     * safety net, and fails with a descriptive message (including the foreground package)
+     * instead of returning null.
+     */
+    private fun requireView(id: String): UiObject2 {
+        device.wakeUp()
+        device.executeShellCommand("wm dismiss-keyguard")
+        val view = device.wait(Until.findObject(By.res(PACKAGE, id)), UI_TIMEOUT_MS)
+        assertNotNull(
+            "View '$id' not found within ${UI_TIMEOUT_MS / 1000}s " +
+                "(screen on: ${device.isScreenOn}, foreground package: ${device.currentPackageName})",
+            view,
+        )
+        return view
     }
 
     @Test
@@ -102,7 +147,7 @@ class GenieXChatTest {
         // 2. Download the model. The download panel (ll_downloading) appears
         //    while the pull runs and is hidden on completion. Wait for it to
         //    appear, then to disappear, with a generous network timeout.
-        device.wait(Until.findObject(By.res(PACKAGE, "btn_download")), UI_TIMEOUT_MS).click()
+        requireView("btn_download").click()
         // It may already be cached from a prior run — only wait for the panel
         // to clear if it actually showed up.
         device.wait(Until.hasObject(By.res(PACKAGE, "ll_downloading")), UI_TIMEOUT_MS)
@@ -127,7 +172,7 @@ class GenieXChatTest {
      * no model is currently loaded.
      */
     private fun loadChatAndAssertOnUnit(unit: ComputeUnit) {
-        device.wait(Until.findObject(By.res(PACKAGE, "btn_load_model")), UI_TIMEOUT_MS).click()
+        requireView("btn_load_model").click()
 
         // The compute-unit picker appears for multi-unit (GGUF) models. Select
         // the radio for this unit and confirm. GPU reveals an n-layers field
@@ -149,7 +194,7 @@ class GenieXChatTest {
         val input = device.wait(Until.findObject(By.res(PACKAGE, "et_input")), UI_TIMEOUT_MS)
         assertNotNull("Input field not found", input)
         input.text = TEST_PROMPT
-        device.wait(Until.findObject(By.res(PACKAGE, "btn_send")), UI_TIMEOUT_MS).click()
+        requireView("btn_send").click()
 
         // Wait for inference and assert a non-empty assistant response. After
         // sending, the chat list holds [USER prompt, ASSISTANT reply], both
@@ -175,7 +220,7 @@ class GenieXChatTest {
 
     /** Unloads the current model and waits for the Unload button to disappear. */
     private fun unloadModel() {
-        device.wait(Until.findObject(By.res(PACKAGE, "btn_unload_model")), UI_TIMEOUT_MS).click()
+        requireView("btn_unload_model").click()
         assertTrue(
             "Model did not unload within ${UI_TIMEOUT_MS / 1000}s",
             device.wait(Until.gone(By.res(PACKAGE, "btn_unload_model")), UI_TIMEOUT_MS),
@@ -231,5 +276,6 @@ class GenieXChatTest {
         private const val RESPONSE_TIMEOUT_MS = 120_000L // first non-empty generation
         private const val POLL_INTERVAL_MS = 2_000L
         private const val DROPDOWN_RETRIES = 3
+        private const val SCREEN_OFF_TIMEOUT_MS = 1_800_000L // 30 min, well past the longest run
     }
 }
